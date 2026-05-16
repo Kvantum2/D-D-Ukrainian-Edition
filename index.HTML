@@ -1884,7 +1884,7 @@ function changeStat(s,delta){
   const c=getChar();
   if(delta>0){
     if((c.statPoints||0)<1)return;
-    c.stats[s]=Math.min(20,c.stats[s]+1);
+    c.stats[s]=Math.min(20,c.stats[s]+2);
     c.statPoints--;
   } else {
     if(c.stats[s]<=1)return;
