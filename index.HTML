@@ -1888,7 +1888,7 @@ function changeStat(s,delta){
     c.statPoints--;
   } else {
     if(c.stats[s]<=1)return;
-    c.stats[s]--;
+    c.stats[s]=Math.max(1,c.stats[s]-2);
     c.statPoints++;
   }
   saveAll();renderStats();renderSkills();
