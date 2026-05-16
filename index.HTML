@@ -1,0 +1,1185 @@
+cat > /mnt/user-data/outputs/dnd_app.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>D&D Аркуш Персонажа</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e0c09;--bg2:#13100c;--bg3:#1a1510;--card:rgba(255,255,255,0.03);--border:rgba(180,140,80,0.22);--border2:rgba(180,140,80,0.12);--blood:#8b1a1a;--blood2:rgba(139,26,26,0.18);--gold:#c8a96e;--gold2:rgba(200,169,110,0.5);--text:#c8b99a;--text2:rgba(200,185,154,0.6);--text3:rgba(200,185,154,0.3);--green:#5a9a3a;--red:#c05050}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'EB Garamond',Georgia,serif;font-size:14px;min-height:100vh;overflow-x:hidden}
+input,textarea,select{background:rgba(255,255,255,0.05);border:0.5px solid rgba(180,140,80,0.25);border-radius:3px;color:var(--text);font-family:'EB Garamond',Georgia,serif;font-size:13px;padding:4px 7px;width:100%;outline:none;transition:border-color 0.2s}
+input:focus,textarea:focus,select:focus{border-color:rgba(139,26,26,0.6)}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+button{cursor:pointer;font-family:'Cinzel',serif;transition:all 0.2s}
+select option{background:#1a1510;color:var(--text)}
+textarea{resize:vertical;line-height:1.5}
+
+/* CHAR SELECT SCREEN */
+#char-select-screen{padding:20px;min-height:100vh;display:flex;flex-direction:column}
+.app-logo{text-align:center;padding:24px 0 20px;border-bottom:0.5px solid var(--border);margin-bottom:20px}
+.app-logo-sub{font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.4em;color:var(--blood);text-transform:uppercase;margin-bottom:6px}
+.app-logo-title{font-family:'Cinzel',serif;font-size:24px;font-weight:700;color:var(--gold)}
+.char-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.char-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;padding:14px 16px;display:flex;align-items:center;gap:12px;position:relative}
+.char-card-avatar{width:44px;height:44px;border-radius:3px;border:1px solid rgba(139,26,26,0.4);background:rgba(139,26,26,0.1);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.char-card-info{flex:1;min-width:0}
+.char-card-name{font-family:'Cinzel',serif;font-size:15px;color:var(--gold);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.char-card-sub{font-size:11px;color:var(--text2);font-style:italic}
+.char-card-btns{display:flex;gap:6px;flex-shrink:0}
+.btn-open{background:rgba(139,26,26,0.2);border:0.5px solid rgba(139,26,26,0.4);color:var(--gold);font-size:10px;letter-spacing:0.12em;padding:6px 12px;border-radius:3px}
+.btn-open:active{background:rgba(139,26,26,0.4)}
+.btn-del{background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);color:var(--text3);font-size:12px;padding:6px 10px;border-radius:3px;font-family:serif}
+.btn-del:active{background:rgba(200,80,80,0.15);color:var(--red)}
+.btn-new{background:rgba(139,26,26,0.15);border:1px solid rgba(139,26,26,0.4);color:var(--gold);font-size:11px;letter-spacing:0.25em;padding:14px;border-radius:4px;width:100%;text-align:center}
+.btn-new:active{background:rgba(139,26,26,0.3)}
+
+/* MAIN APP */
+#app{display:none;flex-direction:column;min-height:100vh}
+.topbar{background:#0a0806;border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:200}
+.topbar-back{background:none;border:none;color:var(--gold2);font-size:18px;padding:4px 8px 4px 0;border-right:0.5px solid var(--border2);margin-right:4px}
+.topbar-name{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-level{font-size:11px;color:var(--text2);font-style:italic}
+.save-ind{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.15em;color:var(--green);opacity:0;transition:opacity 0.3s;flex-shrink:0}
+.save-ind.show{opacity:1}
+
+/* TABS */
+.tabs{display:flex;background:var(--bg2);border-bottom:0.5px solid var(--border2);overflow-x:auto;scrollbar-width:none;position:sticky;top:53px;z-index:199}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:9px 12px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;white-space:nowrap}
+.tab.active{color:var(--gold);border-bottom-color:var(--blood)}
+.tab:active{color:var(--gold2)}
+
+/* PAGES */
+.page{display:none;padding:14px;padding-bottom:40px}
+.page.active{display:block}
+
+/* SECTION */
+.sec{margin-bottom:16px}
+.sec-title{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.35em;color:var(--blood);text-transform:uppercase;padding-bottom:6px;border-bottom:0.5px solid rgba(139,26,26,0.25);margin-bottom:10px}
+
+/* FIELD */
+.field{margin-bottom:8px}
+.field-label{font-size:10px;color:var(--text3);letter-spacing:0.15em;margin-bottom:3px;font-family:'Cinzel',serif}
+.field-row{display:flex;gap:8px;align-items:center}
+.field-row .field{flex:1;margin-bottom:0}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stat-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:5px;padding:10px 8px;text-align:center;position:relative}
+.stat-card-name{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.2em;color:var(--text3);margin-bottom:6px}
+.stat-val-wrap{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:4px}
+.stat-btn{background:rgba(139,26,26,0.15);border:0.5px solid rgba(139,26,26,0.3);color:var(--gold);width:24px;height:24px;border-radius:2px;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stat-btn:active{background:rgba(139,26,26,0.4)}
+.stat-num{font-family:'Cinzel',serif;font-size:22px;color:var(--gold);line-height:1;min-width:30px;text-align:center}
+.stat-mod{font-size:13px;color:var(--text2)}
+.stat-save{display:flex;align-items:center;gap:4px;justify-content:center;font-size:10px;color:var(--text3)}
+.stat-save input[type=checkbox]{width:12px;height:12px;accent-color:var(--blood);flex-shrink:0}
+
+/* POINTS BANNER */
+.points-banner{background:rgba(139,26,26,0.1);border:0.5px solid rgba(139,26,26,0.35);border-radius:4px;padding:10px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.points-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;color:var(--blood);text-transform:uppercase}
+.points-val{font-family:'Cinzel',serif;font-size:20px;color:var(--gold)}
+.points-hint{font-size:10px;color:var(--text3);font-style:italic}
+
+/* HP SECTION */
+.hp-main{background:var(--bg3);border:0.5px solid var(--border);border-radius:5px;padding:12px;margin-bottom:8px}
+.hp-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.hp-big{font-family:'Cinzel',serif;font-size:28px;color:var(--gold);line-height:1}
+.hp-sep{font-size:20px;color:var(--text3)}
+.hp-bar{height:8px;background:rgba(255,255,255,0.06);border-radius:3px;border:0.5px solid rgba(180,140,80,0.12);overflow:hidden;margin-bottom:8px}
+.hp-fill{height:100%;background:var(--blood);border-radius:3px;transition:width 0.3s}
+.hp-btn-row{display:flex;gap:6px}
+.hp-btn{flex:1;padding:7px;border-radius:3px;font-size:13px;font-family:'EB Garamond',serif;font-weight:500}
+.hp-btn.dmg{background:rgba(192,80,80,0.15);border:0.5px solid rgba(192,80,80,0.35);color:#d08080}
+.hp-btn.heal{background:rgba(90,154,58,0.12);border:0.5px solid rgba(90,154,58,0.3);color:#7aab5a}
+.hp-btn.rest{background:rgba(180,140,80,0.1);border:0.5px solid rgba(180,140,80,0.25);color:var(--gold2)}
+.hp-btn:active{opacity:0.7}
+.hp-input{width:60px;flex-shrink:0}
+
+/* XP BAR */
+.xp-section{background:var(--bg3);border:0.5px solid var(--border);border-radius:5px;padding:12px;margin-bottom:8px}
+.xp-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.xp-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;color:var(--text3)}
+.xp-val{font-size:13px;color:var(--gold)}
+.xp-bar{height:6px;background:rgba(255,255,255,0.05);border-radius:2px;margin-bottom:8px;overflow:hidden}
+.xp-fill{height:100%;background:rgba(180,140,80,0.5);border-radius:2px;transition:width 0.4s}
+.xp-add-row{display:flex;gap:6px}
+.xp-add-input{flex:1}
+.xp-add-btn{background:rgba(180,140,80,0.12);border:0.5px solid rgba(180,140,80,0.3);color:var(--gold);font-size:11px;letter-spacing:0.15em;padding:6px 12px;border-radius:3px;flex-shrink:0}
+.xp-add-btn:active{background:rgba(180,140,80,0.25)}
+.lvl-up-banner{background:rgba(180,140,80,0.08);border:1px solid rgba(180,140,80,0.35);border-radius:4px;padding:10px;text-align:center;margin-top:8px;display:none}
+.lvl-up-banner.show{display:block}
+.lvl-up-text{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:0.15em}
+
+/* SKILLS */
+.skill-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:0.5px solid rgba(255,255,255,0.04)}
+.skill-item:last-child{border-bottom:none}
+.skill-check{width:14px;height:14px;accent-color:var(--blood);flex-shrink:0}
+.skill-prof{font-size:11px;color:var(--text3);flex-shrink:0;min-width:26px;text-align:right}
+.skill-name{flex:1;font-size:13px;color:var(--text2)}
+.skill-attr{font-size:10px;color:var(--text3);font-style:italic}
+
+/* ATTACKS TABLE */
+.atk-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px}
+.atk-table th{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.15em;color:rgba(139,26,26,0.7);padding:0 5px 6px;text-align:left;font-weight:400;border-bottom:0.5px solid rgba(139,26,26,0.2)}
+.atk-table td{padding:4px 5px;border-bottom:0.5px solid rgba(255,255,255,0.04);vertical-align:middle}
+.atk-table input{font-size:12px;padding:3px 5px}
+.atk-del{background:none;border:none;color:var(--text3);font-size:14px;padding:2px 4px}
+.atk-del:active{color:var(--red)}
+.add-row-btn{background:rgba(255,255,255,0.03);border:0.5px solid rgba(180,140,80,0.15);color:var(--text3);font-size:10px;letter-spacing:0.15em;padding:7px;border-radius:3px;width:100%;font-family:'Cinzel',serif}
+.add-row-btn:active{background:rgba(255,255,255,0.07)}
+
+/* INVENTORY */
+.inv-item{background:var(--bg3);border:0.5px solid var(--border2);border-radius:4px;padding:10px;margin-bottom:8px;position:relative}
+.inv-item-header{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
+.inv-item-name{flex:1;font-size:14px;font-weight:500;color:var(--gold)}
+.inv-badge{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.12em;padding:2px 8px;border-radius:2px;flex-shrink:0}
+.badge-weapon{background:rgba(139,26,26,0.2);color:#c07070;border:0.5px solid rgba(139,26,26,0.3)}
+.badge-armor{background:rgba(60,80,100,0.25);color:#80a0c0;border:0.5px solid rgba(60,80,100,0.35)}
+.badge-item{background:rgba(80,100,60,0.2);color:#90b070;border:0.5px solid rgba(80,100,60,0.3)}
+.badge-magic{background:rgba(100,60,120,0.2);color:#b080d0;border:0.5px solid rgba(100,60,120,0.3)}
+.inv-row{display:flex;gap:6px;margin-bottom:5px}
+.inv-del{background:none;border:none;color:var(--text3);font-size:16px;padding:0 3px;align-self:flex-start}
+.inv-del:active{color:var(--red)}
+
+/* COINS */
+.coins-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.coin-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:5px;padding:10px 8px;text-align:center}
+.coin-icon{font-size:18px;margin-bottom:4px}
+.coin-name{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.2em;color:var(--text3);margin-bottom:6px}
+.coin-val{font-family:'Cinzel',serif;font-size:20px;color:var(--gold);margin-bottom:6px}
+.coin-btns{display:flex;gap:4px}
+.coin-btn{flex:1;background:rgba(139,26,26,0.12);border:0.5px solid rgba(139,26,26,0.25);color:var(--gold2);font-size:13px;padding:4px;border-radius:2px}
+.coin-btn:active{background:rgba(139,26,26,0.3)}
+
+/* ENEMY */
+.enemy-card{background:var(--bg3);border:0.5px solid rgba(139,26,26,0.3);border-radius:5px;padding:12px;margin-bottom:10px;position:relative}
+.enemy-name-row{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.enemy-name-input{font-family:'Cinzel',serif;font-size:15px;color:var(--gold);background:none;border:none;border-bottom:0.5px solid rgba(180,140,80,0.2);border-radius:0;padding:2px 0;flex:1}
+.enemy-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.enemy-stat{background:rgba(255,255,255,0.02);border:0.5px solid rgba(180,140,80,0.12);border-radius:3px;padding:6px;text-align:center}
+.enemy-stat-label{font-size:8px;letter-spacing:0.15em;color:var(--text3);margin-bottom:2px;font-family:'Cinzel',serif}
+.enemy-stat-val{font-family:'Cinzel',serif;font-size:16px;color:var(--gold)}
+.enemy-hp-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.enemy-hp-cur{font-family:'Cinzel',serif;font-size:20px;color:var(--red)}
+.enemy-hp-sep{color:var(--text3)}
+.enemy-hp-max{font-family:'Cinzel',serif;font-size:16px;color:var(--text2)}
+.enemy-hp-bar{flex:1;height:6px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden}
+.enemy-hp-fill{height:100%;background:rgba(192,80,80,0.6);border-radius:2px;transition:width 0.3s}
+.enemy-xp-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(180,140,80,0.1);border:0.5px solid rgba(180,140,80,0.2);border-radius:3px;padding:3px 10px;font-size:11px;color:var(--gold2);margin-bottom:8px}
+.enemy-del{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text3);font-size:16px;padding:2px}
+.enemy-del:active{color:var(--red)}
+.award-btn{background:rgba(180,140,80,0.1);border:0.5px solid rgba(180,140,80,0.25);color:var(--gold2);font-size:10px;letter-spacing:0.12em;padding:5px 12px;border-radius:3px;width:100%}
+.award-btn:active{background:rgba(180,140,80,0.25)}
+
+/* SHOP */
+.shop-item{background:var(--bg3);border:0.5px solid var(--border2);border-radius:4px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.shop-item-info{flex:1;min-width:0}
+.shop-item-name{font-size:14px;color:var(--gold);margin-bottom:2px}
+.shop-item-desc{font-size:11px;color:var(--text3);font-style:italic}
+.shop-prices{display:flex;gap:6px;flex-shrink:0}
+.price-tag{display:flex;flex-direction:column;align-items:center;gap:2px}
+.price-label{font-size:8px;letter-spacing:0.1em;color:var(--text3);font-family:'Cinzel',serif}
+.price-val{font-size:11px;color:var(--gold2)}
+.shop-btn{padding:5px 10px;border-radius:3px;font-size:10px;letter-spacing:0.1em;white-space:nowrap}
+.buy-btn{background:rgba(90,154,58,0.12);border:0.5px solid rgba(90,154,58,0.3);color:#7aab5a}
+.sell-btn{background:rgba(180,140,80,0.1);border:0.5px solid rgba(180,140,80,0.25);color:var(--gold2)}
+.buy-btn:active{background:rgba(90,154,58,0.25)}
+.sell-btn:active{background:rgba(180,140,80,0.2)}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:#13100c;border:0.5px solid var(--border);border-radius:8px 8px 0 0;padding:20px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.25s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-title{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);margin-bottom:16px;padding-bottom:10px;border-bottom:0.5px solid var(--border2)}
+.modal-btns{display:flex;gap:8px;margin-top:16px}
+.modal-confirm{flex:1;background:rgba(139,26,26,0.2);border:0.5px solid rgba(139,26,26,0.45);color:var(--gold);font-size:11px;letter-spacing:0.2em;padding:11px;border-radius:3px}
+.modal-cancel{flex:1;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);color:var(--text2);font-size:11px;letter-spacing:0.15em;padding:11px;border-radius:3px}
+.modal-confirm:active{background:rgba(139,26,26,0.4)}
+.modal-cancel:active{background:rgba(255,255,255,0.08)}
+
+/* UTILITY */
+.divider{height:0.5px;background:var(--border2);margin:12px 0}
+.note-box{background:rgba(139,26,26,0.07);border:0.5px solid rgba(139,26,26,0.2);border-radius:3px;padding:8px 10px;font-size:11px;color:rgba(200,160,150,0.6);font-style:italic;margin-bottom:10px}
+.lvl-table{width:100%;font-size:11px;border-collapse:collapse}
+.lvl-table td{padding:3px 6px;border-bottom:0.5px solid rgba(255,255,255,0.04);color:var(--text2)}
+.lvl-table td:first-child{font-family:'Cinzel',serif;color:var(--gold2);font-size:10px}
+.lvl-table tr.current-lvl td{background:rgba(139,26,26,0.1);color:var(--gold)}
+.checkbox-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.checkbox-row input[type=checkbox]{width:15px;height:15px;accent-color:var(--blood)}
+.checkbox-row label{font-size:13px;color:var(--text2)}
+.death-saves{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.save-circles{display:flex;gap:4px}
+.save-circle{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(180,140,80,0.3);cursor:pointer;transition:all 0.15s;flex-shrink:0}
+.save-circle.success{background:var(--green);border-color:var(--green)}
+.save-circle.fail{background:var(--red);border-color:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- CHARACTER SELECT -->
+<div id="char-select-screen">
+  <div class="app-logo">
+    <div class="app-logo-sub">Dungeons &amp; Dragons</div>
+    <div class="app-logo-title">Аркуш Персонажа</div>
+  </div>
+  <div class="char-list" id="char-list"></div>
+  <button class="btn-new" onclick="openNewCharModal()">+ Новий Персонаж</button>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goToSelect()">←</button>
+    <div>
+      <div class="topbar-name" id="topbar-name">—</div>
+      <div class="topbar-level" id="topbar-level">Рівень 1</div>
+    </div>
+    <div class="save-ind" id="save-ind">ЗБЕРЕЖЕНО</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('main')">Основне</button>
+    <button class="tab" onclick="switchTab('stats')">Характ.</button>
+    <button class="tab" onclick="switchTab('combat')">Бій</button>
+    <button class="tab" onclick="switchTab('inventory')">Інвентар</button>
+    <button class="tab" onclick="switchTab('enemies')">Вороги</button>
+    <button class="tab" onclick="switchTab('shop')">Крамниця</button>
+  </div>
+
+  <!-- MAIN TAB -->
+  <div class="page active" id="page-main">
+    <div class="sec">
+      <div class="sec-title">Інформація про персонажа</div>
+      <div class="field"><div class="field-label">Ім'я персонажа</div><input type="text" id="f-name" placeholder="Введи ім'я..." oninput="syncName()"></div>
+      <div class="g2">
+        <div class="field"><div class="field-label">Раса</div><input type="text" id="f-race" placeholder="Людина..."></div>
+        <div class="field"><div class="field-label">Клас</div><input type="text" id="f-class" placeholder="Воїн..."></div>
+      </div>
+      <div class="g2">
+        <div class="field"><div class="field-label">Передісторія</div><input type="text" id="f-background" placeholder="Солдат..."></div>
+        <div class="field"><div class="field-label">Світогляд</div><input type="text" id="f-alignment" placeholder="Нейтральний..."></div>
+      </div>
+      <div class="field"><div class="field-label">Ім'я гравця</div><input type="text" id="f-player" placeholder="Твоє ім'я..."></div>
+      <div class="field"><div class="field-label">Група авантюристів</div><input type="text" id="f-party" placeholder="Назва партії..."></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Рівень та досвід</div>
+      <div class="xp-section">
+        <div class="xp-top">
+          <span class="xp-label">РІВЕНЬ</span>
+          <span style="font-family:'Cinzel',serif;font-size:22px;color:var(--gold)" id="disp-level">1</span>
+        </div>
+        <div class="xp-top" style="margin-bottom:4px">
+          <span class="xp-label">ДОСВІД</span>
+          <span class="xp-val" id="disp-xp">0 / 300</span>
+        </div>
+        <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+        <div class="xp-add-row">
+          <input type="number" class="xp-add-input" id="xp-add-input" placeholder="±досвід (напр. 150 або -50)">
+          <button class="xp-add-btn" onclick="addXP()">Додати</button>
+        </div>
+        <div class="lvl-up-banner" id="lvl-up-banner">
+          <div class="lvl-up-text">⬆ ПІДВИЩЕННЯ РІВНЯ!</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">Перейди у вкладку «Характ.» щоб витратити очки</div>
+        </div>
+      </div>
+      <details style="margin-top:4px">
+        <summary style="font-size:11px;color:var(--text3);cursor:pointer;font-style:italic;padding:4px 0">Таблиця досвіду по рівнях</summary>
+        <table class="lvl-table" style="margin-top:8px" id="lvl-table"></table>
+      </details>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Риси та особливості</div>
+      <div class="field"><div class="field-label">Особистісні риси</div><textarea id="f-traits" rows="3" placeholder="Опиши характер персонажа..."></textarea></div>
+      <div class="field"><div class="field-label">Ідеали</div><textarea id="f-ideals" rows="2" placeholder="У що вірить твій персонаж..."></textarea></div>
+      <div class="field"><div class="field-label">Зв'язки</div><textarea id="f-bonds" rows="2" placeholder="Що важливо для персонажа..."></textarea></div>
+      <div class="field"><div class="field-label">Вади</div><textarea id="f-flaws" rows="2" placeholder="Слабкості та вади..."></textarea></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Примітки</div>
+      <textarea id="f-notes" rows="5" placeholder="Вільні нотатки, квести, NPC..."></textarea>
+    </div>
+  </div>
+
+  <!-- STATS TAB -->
+  <div class="page" id="page-stats">
+    <div class="sec">
+      <div class="sec-title">Очки характеристик</div>
+      <div class="points-banner">
+        <div>
+          <div class="points-label">Доступних очок</div>
+          <div class="points-hint" id="pts-hint">Кожні +2 = +1 бонус</div>
+        </div>
+        <div class="points-val" id="pts-display">4</div>
+      </div>
+      <div class="note-box">Кожен 5-й рівень: +2 очки для характеристик. Базове значення всіх характеристик: 10.</div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Характеристики</div>
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="field-row">
+        <div class="field">
+          <div class="field-label">Бонус майстерності</div>
+          <input type="text" id="f-prof-bonus" readonly style="text-align:center;font-family:'Cinzel',serif;font-size:16px;color:var(--gold)">
+        </div>
+        <div class="field">
+          <div class="field-label">Пасивне сприйняття</div>
+          <input type="text" id="f-passive-perc" readonly style="text-align:center;font-family:'Cinzel',serif;font-size:16px;color:var(--gold)">
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Навички</div>
+      <div id="skills-list"></div>
+      <button class="add-row-btn" style="margin-top:8px" onclick="openCustomSkillModal()">+ Додати власний скіл</button>
+    </div>
+  </div>
+
+  <!-- COMBAT TAB -->
+  <div class="page" id="page-combat">
+    <div class="sec">
+      <div class="sec-title">Захист та переміщення</div>
+      <div class="g3">
+        <div class="field"><div class="field-label">Клас броні</div><input type="number" id="f-ac" placeholder="10"></div>
+        <div class="field"><div class="field-label">Ініціатива</div><input type="text" id="f-initiative" placeholder="+0" readonly style="color:var(--gold)"></div>
+        <div class="field"><div class="field-label">Швидкість (м)</div><input type="number" id="f-speed" placeholder="9"></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Здоров'я</div>
+      <div class="hp-main">
+        <div class="hp-row">
+          <div>
+            <div style="font-size:9px;letter-spacing:0.2em;color:var(--text3);font-family:'Cinzel',serif;margin-bottom:3px">ПОТОЧНЕ ХП</div>
+            <div style="display:flex;align-items:baseline;gap:6px">
+              <div class="hp-big" id="hp-cur-disp">0</div>
+              <div class="hp-sep">/</div>
+              <div style="font-family:'Cinzel',serif;font-size:18px;color:var(--text2)" id="hp-max-disp">0</div>
+            </div>
+          </div>
+          <div style="flex:1;margin-left:10px">
+            <div style="font-size:9px;letter-spacing:0.2em;color:var(--text3);font-family:'Cinzel',serif;margin-bottom:3px">ТИМЧАСОВЕ ХП</div>
+            <input type="number" id="f-temp-hp" placeholder="0" style="font-family:'Cinzel',serif;font-size:16px;text-align:center">
+          </div>
+        </div>
+        <div class="hp-bar"><div class="hp-fill" id="hp-bar"></div></div>
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
+          <input type="number" class="hp-input" id="hp-change-amt" placeholder="0">
+          <div class="hp-btn-row" style="flex:1">
+            <button class="hp-btn dmg" onclick="changeHP(-1)">— Шкода</button>
+            <button class="hp-btn heal" onclick="changeHP(1)">+ Лікування</button>
+          </div>
+        </div>
+        <div class="g2">
+          <div class="field"><div class="field-label">Макс. ХП</div><input type="number" id="f-hp-max" placeholder="0" oninput="updateHP()"></div>
+          <button class="hp-btn rest" style="align-self:flex-end;margin-bottom:0" onclick="fullRest()">Довгий відпочинок</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Рятівні кидки від смерті</div>
+      <div class="death-saves">
+        <span style="font-size:11px;color:var(--green)">Успіх:</span>
+        <div class="save-circles" id="death-success"></div>
+        <span style="font-size:11px;color:var(--red);margin-left:8px">Провал:</span>
+        <div class="save-circles" id="death-fail"></div>
+        <button onclick="resetDeathSaves()" style="background:none;border:none;color:var(--text3);font-size:10px;margin-left:8px;font-family:'Cinzel',serif;letter-spacing:0.1em">СКИНУТИ</button>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Атаки та заклинання</div>
+      <table class="atk-table">
+        <thead><tr>
+          <th>Назва</th><th>Атака</th><th>Урон</th><th>Радіус</th><th>К-сть</th><th></th>
+        </tr></thead>
+        <tbody id="atk-body"></tbody>
+      </table>
+      <button class="add-row-btn" onclick="addAttack()">+ Додати атаку / заклинання</button>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Особливості та здібності</div>
+      <textarea id="f-features" rows="5" placeholder="Особливості класу, раси, здібності..."></textarea>
+    </div>
+  </div>
+
+  <!-- INVENTORY TAB -->
+  <div class="page" id="page-inventory">
+    <div class="sec">
+      <div class="sec-title">Монети</div>
+      <div class="coins-grid">
+        <div class="coin-card">
+          <div class="coin-icon">🟫</div>
+          <div class="coin-name">Мідні</div>
+          <div class="coin-val" id="coins-copper">0</div>
+          <div class="coin-btns">
+            <button class="coin-btn" onclick="changeCoin('copper',-1)">−</button>
+            <button class="coin-btn" onclick="changeCoin('copper',1)">+</button>
+          </div>
+        </div>
+        <div class="coin-card">
+          <div class="coin-icon">⬜</div>
+          <div class="coin-name">Срібні</div>
+          <div class="coin-val" id="coins-silver">0</div>
+          <div class="coin-btns">
+            <button class="coin-btn" onclick="changeCoin('silver',-1)">−</button>
+            <button class="coin-btn" onclick="changeCoin('silver',1)">+</button>
+          </div>
+        </div>
+        <div class="coin-card">
+          <div class="coin-icon">🟡</div>
+          <div class="coin-name">Золоті</div>
+          <div class="coin-val" id="coins-gold">0</div>
+          <div class="coin-btns">
+            <button class="coin-btn" onclick="changeCoin('gold',-1)">−</button>
+            <button class="coin-btn" onclick="changeCoin('gold',1)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Інвентар</div>
+      <div id="inv-list"></div>
+      <button class="add-row-btn" onclick="openAddItemModal()">+ Додати предмет</button>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Інші знання та мови</div>
+      <textarea id="f-languages" rows="3" placeholder="Мови, знання, інструменти..."></textarea>
+    </div>
+  </div>
+
+  <!-- ENEMIES TAB -->
+  <div class="page" id="page-enemies">
+    <div class="sec">
+      <div class="sec-title">Вороги</div>
+      <div id="enemy-list"></div>
+      <button class="add-row-btn" onclick="addEnemy()">+ Додати ворога</button>
+    </div>
+  </div>
+
+  <!-- SHOP TAB -->
+  <div class="page" id="page-shop">
+    <div class="sec">
+      <div class="sec-title">Крамниця</div>
+      <div id="shop-list"></div>
+      <button class="add-row-btn" onclick="openAddShopModal()">+ Додати товар</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: NEW CHAR -->
+<div class="modal-overlay" id="modal-new-char">
+  <div class="modal">
+    <div class="modal-title">Новий Персонаж</div>
+    <div class="field"><div class="field-label">Ім'я персонажа</div><input type="text" id="new-char-name" placeholder="Введи ім'я..."></div>
+    <div class="modal-btns">
+      <button class="modal-confirm" onclick="createChar()">Створити</button>
+      <button class="modal-cancel" onclick="closeModal('modal-new-char')">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD ITEM -->
+<div class="modal-overlay" id="modal-add-item">
+  <div class="modal">
+    <div class="modal-title">Додати предмет</div>
+    <div class="field"><div class="field-label">Назва</div><input type="text" id="item-name-input" placeholder="Меч, зілля..."></div>
+    <div class="g2">
+      <div class="field"><div class="field-label">Вага (кг)</div><input type="number" id="item-weight-input" placeholder="0.5" step="0.1"></div>
+      <div class="field"><div class="field-label">К-сть</div><input type="number" id="item-qty-input" placeholder="1" value="1"></div>
+    </div>
+    <div class="field"><div class="field-label">Клас предмету</div>
+      <select id="item-type-input">
+        <option value="item">Предмет</option>
+        <option value="weapon">Зброя</option>
+        <option value="armor">Броня</option>
+        <option value="magic">Магічне</option>
+      </select>
+    </div>
+    <div class="field"><div class="field-label">Опис / Ефект</div><textarea id="item-desc-input" rows="2" placeholder="Опис або ефект..."></textarea></div>
+    <div class="modal-btns">
+      <button class="modal-confirm" onclick="confirmAddItem()">Додати</button>
+      <button class="modal-cancel" onclick="closeModal('modal-add-item')">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD SHOP ITEM -->
+<div class="modal-overlay" id="modal-add-shop">
+  <div class="modal">
+    <div class="modal-title">Додати товар до крамниці</div>
+    <div class="field"><div class="field-label">Назва</div><input type="text" id="shop-name-input" placeholder="Назва товару..."></div>
+    <div class="field"><div class="field-label">Клас предмету</div>
+      <select id="shop-type-input">
+        <option value="item">Предмет</option>
+        <option value="weapon">Зброя</option>
+        <option value="armor">Броня</option>
+        <option value="magic">Магічне</option>
+      </select>
+    </div>
+    <div class="g2">
+      <div class="field"><div class="field-label">Ціна купівлі (зол.)</div><input type="number" id="shop-buy-input" placeholder="10"></div>
+      <div class="field"><div class="field-label">Ціна продажу (зол.)</div><input type="number" id="shop-sell-input" placeholder="5"></div>
+    </div>
+    <div class="field"><div class="field-label">Опис</div><textarea id="shop-desc-input" rows="2" placeholder="Опис товару..."></textarea></div>
+    <div class="modal-btns">
+      <button class="modal-confirm" onclick="confirmAddShop()">Додати</button>
+      <button class="modal-cancel" onclick="closeModal('modal-add-shop')">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CUSTOM SKILL -->
+<div class="modal-overlay" id="modal-custom-skill">
+  <div class="modal">
+    <div class="modal-title">Власний скіл</div>
+    <div class="field"><div class="field-label">Назва скілу</div><input type="text" id="custom-skill-name" placeholder="Назва..."></div>
+    <div class="field"><div class="field-label">Пов'язана характеристика</div>
+      <select id="custom-skill-stat">
+        <option value="str">Сила (СИЛ)</option>
+        <option value="dex">Спритність (СПР)</option>
+        <option value="con">Витривалість (ВИТ)</option>
+        <option value="int">Інтелект (ІНТ)</option>
+        <option value="wis">Мудрість (МУД)</option>
+        <option value="cha">Харизма (ХАР)</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-confirm" onclick="confirmCustomSkill()">Додати</button>
+      <button class="modal-cancel" onclick="closeModal('modal-custom-skill')">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const XP_TABLE=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,120000,140000,165000,190000,225000,265000,305000,355000];
+const STAT_NAMES={str:'СИЛ',dex:'СПР',con:'ВИТ',int:'ІНТ',wis:'МУД',cha:'ХАР'};
+const STAT_FULL={str:'Сила',dex:'Спритність',con:'Витривалість',int:'Інтелект',wis:'Мудрість',cha:'Харизма'};
+const SKILLS_DEFAULT=[
+  {name:'Акробатика',stat:'dex'},{name:'Приручення',stat:'wis'},{name:'Аркана',stat:'int'},
+  {name:'Атлетика',stat:'str'},{name:'Обман',stat:'cha'},{name:'Історія',stat:'int'},
+  {name:'Проникливість',stat:'wis'},{name:'Залякування',stat:'cha'},{name:'Розвідка',stat:'int'},
+  {name:'Медицина',stat:'wis'},{name:'Природа',stat:'int'},{name:'Сприйняття',stat:'wis'},
+  {name:'Виступ',stat:'cha'},{name:'Переконання',stat:'cha'},{name:'Релігія',stat:'int'},
+  {name:'Спритність рук',stat:'dex'},{name:'Скритність',stat:'dex'},{name:'Виживання',stat:'wis'}
+];
+
+let chars={};
+let currentCharId=null;
+
+function newChar(name){
+  const id='char_'+Date.now();
+  chars[id]={
+    id,name,
+    race:'',cls:'',background:'',alignment:'',player:'',party:'',
+    level:1,xp:0,statPoints:4,
+    stats:{str:10,dex:10,con:10,int:10,wis:10,cha:10},
+    savingThrows:{str:false,dex:false,con:false,int:false,wis:false,cha:false},
+    skillProfs:{},customSkills:[],
+    ac:10,speed:9,hpMax:0,hpCurrent:0,hpTemp:0,
+    deathSuccess:[false,false,false],deathFail:[false,false,false],
+    attacks:[],features:'',
+    traits:'',ideals:'',bonds:'',flaws:'',notes:'',
+    coins:{copper:0,silver:0,gold:0},
+    inventory:[],languages:'',
+    enemies:[],shop:[]
+  };
+  saveAll();
+  return id;
+}
+
+function saveAll(){localStorage.setItem('dnd_chars',JSON.stringify(chars));}
+function loadAll(){try{const d=localStorage.getItem('dnd_chars');if(d)chars=JSON.parse(d);}catch(e){chars={};}}
+function getChar(){return chars[currentCharId];}
+
+function autoSave(){
+  const c=getChar();if(!c)return;
+  const fields=['name','race','cls','background','alignment','player','party','traits','ideals','bonds','flaws','notes','features','languages'];
+  fields.forEach(f=>{const el=document.getElementById('f-'+f);if(el)c[f]=el.value;});
+  c.ac=parseInt(document.getElementById('f-ac')?.value)||10;
+  c.speed=parseInt(document.getElementById('f-speed')?.value)||9;
+  c.hpMax=parseInt(document.getElementById('f-hp-max')?.value)||0;
+  c.hpTemp=parseInt(document.getElementById('f-temp-hp')?.value)||0;
+  saveAll();
+  const ind=document.getElementById('save-ind');
+  ind.classList.add('show');
+  clearTimeout(ind._t);
+  ind._t=setTimeout(()=>ind.classList.remove('show'),1500);
+}
+
+// ===================== CHAR SELECT =====================
+function renderCharSelect(){
+  const list=document.getElementById('char-list');
+  list.innerHTML='';
+  const ids=Object.keys(chars);
+  if(!ids.length){list.innerHTML='<div style="text-align:center;padding:30px 0;color:var(--text3);font-style:italic;font-size:13px">Немає персонажів. Створи першого!</div>';return;}
+  ids.forEach(id=>{
+    const c=chars[id];
+    const div=document.createElement('div');
+    div.className='char-card';
+    div.innerHTML=`<div class="char-card-avatar">⚔</div>
+      <div class="char-card-info">
+        <div class="char-card-name">${c.name||'Без імені'}</div>
+        <div class="char-card-sub">${c.race||'—'} ${c.cls||''} · Рівень ${c.level}</div>
+      </div>
+      <div class="char-card-btns">
+        <button class="btn-open" onclick="openChar('${id}')">Відкрити</button>
+        <button class="btn-del" onclick="deleteChar('${id}')">✕</button>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function openNewCharModal(){openModal('modal-new-char');document.getElementById('new-char-name').value='';}
+function createChar(){
+  const name=document.getElementById('new-char-name').value.trim()||'Новий Персонаж';
+  const id=newChar(name);
+  closeModal('modal-new-char');
+  openChar(id);
+}
+function deleteChar(id){
+  if(!confirm('Видалити персонажа? Це незворотньо!'))return;
+  delete chars[id];saveAll();renderCharSelect();
+}
+function goToSelect(){
+  autoSave();
+  document.getElementById('app').style.display='none';
+  document.getElementById('char-select-screen').style.display='flex';
+  renderCharSelect();
+}
+
+// ===================== OPEN CHAR =====================
+function openChar(id){
+  currentCharId=id;
+  document.getElementById('char-select-screen').style.display='none';
+  const app=document.getElementById('app');
+  app.style.display='flex';
+  app.style.flexDirection='column';
+  loadCharUI();
+  switchTab('main');
+}
+
+function loadCharUI(){
+  const c=getChar();
+  document.getElementById('topbar-name').textContent=c.name||'Персонаж';
+  document.getElementById('topbar-level').textContent='Рівень '+c.level;
+  const fields=['name','race','cls','background','alignment','player','party','traits','ideals','bonds','flaws','notes','features','languages'];
+  fields.forEach(f=>{const el=document.getElementById('f-'+f);if(el)el.value=c[f]||'';});
+  document.getElementById('f-ac').value=c.ac||10;
+  document.getElementById('f-speed').value=c.speed||9;
+  document.getElementById('f-hp-max').value=c.hpMax||0;
+  document.getElementById('f-temp-hp').value=c.hpTemp||0;
+  renderXP();
+  renderStats();
+  renderSkills();
+  renderHP();
+  renderAttacks();
+  renderDeathSaves();
+  renderInventory();
+  renderCoins();
+  renderEnemies();
+  renderShop();
+  renderLvlTable();
+  document.querySelectorAll('input,textarea,select').forEach(el=>{
+    el.removeEventListener('input',autoSave);
+    el.addEventListener('input',autoSave);
+  });
+}
+
+function syncName(){
+  const c=getChar();if(!c)return;
+  c.name=document.getElementById('f-name').value;
+  document.getElementById('topbar-name').textContent=c.name||'Персонаж';
+}
+
+// ===================== TABS =====================
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const tabs=['main','stats','combat','inventory','enemies','shop'];
+    t.classList.toggle('active',tabs[i]===name);
+  });
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.toggle('active',p.id==='page-'+name);
+  });
+}
+
+// ===================== XP & LEVEL =====================
+function renderXP(){
+  const c=getChar();
+  const lvl=c.level;
+  const xp=c.xp;
+  document.getElementById('disp-level').textContent=lvl;
+  document.getElementById('topbar-level').textContent='Рівень '+lvl;
+  const next=lvl<20?XP_TABLE[lvl]:null;
+  const prev=XP_TABLE[lvl-1];
+  document.getElementById('disp-xp').textContent=next?`${xp} / ${next}`:`${xp} (МАКС)`;
+  const pct=next?Math.min(100,Math.round((xp-prev)/(next-prev)*100)):100;
+  document.getElementById('xp-fill').style.width=pct+'%';
+  const banner=document.getElementById('lvl-up-banner');
+  banner.classList.toggle('show',c._pendingLevelUp||false);
+  updateStatPoints();
+}
+
+function addXP(){
+  const c=getChar();
+  const amt=parseInt(document.getElementById('xp-add-input').value)||0;
+  if(!amt)return;
+  c.xp=Math.max(0,c.xp+amt);
+  document.getElementById('xp-add-input').value='';
+  let leveled=false;
+  while(c.level<20&&c.xp>=XP_TABLE[c.level]){
+    c.level++;
+    if(c.level%5===0)c.statPoints+=2;
+    leveled=true;
+  }
+  if(leveled){c._pendingLevelUp=true;}
+  saveAll();renderXP();
+}
+
+function renderLvlTable(){
+  const c=getChar();
+  const t=document.getElementById('lvl-table');
+  t.innerHTML='';
+  for(let i=1;i<=20;i++){
+    const tr=document.createElement('tr');
+    if(i===c.level)tr.className='current-lvl';
+    tr.innerHTML=`<td>Рівень ${i}</td><td>${XP_TABLE[i-1].toLocaleString()} досвіду</td>`;
+    t.appendChild(tr);
+  }
+}
+
+// ===================== STATS =====================
+function getMod(val){return Math.floor((val-10)/2);}
+function fmtMod(m){return m>=0?'+'+m:''+m;}
+function getProfBonus(lvl){return Math.floor((lvl-1)/4)+2;}
+
+function renderStats(){
+  const c=getChar();
+  const grid=document.getElementById('stats-grid');
+  grid.innerHTML='';
+  const pb=getProfBonus(c.level);
+  Object.keys(STAT_NAMES).forEach(key=>{
+    const val=c.stats[key];
+    const mod=getMod(val);
+    const div=document.createElement('div');
+    div.className='stat-card';
+    div.innerHTML=`
+      <div class="stat-card-name">${STAT_FULL[key]}</div>
+      <div class="stat-val-wrap">
+        <button class="stat-btn" onclick="adjustStat('${key}',-2)">−</button>
+        <div class="stat-num" id="stat-num-${key}">${val}</div>
+        <button class="stat-btn" onclick="adjustStat('${key}',2)">+</button>
+      </div>
+      <div class="stat-mod" id="stat-mod-${key}">${fmtMod(mod)}</div>
+      <div class="stat-save">
+        <input type="checkbox" id="save-${key}" ${c.savingThrows[key]?'checked':''} onchange="toggleSave('${key}')">
+        <span>Рятівний кидок ${fmtMod(c.savingThrows[key]?mod+pb:mod)}</span>
+      </div>`;
+    grid.appendChild(div);
+  });
+  document.getElementById('f-prof-bonus').value='+'+pb;
+  const wis=getMod(c.stats.wis);
+  const percProf=c.skillProfs['Сприйняття']?pb:0;
+  document.getElementById('f-passive-perc').value=10+wis+percProf;
+  document.getElementById('f-initiative').value=fmtMod(getMod(c.stats.dex));
+}
+
+function adjustStat(key,delta){
+  const c=getChar();
+  const current=c.stats[key];
+  const newVal=current+delta;
+  if(newVal<2||newVal>20)return;
+  if(delta>0){
+    if(c.statPoints<1){alert('Недостатньо очок!');return;}
+    c.statPoints--;
+  } else {
+    c.statPoints++;
+  }
+  c.stats[key]=newVal;
+  saveAll();renderStats();renderSkills();
+  updateStatPoints();
+}
+
+function updateStatPoints(){
+  const c=getChar();
+  document.getElementById('pts-display').textContent=c.statPoints;
+  document.getElementById('pts-hint').textContent=c.statPoints>0?'Кожні +2 = +1 бонус':'Очки витрачено';
+}
+
+function toggleSave(key){
+  const c=getChar();
+  c.savingThrows[key]=document.getElementById('save-'+key).checked;
+  saveAll();renderStats();
+}
+
+// ===================== SKILLS =====================
+function renderSkills(){
+  const c=getChar();
+  const pb=getProfBonus(c.level);
+  const list=document.getElementById('skills-list');
+  list.innerHTML='';
+  const allSkills=[...SKILLS_DEFAULT,...(c.customSkills||[])];
+  allSkills.forEach((sk,idx)=>{
+    const mod=getMod(c.stats[sk.stat]);
+    const prof=c.skillProfs[sk.name]||false;
+    const bonus=prof?mod+pb:mod;
+    const isCustom=idx>=SKILLS_DEFAULT.length;
+    const div=document.createElement('div');
+    div.className='skill-item';
+    div.innerHTML=`
+      <input type="checkbox" class="skill-check" ${prof?'checked':''} onchange="toggleSkillProf('${sk.name}',this.checked)">
+      <span class="skill-prof">${fmtMod(bonus)}</span>
+      <span class="skill-name">${sk.name}</span>
+      <span class="skill-attr">${STAT_NAMES[sk.stat]}</span>
+      ${isCustom?`<button onclick="removeCustomSkill(${idx-SKILLS_DEFAULT.length})" style="background:none;border:none;color:var(--text3);font-size:13px;padding:0 4px">✕</button>`:''}`;
+    list.appendChild(div);
+  });
+}
+
+function toggleSkillProf(name,val){
+  const c=getChar();
+  c.skillProfs[name]=val;
+  saveAll();renderSkills();
+  if(name==='Сприйняття')renderStats();
+}
+
+function openCustomSkillModal(){openModal('modal-custom-skill');}
+function confirmCustomSkill(){
+  const c=getChar();
+  const name=document.getElementById('custom-skill-name').value.trim();
+  const stat=document.getElementById('custom-skill-stat').value;
+  if(!name)return;
+  if(!c.customSkills)c.customSkills=[];
+  c.customSkills.push({name,stat});
+  saveAll();renderSkills();closeModal('modal-custom-skill');
+}
+function removeCustomSkill(idx){
+  const c=getChar();
+  c.customSkills.splice(idx,1);
+  saveAll();renderSkills();
+}
+
+// ===================== HP =====================
+function renderHP(){
+  const c=getChar();
+  document.getElementById('hp-cur-disp').textContent=c.hpCurrent;
+  document.getElementById('hp-max-disp').textContent=c.hpMax;
+  const pct=c.hpMax>0?Math.max(0,Math.min(100,c.hpCurrent/c.hpMax*100)):0;
+  document.getElementById('hp-bar').style.width=pct+'%';
+  document.getElementById('hp-bar').style.background=pct>50?'var(--blood)':pct>25?'#b85020':'#a03030';
+}
+function updateHP(){
+  const c=getChar();
+  c.hpMax=parseInt(document.getElementById('f-hp-max').value)||0;
+  if(c.hpCurrent>c.hpMax)c.hpCurrent=c.hpMax;
+  saveAll();renderHP();
+}
+function changeHP(sign){
+  const c=getChar();
+  const amt=parseInt(document.getElementById('hp-change-amt').value)||0;
+  if(!amt)return;
+  c.hpCurrent=Math.max(0,Math.min(c.hpMax,c.hpCurrent+sign*amt));
+  document.getElementById('hp-change-amt').value='';
+  saveAll();renderHP();
+}
+function fullRest(){
+  const c=getChar();
+  c.hpCurrent=c.hpMax;
+  c.hpTemp=0;
+  c.deathSuccess=[false,false,false];
+  c.deathFail=[false,false,false];
+  document.getElementById('f-temp-hp').value=0;
+  saveAll();renderHP();renderDeathSaves();
+}
+
+// ===================== DEATH SAVES =====================
+function renderDeathSaves(){
+  const c=getChar();
+  ['success','fail'].forEach(type=>{
+    const wrap=document.getElementById('death-'+type);
+    wrap.innerHTML='';
+    for(let i=0;i<3;i++){
+      const d=document.createElement('div');
+      d.className='save-circle'+(c['death'+type.charAt(0).toUpperCase()+type.slice(1)][i]?' '+type:'');
+      d.onclick=()=>toggleDeathSave(type,i);
+      wrap.appendChild(d);
+    }
+  });
+}
+function toggleDeathSave(type,idx){
+  const c=getChar();
+  const key='death'+type.charAt(0).toUpperCase()+type.slice(1);
+  c[key][idx]=!c[key][idx];
+  saveAll();renderDeathSaves();
+}
+function resetDeathSaves(){
+  const c=getChar();
+  c.deathSuccess=[false,false,false];c.deathFail=[false,false,false];
+  saveAll();renderDeathSaves();
+}
+
+// ===================== ATTACKS =====================
+function renderAttacks(){
+  const c=getChar();
+  const body=document.getElementById('atk-body');
+  body.innerHTML='';
+  (c.attacks||[]).forEach((atk,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><input type="text" value="${atk.name||''}" placeholder="Назва" oninput="updateAtk(${i},'name',this.value)" style="min-width:70px"></td>
+      <td><input type="text" value="${atk.roll||''}" placeholder="к20+4" oninput="updateAtk(${i},'roll',this.value)" style="min-width:55px"></td>
+      <td><input type="text" value="${atk.dmg||''}" placeholder="к8+2" oninput="updateAtk(${i},'dmg',this.value)" style="min-width:55px"></td>
+      <td><input type="text" value="${atk.range||''}" placeholder="1.5м" oninput="updateAtk(${i},'range',this.value)" style="min-width:40px"></td>
+      <td><input type="text" value="${atk.uses||''}" placeholder="∞" oninput="updateAtk(${i},'uses',this.value)" style="min-width:35px"></td>
+      <td><button class="atk-del" onclick="delAtk(${i})">✕</button></td>`;
+    body.appendChild(tr);
+  });
+}
+function addAttack(){
+  const c=getChar();
+  if(!c.attacks)c.attacks=[];
+  c.attacks.push({name:'',roll:'',dmg:'',range:'',uses:''});
+  saveAll();renderAttacks();
+}
+function updateAtk(i,field,val){
+  const c=getChar();c.attacks[i][field]=val;saveAll();
+}
+function delAtk(i){
+  const c=getChar();c.attacks.splice(i,1);saveAll();renderAttacks();
+}
+
+// ===================== INVENTORY =====================
+function renderInventory(){
+  const c=getChar();
+  const list=document.getElementById('inv-list');
+  list.innerHTML='';
+  (c.inventory||[]).forEach((item,i)=>{
+    const typeLabels={weapon:'Зброя',armor:'Броня',item:'Предмет',magic:'Магічне'};
+    const div=document.createElement('div');
+    div.className='inv-item';
+    div.innerHTML=`
+      <div class="inv-item-header">
+        <div class="inv-item-name">${item.name||'Предмет'}</div>
+        <span class="inv-badge badge-${item.type||'item'}">${typeLabels[item.type||'item']}</span>
+        <button class="inv-del" onclick="delItem(${i})">✕</button>
+      </div>
+      ${item.desc?`<div style="font-size:12px;color:var(--text2);font-style:italic;margin-bottom:5px">${item.desc}</div>`:''}
+      <div style="display:flex;gap:12px;font-size:11px;color:var(--text3)">
+        ${item.qty?`<span>К-сть: <span style="color:var(--gold2)">${item.qty}</span></span>`:''}
+        ${item.weight?`<span>Вага: <span style="color:var(--gold2)">${item.weight} кг</span></span>`:''}
+      </div>`;
+    list.appendChild(div);
+  });
+}
+function openAddItemModal(){openModal('modal-add-item');}
+function confirmAddItem(){
+  const c=getChar();
+  if(!c.inventory)c.inventory=[];
+  c.inventory.push({
+    name:document.getElementById('item-name-input').value||'Предмет',
+    type:document.getElementById('item-type-input').value,
+    weight:document.getElementById('item-weight-input').value,
+    qty:document.getElementById('item-qty-input').value||1,
+    desc:document.getElementById('item-desc-input').value
+  });
+  saveAll();renderInventory();closeModal('modal-add-item');
+}
+function delItem(i){const c=getChar();c.inventory.splice(i,1);saveAll();renderInventory();}
+
+// ===================== COINS =====================
+function renderCoins(){
+  const c=getChar();
+  ['copper','silver','gold'].forEach(t=>{
+    document.getElementById('coins-'+t).textContent=c.coins[t]||0;
+  });
+}
+function changeCoin(type,delta){
+  const c=getChar();
+  c.coins[type]=Math.max(0,(c.coins[type]||0)+delta);
+  saveAll();renderCoins();
+}
+
+// ===================== ENEMIES =====================
+function renderEnemies(){
+  const c=getChar();
+  const list=document.getElementById('enemy-list');
+  list.innerHTML='';
+  (c.enemies||[]).forEach((en,i)=>{
+    const pct=en.hpMax>0?Math.max(0,Math.min(100,en.hpCur/en.hpMax*100)):0;
+    const div=document.createElement('div');
+    div.className='enemy-card';
+    div.innerHTML=`
+      <button class="enemy-del" onclick="delEnemy(${i})">✕</button>
+      <div class="enemy-name-row">
+        <input class="enemy-name-input" type="text" value="${en.name||''}" placeholder="Назва ворога..." oninput="updateEnemy(${i},'name',this.value)">
+      </div>
+      <div class="enemy-stats">
+        ${['str','dex','con','int','wis','cha'].map(s=>`<div class="enemy-stat">
+          <div class="enemy-stat-label">${STAT_NAMES[s]}</div>
+          <input type="number" value="${en.stats&&en.stats[s]||10}" style="text-align:center;font-family:'Cinzel',serif;font-size:14px;color:var(--gold);background:none;border:none;border-bottom:0.5px solid rgba(180,140,80,0.15);border-radius:0;padding:2px 0;width:100%" oninput="updateEnemyStat(${i},'${s}',this.value)">
+        </div>`).join('')}
+      </div>
+      <div class="g3" style="margin-bottom:8px">
+        <div class="field"><div class="field-label">Захист</div><input type="number" value="${en.ac||10}" oninput="updateEnemy(${i},'ac',this.value)"></div>
+        <div class="field"><div class="field-label">Швидкість</div><input type="number" value="${en.speed||9}" oninput="updateEnemy(${i},'speed',this.value)"></div>
+        <div class="field"><div class="field-label">Досвід</div><input type="number" value="${en.xpReward||0}" oninput="updateEnemy(${i},'xpReward',this.value)"></div>
+      </div>
+      <div class="enemy-hp-row">
+        <div class="enemy-hp-cur" id="en-hpcur-${i}">${en.hpCur||0}</div>
+        <div class="enemy-hp-sep">/</div>
+        <div class="enemy-hp-max" id="en-hpmax-${i}">${en.hpMax||0}</div>
+        <div class="enemy-hp-bar"><div class="enemy-hp-fill" id="en-hpbar-${i}" style="width:${pct}%"></div></div>
+      </div>
+      <div class="g2" style="margin-bottom:8px">
+        <div class="field"><div class="field-label">Макс. ХП</div><input type="number" value="${en.hpMax||0}" oninput="updateEnemyHPMax(${i},this.value)"></div>
+        <div style="display:flex;gap:6px;align-items:flex-end;margin-bottom:0">
+          <input type="number" id="en-amt-${i}" placeholder="шкода" style="flex:1">
+          <button class="hp-btn dmg" style="flex:1;padding:6px 4px;font-size:11px" onclick="damageEnemy(${i})">Шкода</button>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:8px"><div class="field-label">Атаки (назва | к20+x | шкода)</div>
+        <textarea rows="2" placeholder="Укус | к20+4 | к8+2&#10;Кіготь | к20+3 | к6+1" oninput="updateEnemy(${i},'attacks',this.value)">${en.attacks||''}</textarea>
+      </div>
+      <button class="award-btn" onclick="awardXP(${i})">⬆ Нарахувати ${en.xpReward||0} досвіду</button>`;
+    list.appendChild(div);
+  });
+}
+function addEnemy(){
+  const c=getChar();
+  if(!c.enemies)c.enemies=[];
+  c.enemies.push({name:'',stats:{str:10,dex:10,con:10,int:10,wis:10,cha:10},ac:10,speed:9,hpMax:10,hpCur:10,xpReward:100,attacks:''});
+  saveAll();renderEnemies();
+}
+function delEnemy(i){const c=getChar();c.enemies.splice(i,1);saveAll();renderEnemies();}
+function updateEnemy(i,field,val){const c=getChar();c.enemies[i][field]=val;saveAll();}
+function updateEnemyStat(i,stat,val){const c=getChar();if(!c.enemies[i].stats)c.enemies[i].stats={};c.enemies[i].stats[stat]=parseInt(val)||10;saveAll();}
+function updateEnemyHPMax(i,val){
+  const c=getChar();
+  c.enemies[i].hpMax=parseInt(val)||0;
+  if(c.enemies[i].hpCur>c.enemies[i].hpMax)c.enemies[i].hpCur=c.enemies[i].hpMax;
+  saveAll();
+  document.getElementById('en-hpmax-'+i).textContent=c.enemies[i].hpMax;
+  updateEnemyBar(i);
+}
+function damageEnemy(i){
+  const c=getChar();
+  const amt=parseInt(document.getElementById('en-amt-'+i).value)||0;
+  if(!amt)return;
+  c.enemies[i].hpCur=Math.max(0,c.enemies[i].hpCur-amt);
+  document.getElementById('en-amt-'+i).value='';
+  saveAll();
+  document.getElementById('en-hpcur-'+i).textContent=c.enemies[i].hpCur;
+  updateEnemyBar(i);
+}
+function updateEnemyBar(i){
+  const c=getChar();const en=c.enemies[i];
+  const pct=en.hpMax>0?Math.max(0,Math.min(100,en.hpCur/en.hpMax*100)):0;
+  const bar=document.getElementById('en-hpbar-'+i);
+  if(bar)bar.style.width=pct+'%';
+}
+function awardXP(i){
+  const c=getChar();
+  const xp=parseInt(c.enemies[i].xpReward)||0;
+  if(!xp)return;
+  c.xp+=xp;
+  let leveled=false;
+  while(c.level<20&&c.xp>=XP_TABLE[c.level]){c.level++;if(c.level%5===0)c.statPoints+=2;leveled=true;}
+  if(leveled)c._pendingLevelUp=true;
+  saveAll();renderXP();
+  alert(`+${xp} досвіду! Всього: ${c.xp}`);
+}
+
+// ===================== SHOP =====================
+function renderShop(){
+  const c=getChar();
+  const list=document.getElementById('shop-list');
+  list.innerHTML='';
+  (c.shop||[]).forEach((item,i)=>{
+    const typeLabels={weapon:'Зброя',armor:'Броня',item:'Предмет',magic:'Магічне'};
+    const div=document.createElement('div');
+    div.className='shop-item';
+    div.innerHTML=`
+      <div class="shop-item-info">
+        <div class="shop-item-name">${item.name||'Товар'} <span class="inv-badge badge-${item.type||'item'}" style="vertical-align:middle">${typeLabels[item.type||'item']}</span></div>
+        ${item.desc?`<div class="shop-item-desc">${item.desc}</div>`:''}
+      </div>
+      <div class="shop-prices">
+        <div class="price-tag"><div class="price-label">Купити</div><div class="price-val">${item.buyPrice||0}🟡</div></div>
+        <div class="price-tag"><div class="price-label">Продати</div><div class="price-val">${item.sellPrice||0}🟡</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <button class="shop-btn buy-btn" onclick="buyItem(${i})">Купити</button>
+        <button class="shop-btn sell-btn" onclick="sellItem(${i})">Продати</button>
+        <button onclick="delShopItem(${i})" style="background:none;border:none;color:var(--text3);font-size:11px;padding:2px">✕ Видалити</button>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+function openAddShopModal(){openModal('modal-add-shop');}
+function confirmAddShop(){
+  const c=getChar();
+  if(!c.shop)c.shop=[];
+  c.shop.push({
+    name:document.getElementById('shop-name-input').value||'Товар',
+    type:document.getElementById('shop-type-input').value,
+    buyPrice:parseInt(document.getElementById('shop-buy-input').value)||0,
+    sellPrice:parseInt(document.getElementById('shop-sell-input').value)||0,
+    desc:document.getElementById('shop-desc-input').value
+  });
+  saveAll();renderShop();closeModal('modal-add-shop');
+}
+function delShopItem(i){const c=getChar();c.shop.splice(i,1);saveAll();renderShop();}
+function buyItem(i){
+  const c=getChar();const item=c.shop[i];
+  const price=item.buyPrice||0;
+  if(c.coins.gold<price){alert('Недостатньо золота!');return;}
+  c.coins.gold-=price;
+  if(!c.inventory)c.inventory=[];
+  c.inventory.push({name:item.name,type:item.type,desc:item.desc,qty:1,weight:0});
+  saveAll();renderCoins();renderInventory();
+  alert(`Куплено: ${item.name} за ${price} золота`);
+}
+function sellItem(i){
+  const c=getChar();const item=c.shop[i];
+  const price=item.sellPrice||0;
+  c.coins.gold+=price;
+  saveAll();renderCoins();
+  alert(`Продано: ${item.name} за ${price} золота`);
+}
+
+// ===================== MODALS =====================
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});
+});
+
+// ===================== INIT =====================
+loadAll();
+renderCharSelect();
+</script>
+</body>
+</html>
+HTMLEOF
+echo "Done"
