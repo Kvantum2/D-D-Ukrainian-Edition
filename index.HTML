@@ -1,14 +1,21 @@
-cat > /mnt/user-data/outputs/dnd_app.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>D&D Аркуш Персонажа</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<title>D&D — Аркуш Персонажа</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Uncial+Antiqua&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0e0c09;--bg2:#13100c;--bg3:#1a1510;--card:rgba(255,255,255,0.03);--border:rgba(180,140,80,0.22);--border2:rgba(180,140,80,0.12);--blood:#8b1a1a;--blood2:rgba(139,26,26,0.18);--gold:#c8a96e;--gold2:rgba(200,169,110,0.5);--text:#c8b99a;--text2:rgba(200,185,154,0.6);--text3:rgba(200,185,154,0.3);--green:#5a9a3a;--red:#c05050}
+:root{
+  --bg:#0e0c09;--bg2:#13100c;--bg3:#1a1510;--bg4:#201a12;
+  --card:rgba(255,255,255,0.03);--border:rgba(180,140,80,0.22);--border2:rgba(180,140,80,0.12);
+  --blood:#8b1a1a;--blood2:rgba(139,26,26,0.18);
+  --gold:#c8a96e;--gold2:rgba(200,169,110,0.5);
+  --text:#c8b99a;--text2:rgba(200,185,154,0.6);--text3:rgba(200,185,154,0.3);
+  --green:#5a9a3a;--red:#c05050;--purple:#7a4fa0;--blue:#3a6a9a
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'EB Garamond',Georgia,serif;font-size:14px;min-height:100vh;overflow-x:hidden}
 input,textarea,select{background:rgba(255,255,255,0.05);border:0.5px solid rgba(180,140,80,0.25);border-radius:3px;color:var(--text);font-family:'EB Garamond',Georgia,serif;font-size:13px;padding:4px 7px;width:100%;outline:none;transition:border-color 0.2s}
 input:focus,textarea:focus,select:focus{border-color:rgba(139,26,26,0.6)}
@@ -18,13 +25,30 @@ button{cursor:pointer;font-family:'Cinzel',serif;transition:all 0.2s}
 select option{background:#1a1510;color:var(--text)}
 textarea{resize:vertical;line-height:1.5}
 
-/* CHAR SELECT SCREEN */
-#char-select-screen{padding:20px;min-height:100vh;display:flex;flex-direction:column}
+/* ===== MAIN NAV (TOP LEVEL) ===== */
+#main-nav{background:#080604;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:300;min-height:48px}
+.main-nav-left{display:flex;align-items:center;gap:0}
+.main-nav-logo{font-family:'Uncial Antiqua',serif;font-size:16px;color:var(--gold);padding-right:14px;border-right:0.5px solid var(--border2);margin-right:10px;white-space:nowrap}
+.main-nav-tabs{display:flex;overflow-x:auto;scrollbar-width:none}
+.main-nav-tabs::-webkit-scrollbar{display:none}
+.main-nav-tab{padding:14px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.main-nav-tab.active{color:var(--gold);border-bottom-color:var(--blood)}
+.main-nav-tab:active,.main-nav-tab:hover{color:var(--gold2)}
+.lang-toggle{display:flex;border:0.5px solid var(--border);border-radius:3px;overflow:hidden;flex-shrink:0;margin-left:10px}
+.lang-btn{padding:5px 10px;background:none;border:none;color:var(--text3);font-size:9px;letter-spacing:0.15em;font-family:'Cinzel',serif}
+.lang-btn.active{background:rgba(139,26,26,0.25);color:var(--gold)}
+
+/* ===== SCREENS ===== */
+.screen{display:none}
+.screen.active{display:block}
+
+/* ===== CHARACTER SELECT SCREEN ===== */
+#screen-chars{padding:20px;min-height:calc(100vh - 48px)}
 .app-logo{text-align:center;padding:24px 0 20px;border-bottom:0.5px solid var(--border);margin-bottom:20px}
 .app-logo-sub{font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.4em;color:var(--blood);text-transform:uppercase;margin-bottom:6px}
-.app-logo-title{font-family:'Cinzel',serif;font-size:24px;font-weight:700;color:var(--gold)}
+.app-logo-title{font-family:'Uncial Antiqua',serif;font-size:26px;color:var(--gold)}
 .char-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
-.char-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;padding:14px 16px;display:flex;align-items:center;gap:12px;position:relative}
+.char-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;padding:14px 16px;display:flex;align-items:center;gap:12px}
 .char-card-avatar{width:44px;height:44px;border-radius:3px;border:1px solid rgba(139,26,26,0.4);background:rgba(139,26,26,0.1);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .char-card-info{flex:1;min-width:0}
 .char-card-name{font-family:'Cinzel',serif;font-size:15px;color:var(--gold);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -37,41 +61,109 @@ textarea{resize:vertical;line-height:1.5}
 .btn-new{background:rgba(139,26,26,0.15);border:1px solid rgba(139,26,26,0.4);color:var(--gold);font-size:11px;letter-spacing:0.25em;padding:14px;border-radius:4px;width:100%;text-align:center}
 .btn-new:active{background:rgba(139,26,26,0.3)}
 
-/* MAIN APP */
-#app{display:none;flex-direction:column;min-height:100vh}
-.topbar{background:#0a0806;border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:200}
-.topbar-back{background:none;border:none;color:var(--gold2);font-size:18px;padding:4px 8px 4px 0;border-right:0.5px solid var(--border2);margin-right:4px}
-.topbar-name{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.topbar-level{font-size:11px;color:var(--text2);font-style:italic}
+/* ===== CHARACTER SHEET APP ===== */
+#screen-char-app{min-height:calc(100vh - 48px)}
+.char-topbar{background:#0a0806;border-bottom:1px solid var(--border);padding:8px 14px;display:flex;align-items:center;gap:10px}
+.char-topbar-back{background:none;border:none;color:var(--gold2);font-size:18px;padding:4px 8px 4px 0;border-right:0.5px solid var(--border2);margin-right:4px}
+.char-topbar-name{font-family:'Cinzel',serif;font-size:15px;color:var(--gold);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.char-topbar-level{font-size:11px;color:var(--text2);font-style:italic}
 .save-ind{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.15em;color:var(--green);opacity:0;transition:opacity 0.3s;flex-shrink:0}
 .save-ind.show{opacity:1}
-
-/* TABS */
-.tabs{display:flex;background:var(--bg2);border-bottom:0.5px solid var(--border2);overflow-x:auto;scrollbar-width:none;position:sticky;top:53px;z-index:199}
-.tabs::-webkit-scrollbar{display:none}
-.tab{flex-shrink:0;padding:9px 12px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;white-space:nowrap}
-.tab.active{color:var(--gold);border-bottom-color:var(--blood)}
-.tab:active{color:var(--gold2)}
-
-/* PAGES */
+.char-tabs{display:flex;background:var(--bg2);border-bottom:0.5px solid var(--border2);overflow-x:auto;scrollbar-width:none;position:sticky;top:48px;z-index:200}
+.char-tabs::-webkit-scrollbar{display:none}
+.char-tab{flex-shrink:0;padding:9px 12px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;white-space:nowrap}
+.char-tab.active{color:var(--gold);border-bottom-color:var(--blood)}
+.char-tab:active{color:var(--gold2)}
 .page{display:none;padding:14px;padding-bottom:40px}
 .page.active{display:block}
 
-/* SECTION */
-.sec{margin-bottom:16px}
-.sec-title{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.35em;color:var(--blood);text-transform:uppercase;padding-bottom:6px;border-bottom:0.5px solid rgba(139,26,26,0.25);margin-bottom:10px}
+/* ===== ENCYCLOPEDIA SCREEN ===== */
+#screen-encyclopedia{min-height:calc(100vh - 48px)}
+.enc-topbar{background:#0a0806;border-bottom:1px solid var(--border);padding:10px 14px}
+.enc-topbar-title{font-family:'Uncial Antiqua',serif;font-size:18px;color:var(--gold)}
+.enc-tabs{display:flex;background:var(--bg2);border-bottom:0.5px solid var(--border2);overflow-x:auto;scrollbar-width:none;position:sticky;top:48px;z-index:200}
+.enc-tabs::-webkit-scrollbar{display:none}
+.enc-tab{flex-shrink:0;padding:10px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;white-space:nowrap}
+.enc-tab.active{color:var(--gold);border-bottom-color:var(--blood)}
+.enc-tab:hover{color:var(--gold2)}
+.enc-page{display:none;padding:14px;padding-bottom:60px}
+.enc-page.active{display:block}
 
-/* FIELD */
+/* ===== CHAR CREATION SCREEN ===== */
+#screen-creation{min-height:calc(100vh - 48px)}
+.cre-topbar{background:#0a0806;border-bottom:1px solid var(--border);padding:10px 14px}
+.cre-topbar-title{font-family:'Uncial Antiqua',serif;font-size:18px;color:var(--gold)}
+.cre-tabs{display:flex;background:var(--bg2);border-bottom:0.5px solid var(--border2);overflow-x:auto;scrollbar-width:none;position:sticky;top:48px;z-index:200}
+.cre-tabs::-webkit-scrollbar{display:none}
+.cre-tab{flex-shrink:0;padding:10px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;white-space:nowrap}
+.cre-tab.active{color:var(--gold);border-bottom-color:var(--blood)}
+.cre-tab:hover{color:var(--gold2)}
+.cre-page{display:none;padding:14px;padding-bottom:60px}
+.cre-page.active{display:block}
+
+/* ===== EQUIPMENT SCREEN ===== */
+#screen-equipment{min-height:calc(100vh - 48px)}
+.eq-topbar{background:#0a0806;border-bottom:1px solid var(--border);padding:10px 14px}
+.eq-topbar-title{font-family:'Uncial Antiqua',serif;font-size:18px;color:var(--gold)}
+.eq-tabs{display:flex;background:var(--bg2);border-bottom:0.5px solid var(--border2);overflow-x:auto;scrollbar-width:none;position:sticky;top:48px;z-index:200}
+.eq-tabs::-webkit-scrollbar{display:none}
+.eq-tab{flex-shrink:0;padding:10px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;white-space:nowrap}
+.eq-tab.active{color:var(--gold);border-bottom-color:var(--blood)}
+.eq-tab:hover{color:var(--gold2)}
+.eq-page{display:none;padding:14px;padding-bottom:60px}
+.eq-page.active{display:block}
+
+/* ===== SHARED COMPONENTS ===== */
+.sec{margin-bottom:18px}
+.sec-title{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.35em;color:var(--blood);text-transform:uppercase;padding-bottom:6px;border-bottom:0.5px solid rgba(139,26,26,0.25);margin-bottom:10px}
 .field{margin-bottom:8px}
 .field-label{font-size:10px;color:var(--text3);letter-spacing:0.15em;margin-bottom:3px;font-family:'Cinzel',serif}
 .field-row{display:flex;gap:8px;align-items:center}
 .field-row .field{flex:1;margin-bottom:0}
-
-/* GRID */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 
-/* STAT CARDS */
+/* ENTRY CARDS (encyclopedia/creation/equipment) */
+.entry-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;padding:14px;margin-bottom:12px;position:relative}
+.entry-card-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.entry-card-icon{font-size:22px;flex-shrink:0;line-height:1;margin-top:2px}
+.entry-card-title{font-family:'Cinzel',serif;font-size:15px;color:var(--gold);margin-bottom:3px}
+.entry-card-subtitle{font-size:11px;color:var(--text3);font-style:italic}
+.entry-card-body{font-size:13px;color:var(--text2);line-height:1.65}
+.entry-card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.entry-tag{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.12em;padding:2px 9px;border-radius:2px}
+.tag-lore{background:rgba(58,106,154,0.18);color:#80b0d0;border:0.5px solid rgba(58,106,154,0.3)}
+.tag-race{background:rgba(90,154,58,0.15);color:#80b060;border:0.5px solid rgba(90,154,58,0.25)}
+.tag-monster{background:rgba(139,26,26,0.2);color:#d08080;border:0.5px solid rgba(139,26,26,0.3)}
+.tag-item{background:rgba(100,60,120,0.2);color:#b080d0;border:0.5px solid rgba(100,60,120,0.3)}
+.tag-custom{background:rgba(180,140,80,0.15);color:var(--gold2);border:0.5px solid rgba(180,140,80,0.25)}
+.tag-class{background:rgba(139,26,26,0.15);color:#c09090;border:0.5px solid rgba(139,26,26,0.25)}
+.tag-weapon{background:rgba(120,80,40,0.2);color:#c8a070;border:0.5px solid rgba(120,80,40,0.3)}
+.tag-armor{background:rgba(60,80,120,0.2);color:#80a0d0;border:0.5px solid rgba(60,80,120,0.3)}
+.entry-stat-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.entry-stat{background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:3px;padding:4px 10px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.entry-stat-label{font-size:8px;letter-spacing:0.12em;color:var(--text3);font-family:'Cinzel',serif}
+.entry-stat-val{font-family:'Cinzel',serif;font-size:13px;color:var(--gold)}
+
+/* SECTION HEADER with add button */
+.sec-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;border-bottom:0.5px solid rgba(139,26,26,0.25);margin-bottom:12px}
+.sec-header-title{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.35em;color:var(--blood);text-transform:uppercase}
+.sec-add-btn{background:rgba(139,26,26,0.15);border:0.5px solid rgba(139,26,26,0.35);color:var(--gold2);font-size:9px;letter-spacing:0.12em;padding:4px 10px;border-radius:2px}
+.sec-add-btn:active{background:rgba(139,26,26,0.3)}
+
+/* DIVIDER */
+.divider{height:0.5px;background:var(--border2);margin:14px 0}
+.note-box{background:rgba(139,26,26,0.07);border:0.5px solid rgba(139,26,26,0.2);border-radius:3px;padding:8px 10px;font-size:11px;color:rgba(200,160,150,0.6);font-style:italic;margin-bottom:10px}
+
+/* COLLAPSE SECTION */
+.collapse-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 0;border-bottom:0.5px solid var(--border2);margin-bottom:0;user-select:none}
+.collapse-title{font-family:'Cinzel',serif;font-size:13px;color:var(--gold)}
+.collapse-arrow{color:var(--text3);font-size:12px;transition:transform 0.2s}
+.collapse-arrow.open{transform:rotate(180deg)}
+.collapse-body{display:none;padding-top:10px}
+.collapse-body.open{display:block}
+
+/* STATS */
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
 .stat-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:5px;padding:10px 8px;text-align:center;position:relative}
 .stat-card-name{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.2em;color:var(--text3);margin-bottom:6px}
@@ -82,14 +174,12 @@ textarea{resize:vertical;line-height:1.5}
 .stat-mod{font-size:13px;color:var(--text2)}
 .stat-save{display:flex;align-items:center;gap:4px;justify-content:center;font-size:10px;color:var(--text3)}
 .stat-save input[type=checkbox]{width:12px;height:12px;accent-color:var(--blood);flex-shrink:0}
-
-/* POINTS BANNER */
 .points-banner{background:rgba(139,26,26,0.1);border:0.5px solid rgba(139,26,26,0.35);border-radius:4px;padding:10px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
 .points-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;color:var(--blood);text-transform:uppercase}
 .points-val{font-family:'Cinzel',serif;font-size:20px;color:var(--gold)}
 .points-hint{font-size:10px;color:var(--text3);font-style:italic}
 
-/* HP SECTION */
+/* HP */
 .hp-main{background:var(--bg3);border:0.5px solid var(--border);border-radius:5px;padding:12px;margin-bottom:8px}
 .hp-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .hp-big{font-family:'Cinzel',serif;font-size:28px;color:var(--gold);line-height:1}
@@ -104,7 +194,7 @@ textarea{resize:vertical;line-height:1.5}
 .hp-btn:active{opacity:0.7}
 .hp-input{width:60px;flex-shrink:0}
 
-/* XP BAR */
+/* XP */
 .xp-section{background:var(--bg3);border:0.5px solid var(--border);border-radius:5px;padding:12px;margin-bottom:8px}
 .xp-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
 .xp-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;color:var(--text3)}
@@ -127,7 +217,7 @@ textarea{resize:vertical;line-height:1.5}
 .skill-name{flex:1;font-size:13px;color:var(--text2)}
 .skill-attr{font-size:10px;color:var(--text3);font-style:italic}
 
-/* ATTACKS TABLE */
+/* ATTACKS */
 .atk-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px}
 .atk-table th{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.15em;color:rgba(139,26,26,0.7);padding:0 5px 6px;text-align:left;font-weight:400;border-bottom:0.5px solid rgba(139,26,26,0.2)}
 .atk-table td{padding:4px 5px;border-bottom:0.5px solid rgba(255,255,255,0.04);vertical-align:middle}
@@ -195,21 +285,7 @@ textarea{resize:vertical;line-height:1.5}
 .buy-btn:active{background:rgba(90,154,58,0.25)}
 .sell-btn:active{background:rgba(180,140,80,0.2)}
 
-/* MODALS */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s}
-.modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:#13100c;border:0.5px solid var(--border);border-radius:8px 8px 0 0;padding:20px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.25s}
-.modal-overlay.open .modal{transform:translateY(0)}
-.modal-title{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);margin-bottom:16px;padding-bottom:10px;border-bottom:0.5px solid var(--border2)}
-.modal-btns{display:flex;gap:8px;margin-top:16px}
-.modal-confirm{flex:1;background:rgba(139,26,26,0.2);border:0.5px solid rgba(139,26,26,0.45);color:var(--gold);font-size:11px;letter-spacing:0.2em;padding:11px;border-radius:3px}
-.modal-cancel{flex:1;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);color:var(--text2);font-size:11px;letter-spacing:0.15em;padding:11px;border-radius:3px}
-.modal-confirm:active{background:rgba(139,26,26,0.4)}
-.modal-cancel:active{background:rgba(255,255,255,0.08)}
-
-/* UTILITY */
-.divider{height:0.5px;background:var(--border2);margin:12px 0}
-.note-box{background:rgba(139,26,26,0.07);border:0.5px solid rgba(139,26,26,0.2);border-radius:3px;padding:8px 10px;font-size:11px;color:rgba(200,160,150,0.6);font-style:italic;margin-bottom:10px}
+/* DEATH SAVES */
 .lvl-table{width:100%;font-size:11px;border-collapse:collapse}
 .lvl-table td{padding:3px 6px;border-bottom:0.5px solid rgba(255,255,255,0.04);color:var(--text2)}
 .lvl-table td:first-child{font-family:'Cinzel',serif;color:var(--gold2);font-size:10px}
@@ -222,151 +298,187 @@ textarea{resize:vertical;line-height:1.5}
 .save-circle{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(180,140,80,0.3);cursor:pointer;transition:all 0.15s;flex-shrink:0}
 .save-circle.success{background:var(--green);border-color:var(--green)}
 .save-circle.fail{background:var(--red);border-color:var(--red)}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:#13100c;border:0.5px solid var(--border);border-radius:8px 8px 0 0;padding:20px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.25s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-title{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);margin-bottom:16px;padding-bottom:10px;border-bottom:0.5px solid var(--border2)}
+.modal-btns{display:flex;gap:8px;margin-top:16px}
+.modal-confirm{flex:1;background:rgba(139,26,26,0.2);border:0.5px solid rgba(139,26,26,0.45);color:var(--gold);font-size:11px;letter-spacing:0.2em;padding:11px;border-radius:3px}
+.modal-cancel{flex:1;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);color:var(--text2);font-size:11px;letter-spacing:0.15em;padding:11px;border-radius:3px}
+.modal-confirm:active{background:rgba(139,26,26,0.4)}
+.modal-cancel:active{background:rgba(255,255,255,0.08)}
+
+/* SEARCH BOX */
+.search-box{background:rgba(255,255,255,0.04);border:0.5px solid var(--border);border-radius:4px;padding:8px 12px;width:100%;margin-bottom:14px;font-size:13px;color:var(--text)}
+.search-box::placeholder{color:var(--text3)}
+
+/* HERO BANNER */
+.hero-banner{background:linear-gradient(135deg,rgba(139,26,26,0.15),rgba(0,0,0,0));border:0.5px solid rgba(139,26,26,0.25);border-radius:6px;padding:16px;margin-bottom:16px;position:relative;overflow:hidden}
+.hero-banner::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:radial-gradient(circle,rgba(139,26,26,0.15),transparent 70%)}
+.hero-title{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);margin-bottom:6px}
+.hero-text{font-size:13px;color:var(--text2);line-height:1.6}
+.hero-badge{display:inline-block;font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.15em;padding:3px 10px;border-radius:2px;margin-top:8px}
+
+/* STEP CARDS for creation guide */
+.step-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.step-num{font-family:'Uncial Antiqua',serif;font-size:22px;color:rgba(139,26,26,0.5);flex-shrink:0;line-height:1;margin-top:2px}
+.step-content-title{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);margin-bottom:4px}
+.step-content-text{font-size:12px;color:var(--text2);line-height:1.6}
 </style>
 </head>
 <body>
 
-<!-- CHARACTER SELECT -->
-<div id="char-select-screen">
-  <div class="app-logo">
-    <div class="app-logo-sub">Dungeons &amp; Dragons</div>
-    <div class="app-logo-title">Аркуш Персонажа</div>
+<!-- ===== MAIN NAVIGATION ===== -->
+<nav id="main-nav">
+  <div class="main-nav-left">
+    <div class="main-nav-logo">⚔ D&D</div>
+    <div class="main-nav-tabs">
+      <button class="main-nav-tab active" onclick="switchMainTab('chars')" data-i18n-key="nav_chars">Персонаж</button>
+      <button class="main-nav-tab" onclick="switchMainTab('encyclopedia')" data-i18n-key="nav_enc">Енциклопедія</button>
+      <button class="main-nav-tab" onclick="switchMainTab('creation')" data-i18n-key="nav_cre">Створення</button>
+      <button class="main-nav-tab" onclick="switchMainTab('equipment')" data-i18n-key="nav_eq">Спорядження</button>
+    </div>
   </div>
-  <div class="char-list" id="char-list"></div>
-  <button class="btn-new" onclick="openNewCharModal()">+ Новий Персонаж</button>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('uk')">УКР</button>
+    <button class="lang-btn" onclick="setLang('en')">ENG</button>
+  </div>
+</nav>
+
+<!-- ============================= SCREEN: CHARACTER SELECT ============================= -->
+<div id="screen-chars" class="screen active">
+  <div class="app-logo">
+    <div class="app-logo-sub" data-i18n="logo_sub">Dungeons &amp; Dragons</div>
+    <div class="app-logo-title" data-i18n="logo_title">Аркуш Персонажа</div>
+  </div>
+  <div style="padding:0 20px">
+    <div class="char-list" id="char-list"></div>
+    <button class="btn-new" onclick="openNewCharModal()" data-i18n="btn_new_char">+ Новий Персонаж</button>
+  </div>
 </div>
 
-<!-- MAIN APP -->
-<div id="app">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goToSelect()">←</button>
-    <div>
-      <div class="topbar-name" id="topbar-name">—</div>
-      <div class="topbar-level" id="topbar-level">Рівень 1</div>
+<!-- ============================= SCREEN: CHARACTER APP ============================= -->
+<div id="screen-char-app" class="screen">
+  <div class="char-topbar">
+    <button class="char-topbar-back" onclick="goToSelect()">←</button>
+    <div style="flex:1;min-width:0">
+      <div class="char-topbar-name" id="topbar-name">—</div>
+      <div class="char-topbar-level" id="topbar-level" data-i18n-prefix="level_label">Рівень 1</div>
     </div>
-    <div class="save-ind" id="save-ind">ЗБЕРЕЖЕНО</div>
+    <div class="save-ind" id="save-ind" data-i18n="saved">ЗБЕРЕЖЕНО</div>
   </div>
 
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('main')">Основне</button>
-    <button class="tab" onclick="switchTab('stats')">Характ.</button>
-    <button class="tab" onclick="switchTab('combat')">Бій</button>
-    <button class="tab" onclick="switchTab('inventory')">Інвентар</button>
-    <button class="tab" onclick="switchTab('enemies')">Вороги</button>
-    <button class="tab" onclick="switchTab('shop')">Крамниця</button>
+  <div class="char-tabs">
+    <button class="char-tab active" onclick="switchCharTab('main')" data-i18n="tab_main">Основне</button>
+    <button class="char-tab" onclick="switchCharTab('stats')" data-i18n="tab_stats">Характ.</button>
+    <button class="char-tab" onclick="switchCharTab('combat')" data-i18n="tab_combat">Бій</button>
+    <button class="char-tab" onclick="switchCharTab('inventory')" data-i18n="tab_inv">Інвентар</button>
+    <button class="char-tab" onclick="switchCharTab('enemies')" data-i18n="tab_enemies">Вороги</button>
+    <button class="char-tab" onclick="switchCharTab('shop')" data-i18n="tab_shop">Крамниця</button>
   </div>
 
   <!-- MAIN TAB -->
   <div class="page active" id="page-main">
     <div class="sec">
-      <div class="sec-title">Інформація про персонажа</div>
-      <div class="field"><div class="field-label">Ім'я персонажа</div><input type="text" id="f-name" placeholder="Введи ім'я..." oninput="syncName()"></div>
+      <div class="sec-title" data-i18n="sec_char_info">Інформація про персонажа</div>
+      <div class="field"><div class="field-label" data-i18n="lbl_name">Ім'я персонажа</div><input type="text" id="f-name" oninput="syncName()"></div>
       <div class="g2">
-        <div class="field"><div class="field-label">Раса</div><input type="text" id="f-race" placeholder="Людина..."></div>
-        <div class="field"><div class="field-label">Клас</div><input type="text" id="f-class" placeholder="Воїн..."></div>
+        <div class="field"><div class="field-label" data-i18n="lbl_race">Раса</div><input type="text" id="f-race"></div>
+        <div class="field"><div class="field-label" data-i18n="lbl_class">Клас</div><input type="text" id="f-class"></div>
       </div>
       <div class="g2">
-        <div class="field"><div class="field-label">Передісторія</div><input type="text" id="f-background" placeholder="Солдат..."></div>
-        <div class="field"><div class="field-label">Світогляд</div><input type="text" id="f-alignment" placeholder="Нейтральний..."></div>
+        <div class="field"><div class="field-label" data-i18n="lbl_bg">Передісторія</div><input type="text" id="f-background"></div>
+        <div class="field"><div class="field-label" data-i18n="lbl_align">Світогляд</div><input type="text" id="f-alignment"></div>
       </div>
-      <div class="field"><div class="field-label">Ім'я гравця</div><input type="text" id="f-player" placeholder="Твоє ім'я..."></div>
-      <div class="field"><div class="field-label">Група авантюристів</div><input type="text" id="f-party" placeholder="Назва партії..."></div>
+      <div class="field"><div class="field-label" data-i18n="lbl_player">Ім'я гравця</div><input type="text" id="f-player"></div>
+      <div class="field"><div class="field-label" data-i18n="lbl_party">Група авантюристів</div><input type="text" id="f-party"></div>
     </div>
-
     <div class="sec">
-      <div class="sec-title">Рівень та досвід</div>
+      <div class="sec-title" data-i18n="sec_xp">Рівень та досвід</div>
       <div class="xp-section">
         <div class="xp-top">
-          <span class="xp-label">РІВЕНЬ</span>
+          <span class="xp-label" data-i18n="lbl_level">РІВЕНЬ</span>
           <span style="font-family:'Cinzel',serif;font-size:22px;color:var(--gold)" id="disp-level">1</span>
         </div>
         <div class="xp-top" style="margin-bottom:4px">
-          <span class="xp-label">ДОСВІД</span>
+          <span class="xp-label" data-i18n="lbl_xp">ДОСВІД</span>
           <span class="xp-val" id="disp-xp">0 / 300</span>
         </div>
         <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
         <div class="xp-add-row">
-          <input type="number" class="xp-add-input" id="xp-add-input" placeholder="±досвід (напр. 150 або -50)">
-          <button class="xp-add-btn" onclick="addXP()">Додати</button>
+          <input type="number" class="xp-add-input" id="xp-add-input">
+          <button class="xp-add-btn" onclick="addXP()" data-i18n="btn_add">Додати</button>
         </div>
         <div class="lvl-up-banner" id="lvl-up-banner">
-          <div class="lvl-up-text">⬆ ПІДВИЩЕННЯ РІВНЯ!</div>
-          <div style="font-size:11px;color:var(--text2);margin-top:4px">Перейди у вкладку «Характ.» щоб витратити очки</div>
+          <div class="lvl-up-text" data-i18n="lvl_up">⬆ ПІДВИЩЕННЯ РІВНЯ!</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px" data-i18n="lvl_up_hint">Перейди у вкладку «Характ.» щоб витратити очки</div>
         </div>
       </div>
       <details style="margin-top:4px">
-        <summary style="font-size:11px;color:var(--text3);cursor:pointer;font-style:italic;padding:4px 0">Таблиця досвіду по рівнях</summary>
+        <summary style="font-size:11px;color:var(--text3);cursor:pointer;font-style:italic;padding:4px 0" data-i18n="xp_table_show">Таблиця досвіду по рівнях</summary>
         <table class="lvl-table" style="margin-top:8px" id="lvl-table"></table>
       </details>
     </div>
-
     <div class="sec">
-      <div class="sec-title">Риси та особливості</div>
-      <div class="field"><div class="field-label">Особистісні риси</div><textarea id="f-traits" rows="3" placeholder="Опиши характер персонажа..."></textarea></div>
-      <div class="field"><div class="field-label">Ідеали</div><textarea id="f-ideals" rows="2" placeholder="У що вірить твій персонаж..."></textarea></div>
-      <div class="field"><div class="field-label">Зв'язки</div><textarea id="f-bonds" rows="2" placeholder="Що важливо для персонажа..."></textarea></div>
-      <div class="field"><div class="field-label">Вади</div><textarea id="f-flaws" rows="2" placeholder="Слабкості та вади..."></textarea></div>
+      <div class="sec-title" data-i18n="sec_traits">Риси та особливості</div>
+      <div class="field"><div class="field-label" data-i18n="lbl_traits">Особистісні риси</div><textarea id="f-traits" rows="3"></textarea></div>
+      <div class="field"><div class="field-label" data-i18n="lbl_ideals">Ідеали</div><textarea id="f-ideals" rows="2"></textarea></div>
+      <div class="field"><div class="field-label" data-i18n="lbl_bonds">Зв'язки</div><textarea id="f-bonds" rows="2"></textarea></div>
+      <div class="field"><div class="field-label" data-i18n="lbl_flaws">Вади</div><textarea id="f-flaws" rows="2"></textarea></div>
     </div>
-
     <div class="sec">
-      <div class="sec-title">Примітки</div>
-      <textarea id="f-notes" rows="5" placeholder="Вільні нотатки, квести, NPC..."></textarea>
+      <div class="sec-title" data-i18n="sec_notes">Примітки</div>
+      <textarea id="f-notes" rows="5"></textarea>
     </div>
   </div>
 
   <!-- STATS TAB -->
   <div class="page" id="page-stats">
     <div class="sec">
-      <div class="sec-title">Очки характеристик</div>
+      <div class="sec-title" data-i18n="sec_stat_pts">Очки характеристик</div>
       <div class="points-banner">
         <div>
-          <div class="points-label">Доступних очок</div>
-          <div class="points-hint" id="pts-hint">Кожні +2 = +1 бонус</div>
+          <div class="points-label" data-i18n="lbl_avail_pts">Доступних очок</div>
+          <div class="points-hint" data-i18n="pts_hint">Кожні +2 = +1 бонус</div>
         </div>
         <div class="points-val" id="pts-display">4</div>
       </div>
-      <div class="note-box">Кожен 5-й рівень: +2 очки для характеристик. Базове значення всіх характеристик: 10.</div>
+      <div class="note-box" data-i18n="pts_note">Кожен 5-й рівень: +2 очки для характеристик. Базове значення всіх характеристик: 10.</div>
     </div>
-
     <div class="sec">
-      <div class="sec-title">Характеристики</div>
+      <div class="sec-title" data-i18n="sec_stats">Характеристики</div>
       <div class="stats-grid" id="stats-grid"></div>
       <div class="field-row">
-        <div class="field">
-          <div class="field-label">Бонус майстерності</div>
-          <input type="text" id="f-prof-bonus" readonly style="text-align:center;font-family:'Cinzel',serif;font-size:16px;color:var(--gold)">
-        </div>
-        <div class="field">
-          <div class="field-label">Пасивне сприйняття</div>
-          <input type="text" id="f-passive-perc" readonly style="text-align:center;font-family:'Cinzel',serif;font-size:16px;color:var(--gold)">
-        </div>
+        <div class="field"><div class="field-label" data-i18n="lbl_prof_bonus">Бонус майстерності</div><input type="text" id="f-prof-bonus" readonly style="text-align:center;font-family:'Cinzel',serif;font-size:16px;color:var(--gold)"></div>
+        <div class="field"><div class="field-label" data-i18n="lbl_passive_perc">Пасивне сприйняття</div><input type="text" id="f-passive-perc" readonly style="text-align:center;font-family:'Cinzel',serif;font-size:16px;color:var(--gold)"></div>
       </div>
     </div>
-
     <div class="sec">
-      <div class="sec-title">Навички</div>
+      <div class="sec-title" data-i18n="sec_skills">Навички</div>
       <div id="skills-list"></div>
-      <button class="add-row-btn" style="margin-top:8px" onclick="openCustomSkillModal()">+ Додати власний скіл</button>
+      <button class="add-row-btn" style="margin-top:8px" onclick="openCustomSkillModal()" data-i18n="btn_add_skill">+ Додати власний скіл</button>
     </div>
   </div>
 
   <!-- COMBAT TAB -->
   <div class="page" id="page-combat">
     <div class="sec">
-      <div class="sec-title">Захист та переміщення</div>
+      <div class="sec-title" data-i18n="sec_defense">Захист та переміщення</div>
       <div class="g3">
-        <div class="field"><div class="field-label">Клас броні</div><input type="number" id="f-ac" placeholder="10"></div>
-        <div class="field"><div class="field-label">Ініціатива</div><input type="text" id="f-initiative" placeholder="+0" readonly style="color:var(--gold)"></div>
-        <div class="field"><div class="field-label">Швидкість (м)</div><input type="number" id="f-speed" placeholder="9"></div>
+        <div class="field"><div class="field-label" data-i18n="lbl_ac">Клас броні</div><input type="number" id="f-ac" placeholder="10"></div>
+        <div class="field"><div class="field-label" data-i18n="lbl_init">Ініціатива</div><input type="text" id="f-initiative" placeholder="+0" readonly style="color:var(--gold)"></div>
+        <div class="field"><div class="field-label" data-i18n="lbl_speed">Швидкість (м)</div><input type="number" id="f-speed" placeholder="9"></div>
       </div>
     </div>
-
     <div class="sec">
-      <div class="sec-title">Здоров'я</div>
+      <div class="sec-title" data-i18n="sec_hp">Здоров'я</div>
       <div class="hp-main">
         <div class="hp-row">
           <div>
-            <div style="font-size:9px;letter-spacing:0.2em;color:var(--text3);font-family:'Cinzel',serif;margin-bottom:3px">ПОТОЧНЕ ХП</div>
+            <div style="font-size:9px;letter-spacing:0.2em;color:var(--text3);font-family:'Cinzel',serif;margin-bottom:3px" data-i18n="lbl_cur_hp">ПОТОЧНЕ ХП</div>
             <div style="display:flex;align-items:baseline;gap:6px">
               <div class="hp-big" id="hp-cur-disp">0</div>
               <div class="hp-sep">/</div>
@@ -374,7 +486,7 @@ textarea{resize:vertical;line-height:1.5}
             </div>
           </div>
           <div style="flex:1;margin-left:10px">
-            <div style="font-size:9px;letter-spacing:0.2em;color:var(--text3);font-family:'Cinzel',serif;margin-bottom:3px">ТИМЧАСОВЕ ХП</div>
+            <div style="font-size:9px;letter-spacing:0.2em;color:var(--text3);font-family:'Cinzel',serif;margin-bottom:3px" data-i18n="lbl_temp_hp">ТИМЧАСОВЕ ХП</div>
             <input type="number" id="f-temp-hp" placeholder="0" style="font-family:'Cinzel',serif;font-size:16px;text-align:center">
           </div>
         </div>
@@ -382,512 +494,1458 @@ textarea{resize:vertical;line-height:1.5}
         <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
           <input type="number" class="hp-input" id="hp-change-amt" placeholder="0">
           <div class="hp-btn-row" style="flex:1">
-            <button class="hp-btn dmg" onclick="changeHP(-1)">— Шкода</button>
-            <button class="hp-btn heal" onclick="changeHP(1)">+ Лікування</button>
+            <button class="hp-btn dmg" onclick="changeHP(-1)" data-i18n="btn_dmg">— Шкода</button>
+            <button class="hp-btn heal" onclick="changeHP(1)" data-i18n="btn_heal">+ Лікування</button>
           </div>
         </div>
         <div class="g2">
-          <div class="field"><div class="field-label">Макс. ХП</div><input type="number" id="f-hp-max" placeholder="0" oninput="updateHP()"></div>
-          <button class="hp-btn rest" style="align-self:flex-end;margin-bottom:0" onclick="fullRest()">Довгий відпочинок</button>
+          <div class="field"><div class="field-label" data-i18n="lbl_max_hp">Макс. ХП</div><input type="number" id="f-hp-max" placeholder="0" oninput="updateHP()"></div>
+          <button class="hp-btn rest" style="align-self:flex-end;margin-bottom:0" onclick="fullRest()" data-i18n="btn_rest">Довгий відпочинок</button>
         </div>
       </div>
     </div>
-
     <div class="sec">
-      <div class="sec-title">Рятівні кидки від смерті</div>
+      <div class="sec-title" data-i18n="sec_death">Рятівні кидки від смерті</div>
       <div class="death-saves">
-        <span style="font-size:11px;color:var(--green)">Успіх:</span>
+        <span style="font-size:11px;color:var(--green)" data-i18n="lbl_success">Успіх:</span>
         <div class="save-circles" id="death-success"></div>
-        <span style="font-size:11px;color:var(--red);margin-left:8px">Провал:</span>
+        <span style="font-size:11px;color:var(--red);margin-left:8px" data-i18n="lbl_fail">Провал:</span>
         <div class="save-circles" id="death-fail"></div>
-        <button onclick="resetDeathSaves()" style="background:none;border:none;color:var(--text3);font-size:10px;margin-left:8px;font-family:'Cinzel',serif;letter-spacing:0.1em">СКИНУТИ</button>
+        <button onclick="resetDeathSaves()" style="background:none;border:none;color:var(--text3);font-size:10px;margin-left:8px;font-family:'Cinzel',serif;letter-spacing:0.1em" data-i18n="btn_reset">СКИНУТИ</button>
       </div>
     </div>
-
     <div class="sec">
-      <div class="sec-title">Атаки та заклинання</div>
+      <div class="sec-title" data-i18n="sec_attacks">Атаки та заклинання</div>
       <table class="atk-table">
         <thead><tr>
-          <th>Назва</th><th>Атака</th><th>Урон</th><th>Радіус</th><th>К-сть</th><th></th>
+          <th data-i18n="th_name">Назва</th><th data-i18n="th_atk">Атака</th><th data-i18n="th_dmg">Урон</th><th data-i18n="th_range">Радіус</th><th data-i18n="th_qty">К-сть</th><th></th>
         </tr></thead>
         <tbody id="atk-body"></tbody>
       </table>
-      <button class="add-row-btn" onclick="addAttack()">+ Додати атаку / заклинання</button>
+      <button class="add-row-btn" onclick="addAttack()" data-i18n="btn_add_atk">+ Додати атаку / заклинання</button>
     </div>
-
     <div class="sec">
-      <div class="sec-title">Особливості та здібності</div>
-      <textarea id="f-features" rows="5" placeholder="Особливості класу, раси, здібності..."></textarea>
+      <div class="sec-title" data-i18n="sec_features">Особливості та здібності</div>
+      <textarea id="f-features" rows="5"></textarea>
     </div>
   </div>
 
   <!-- INVENTORY TAB -->
   <div class="page" id="page-inventory">
     <div class="sec">
-      <div class="sec-title">Монети</div>
+      <div class="sec-title" data-i18n="sec_coins">Монети</div>
       <div class="coins-grid">
         <div class="coin-card">
           <div class="coin-icon">🟫</div>
-          <div class="coin-name">Мідні</div>
+          <div class="coin-name" data-i18n="coin_copper">Мідні</div>
           <div class="coin-val" id="coins-copper">0</div>
-          <div class="coin-btns">
-            <button class="coin-btn" onclick="changeCoin('copper',-1)">−</button>
-            <button class="coin-btn" onclick="changeCoin('copper',1)">+</button>
-          </div>
+          <div class="coin-btns"><button class="coin-btn" onclick="changeCoin('copper',-1)">−</button><button class="coin-btn" onclick="changeCoin('copper',1)">+</button></div>
         </div>
         <div class="coin-card">
           <div class="coin-icon">⬜</div>
-          <div class="coin-name">Срібні</div>
+          <div class="coin-name" data-i18n="coin_silver">Срібні</div>
           <div class="coin-val" id="coins-silver">0</div>
-          <div class="coin-btns">
-            <button class="coin-btn" onclick="changeCoin('silver',-1)">−</button>
-            <button class="coin-btn" onclick="changeCoin('silver',1)">+</button>
-          </div>
+          <div class="coin-btns"><button class="coin-btn" onclick="changeCoin('silver',-1)">−</button><button class="coin-btn" onclick="changeCoin('silver',1)">+</button></div>
         </div>
         <div class="coin-card">
           <div class="coin-icon">🟡</div>
-          <div class="coin-name">Золоті</div>
+          <div class="coin-name" data-i18n="coin_gold">Золоті</div>
           <div class="coin-val" id="coins-gold">0</div>
-          <div class="coin-btns">
-            <button class="coin-btn" onclick="changeCoin('gold',-1)">−</button>
-            <button class="coin-btn" onclick="changeCoin('gold',1)">+</button>
-          </div>
+          <div class="coin-btns"><button class="coin-btn" onclick="changeCoin('gold',-1)">−</button><button class="coin-btn" onclick="changeCoin('gold',1)">+</button></div>
         </div>
       </div>
     </div>
-
     <div class="sec">
-      <div class="sec-title">Інвентар</div>
+      <div class="sec-title" data-i18n="sec_inv">Інвентар</div>
       <div id="inv-list"></div>
-      <button class="add-row-btn" onclick="openAddItemModal()">+ Додати предмет</button>
+      <button class="add-row-btn" onclick="openAddItemModal()" data-i18n="btn_add_item">+ Додати предмет</button>
     </div>
-
     <div class="sec">
-      <div class="sec-title">Інші знання та мови</div>
-      <textarea id="f-languages" rows="3" placeholder="Мови, знання, інструменти..."></textarea>
+      <div class="sec-title" data-i18n="sec_lang">Інші знання та мови</div>
+      <textarea id="f-languages" rows="3"></textarea>
     </div>
   </div>
 
   <!-- ENEMIES TAB -->
   <div class="page" id="page-enemies">
     <div class="sec">
-      <div class="sec-title">Вороги</div>
+      <div class="sec-title" data-i18n="sec_enemies">Вороги</div>
       <div id="enemy-list"></div>
-      <button class="add-row-btn" onclick="addEnemy()">+ Додати ворога</button>
+      <button class="add-row-btn" onclick="addEnemy()" data-i18n="btn_add_enemy">+ Додати ворога</button>
     </div>
   </div>
 
   <!-- SHOP TAB -->
   <div class="page" id="page-shop">
     <div class="sec">
-      <div class="sec-title">Крамниця</div>
+      <div class="sec-title" data-i18n="sec_shop">Крамниця</div>
       <div id="shop-list"></div>
-      <button class="add-row-btn" onclick="openAddShopModal()">+ Додати товар</button>
+      <button class="add-row-btn" onclick="openAddShopModal()" data-i18n="btn_add_goods">+ Додати товар</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: NEW CHAR -->
+<!-- ============================= SCREEN: ENCYCLOPEDIA ============================= -->
+<div id="screen-encyclopedia" class="screen">
+  <div class="enc-topbar">
+    <div class="enc-topbar-title" data-i18n="enc_title">📖 Енциклопедія</div>
+  </div>
+  <div class="enc-tabs">
+    <button class="enc-tab active" onclick="switchEncTab('prehistory')" data-i18n="enc_tab_pre">Передісторія</button>
+    <button class="enc-tab" onclick="switchEncTab('items')" data-i18n="enc_tab_items">Предмети</button>
+    <button class="enc-tab" onclick="switchEncTab('creatures')" data-i18n="enc_tab_creatures">Породження</button>
+  </div>
+
+  <!-- ПЕРЕДІСТОРІЯ -->
+  <div class="enc-page active" id="enc-prehistory">
+    <div class="sec">
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="enc_sec_worlds">Світи та Королiвства</div>
+        <button class="sec-add-btn" onclick="openEncModal('prehistory')" data-i18n="btn_add_entry">+ Додати</button>
+      </div>
+
+      <!-- Кастомні записи -->
+      <div id="enc-prehistory-custom"></div>
+
+      <!-- Вбудовані записи (офіційний лор) -->
+      <div class="collapse-header" onclick="toggleCollapse('lore-faerún')">
+        <div class="collapse-title">🗺 Фаерун (Faerûn)</div>
+        <div class="collapse-arrow" id="arr-lore-faerún">▼</div>
+      </div>
+      <div class="collapse-body" id="lore-faerún">
+        <div class="entry-card" style="margin-top:10px">
+          <div class="entry-card-header">
+            <div class="entry-card-icon">🌍</div>
+            <div>
+              <div class="entry-card-title">Фаерун</div>
+              <div class="entry-card-subtitle" data-i18n="enc_faerún_sub">Головний континент Забутих Королівств</div>
+            </div>
+          </div>
+          <div class="entry-card-body" data-i18n="enc_faerún_body">Фаерун — великий континент у світі Abeir-Toril. Тут існують могутні міста-держави, стародавні руїни, темні ліси та засніжені гори. Головні регіони: Побережжя Мечів, Глибокий Ватаґа, Амн, Балдурс Ґейт.</div>
+          <div class="entry-card-tags">
+            <span class="entry-tag tag-lore" data-i18n="tag_official">Офіційний</span>
+            <span class="entry-tag tag-lore">Forgotten Realms</span>
+          </div>
+        </div>
+        <div class="entry-card">
+          <div class="entry-card-header">
+            <div class="entry-card-icon">🏰</div>
+            <div>
+              <div class="entry-card-title">Балдурс Ґейт</div>
+              <div class="entry-card-subtitle" data-i18n="enc_baldurs_sub">Місто торгівлі та інтриг</div>
+            </div>
+          </div>
+          <div class="entry-card-body" data-i18n="enc_baldurs_body">Великий портовий город на Побережжі Мечів, керований Радою Чотирьох. Відомий своїми гільдіями, підземними тунелями та бурхливим торговим портом. Тут перетинаються шляхи авантюристів з усього світу.</div>
+          <div class="entry-card-tags">
+            <span class="entry-tag tag-lore" data-i18n="tag_official">Офіційний</span>
+            <span class="entry-tag tag-lore">Forgotten Realms</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="collapse-header" onclick="toggleCollapse('lore-underdark')">
+        <div class="collapse-title">🕳 Підземля (Underdark)</div>
+        <div class="collapse-arrow" id="arr-lore-underdark">▼</div>
+      </div>
+      <div class="collapse-body" id="lore-underdark">
+        <div class="entry-card" style="margin-top:10px">
+          <div class="entry-card-header">
+            <div class="entry-card-icon">🕳</div>
+            <div>
+              <div class="entry-card-title" data-i18n="enc_underdark_title">Підземля</div>
+              <div class="entry-card-subtitle" data-i18n="enc_underdark_sub">Темний підземний світ</div>
+            </div>
+          </div>
+          <div class="entry-card-body" data-i18n="enc_underdark_body">Величезна мережа печер і тунелів під поверхнею Фаеруну. Тут живуть дроу, іллітіди (розумоїди), двергари та інші темні істоти. Головні міста: Мензоберранзан (місто дроу), Блінк.</div>
+          <div class="entry-card-tags">
+            <span class="entry-tag tag-lore" data-i18n="tag_official">Офіційний</span>
+            <span class="entry-tag tag-monster">Небезпечно</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <!-- КАСТОМНИЙ ПРИКЛАД -->
+      <div class="collapse-header" onclick="toggleCollapse('lore-asturia')">
+        <div class="collapse-title">👑 Королівство Астурія <span style="font-size:9px;color:var(--gold2);margin-left:6px;font-family:'EB Garamond'" data-i18n="tag_custom_label">(Кастомне)</span></div>
+        <div class="collapse-arrow" id="arr-lore-asturia">▼</div>
+      </div>
+      <div class="collapse-body" id="lore-asturia">
+        <div class="entry-card" style="margin-top:10px;border-color:rgba(180,140,80,0.3)">
+          <div class="entry-card-header">
+            <div class="entry-card-icon">👑</div>
+            <div>
+              <div class="entry-card-title">Королівство Астурія</div>
+              <div class="entry-card-subtitle" data-i18n="enc_asturia_sub">Королівство на краю забутого континенту</div>
+            </div>
+          </div>
+          <div class="entry-card-body" data-i18n="enc_asturia_body">Стародавнє королівство, засноване триста років тому людьми-першовідкривачами. Управляється Срібним Троном — спадковою монархією з сильним радою магів. Відоме своїми вугільними шахтами, зачарованими лісами на сході та постійними конфліктами з гірськими кланами дварфів.</div>
+          <div class="entry-card-tags">
+            <span class="entry-tag tag-custom" data-i18n="tag_custom">Кастомне</span>
+            <span class="entry-tag tag-lore">Королівство</span>
+          </div>
+        </div>
+        <div class="entry-card" style="border-color:rgba(180,140,80,0.3)">
+          <div class="entry-card-header">
+            <div class="entry-card-icon">⛏</div>
+            <div>
+              <div class="entry-card-title" data-i18n="enc_dwarf_clan_title">Клан Кам'яного Кулаку</div>
+              <div class="entry-card-subtitle" data-i18n="enc_dwarf_clan_sub">Гірський клан дварфів</div>
+            </div>
+          </div>
+          <div class="entry-card-body" data-i18n="enc_dwarf_clan_body">Войовничий клан дварфів, що мешкає в горах Залізного Хребта. Відомі своїми рунними ковалями та магічними рунними щитами. Час від часу укладають угоди з Астурійськими купцями, але частіше вступають у сутички через порушення кордонів.</div>
+          <div class="entry-card-tags">
+            <span class="entry-tag tag-custom" data-i18n="tag_custom">Кастомне</span>
+            <span class="entry-tag tag-race" data-i18n="tag_dwarf">Дварфи</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПРЕДМЕТИ -->
+  <div class="enc-page" id="enc-items">
+    <div class="sec">
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="enc_items_title">Предмети та Артефакти</div>
+        <button class="sec-add-btn" onclick="openEncModal('items')" data-i18n="btn_add_entry">+ Додати</button>
+      </div>
+      <input class="search-box" placeholder="🔍 Пошук предметів..." oninput="filterEncItems(this.value)" data-i18n-placeholder="search_items">
+      <div id="enc-items-custom"></div>
+
+      <!-- Офіційні предмети -->
+      <div class="entry-card">
+        <div class="entry-card-header">
+          <div class="entry-card-icon">⚗️</div>
+          <div>
+            <div class="entry-card-title" data-i18n="item_healing_name">Зілля зцілення</div>
+            <div class="entry-card-subtitle" data-i18n="item_healing_sub">Відновлює 2к4+2 ХП</div>
+          </div>
+        </div>
+        <div class="entry-card-body" data-i18n="item_healing_body">Рожева рідина в маленькому флаконі. Якщо ти п'єш цю рідину або даєш її випити іншій особі, відновлюється 2к4+2 очок здоров'я. Дія бонусна.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_heal">ЛІКУВАННЯ</div><div class="entry-stat-val">2к4+2</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_cost">ЦІНА</div><div class="entry-stat-val">50зл</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_weight">ВАГА</div><div class="entry-stat-val">0.5кг</div></div>
+        </div>
+        <div class="entry-card-tags">
+          <span class="entry-tag tag-item" data-i18n="tag_official">Офіційний</span>
+          <span class="entry-tag tag-item" data-i18n="tag_consumable">Витратний</span>
+        </div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header">
+          <div class="entry-card-icon">🔦</div>
+          <div>
+            <div class="entry-card-title" data-i18n="item_torch_name">Смолоскип</div>
+            <div class="entry-card-subtitle" data-i18n="item_torch_sub">Освітлення, 1 година</div>
+          </div>
+        </div>
+        <div class="entry-card-body" data-i18n="item_torch_body">Палаючий смолоскип освітлює яскравим світлом радіус 6 м та тьмяним світлом — ще 6 м. Горить 1 годину. Можна використати як імпровізовану зброю: 1 вогневої шкоди при попаданні.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_dmg">УРОН</div><div class="entry-stat-val">1 🔥</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_cost">ЦІНА</div><div class="entry-stat-val">1мм</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_duration">ТРИВАЛІСТЬ</div><div class="entry-stat-val">1год</div></div>
+        </div>
+        <div class="entry-card-tags">
+          <span class="entry-tag tag-item" data-i18n="tag_official">Офіційний</span>
+        </div>
+      </div>
+      <!-- Кастомний предмет-приклад -->
+      <div class="entry-card" style="border-color:rgba(180,140,80,0.3)">
+        <div class="entry-card-header">
+          <div class="entry-card-icon">💎</div>
+          <div>
+            <div class="entry-card-title" data-i18n="item_shard_name">Осколок Темної Зорі</div>
+            <div class="entry-card-subtitle" data-i18n="item_shard_sub">Магічний артефакт — Рідкісний</div>
+          </div>
+        </div>
+        <div class="entry-card-body" data-i18n="item_shard_body">Чорний кристал, що пульсує темною енергією. При торканні шкіри власника дає +1 до рятівних кидків Некромантії. 1 раз на день можна активувати: наступна атака завдає додаткові 1к6 некромантичної шкоди, але власник втрачає 1к4 ХП.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_bonus">БОНУС</div><div class="entry-stat-val">+1к6</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_cost">ЦІНА</div><div class="entry-stat-val">—</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_uses">ВИКОРИСТ.</div><div class="entry-stat-val">1/день</div></div>
+        </div>
+        <div class="entry-card-tags">
+          <span class="entry-tag tag-custom" data-i18n="tag_custom">Кастомне</span>
+          <span class="entry-tag tag-item" data-i18n="tag_rare">Рідкісний</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПОРОДЖЕННЯ -->
+  <div class="enc-page" id="enc-creatures">
+    <div class="sec">
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="enc_creatures_title">Раси, Монстри та Породження</div>
+        <button class="sec-add-btn" onclick="openEncModal('creatures')" data-i18n="btn_add_entry">+ Додати</button>
+      </div>
+      <div id="enc-creatures-custom"></div>
+
+      <!-- Раси (офіційні) -->
+      <div class="divider"></div>
+      <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.25em;color:var(--text3);margin-bottom:10px" data-i18n="enc_races_label">РАСИ</div>
+      <div class="entry-card">
+        <div class="entry-card-header">
+          <div class="entry-card-icon">👤</div>
+          <div>
+            <div class="entry-card-title" data-i18n="race_human_name">Людина (Human)</div>
+            <div class="entry-card-subtitle" data-i18n="race_human_sub">Універсальна раса</div>
+          </div>
+        </div>
+        <div class="entry-card-body" data-i18n="race_human_body">Найчисленніша раса. +1 до всіх характеристик. Додаткова навичка та мова. Середній вік ~70 років. Зріст 1.5–1.8м.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_speed">ШВИДКІСТЬ</div><div class="entry-stat-val">9м</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_bonus">БОНУС</div><div class="entry-stat-val">+1 всі</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_vision">ЗIР</div><div class="entry-stat-val">Норм.</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-race" data-i18n="tag_official">Офіційний</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header">
+          <div class="entry-card-icon">🧝</div>
+          <div>
+            <div class="entry-card-title" data-i18n="race_elf_name">Ельф (Elf)</div>
+            <div class="entry-card-subtitle" data-i18n="race_elf_sub">Стрункі та мудрі</div>
+          </div>
+        </div>
+        <div class="entry-card-body" data-i18n="race_elf_body">+2 Спритність. Нічний зір 18м. Стійкість до чарів. Не потребує сну (транс 4год замість 8год сну). Вік до 750 років. Підраси: Лісовий, Високий, Темний (Дроу).</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label">СПР</div><div class="entry-stat-val">+2</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_vision">ЗIР</div><div class="entry-stat-val">18м 🌑</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_speed">ШВИДК.</div><div class="entry-stat-val">9м</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-race" data-i18n="tag_official">Офіційний</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header">
+          <div class="entry-card-icon">⛏</div>
+          <div>
+            <div class="entry-card-title" data-i18n="race_dwarf_name">Дварф (Dwarf)</div>
+            <div class="entry-card-subtitle" data-i18n="race_dwarf_sub">Гірські ковалі</div>
+          </div>
+        </div>
+        <div class="entry-card-body" data-i18n="race_dwarf_body">+2 Витривалість. Нічний зір 18м. Стійкість до отрути. Знання гірничих робіт. Бойові тренування. Вік до 350 років. Підраси: Гірський (+2 Сила), Пагорбовий (+1 Мудрість).</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label">ВИТ</div><div class="entry-stat-val">+2</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_vision">ЗIР</div><div class="entry-stat-val">18м 🌑</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_speed">ШВИДК.</div><div class="entry-stat-val">7.5м</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-race" data-i18n="tag_official">Офіційний</span></div>
+      </div>
+
+      <!-- Монстри -->
+      <div class="divider"></div>
+      <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.25em;color:var(--text3);margin-bottom:10px" data-i18n="enc_monsters_label">МОНСТРИ</div>
+      <div class="entry-card" style="border-color:rgba(139,26,26,0.3)">
+        <div class="entry-card-header">
+          <div class="entry-card-icon">🐉</div>
+          <div>
+            <div class="entry-card-title" data-i18n="monster_goblin_name">Ґоблін (Goblin)</div>
+            <div class="entry-card-subtitle" data-i18n="monster_goblin_sub">КН 1/4 • Мала істота</div>
+          </div>
+        </div>
+        <div class="entry-card-body" data-i18n="monster_goblin_body">Мала, жадібна, злобна істота зеленого кольору. Живуть зграями і полюбляють засади. Нічний зір 18м. Хитра втеча — бонусна дія відійти або сховатись.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label">ХП</div><div class="entry-stat-val">7</div></div>
+          <div class="entry-stat"><div class="entry-stat-label">КБ</div><div class="entry-stat-val">15</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_xp">ДС</div><div class="entry-stat-val">50</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-monster" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-monster">КН 1/4</span></div>
+      </div>
+      <div class="entry-card" style="border-color:rgba(139,26,26,0.3)">
+        <div class="entry-card-header">
+          <div class="entry-card-icon">👹</div>
+          <div>
+            <div class="entry-card-title" data-i18n="monster_orc_name">Орк (Orc)</div>
+            <div class="entry-card-subtitle" data-i18n="monster_orc_sub">КН 1/2 • Середня істота</div>
+          </div>
+        </div>
+        <div class="entry-card-body" data-i18n="monster_orc_body">Агресивні, мускулисті гуманоїди з іклами. Живуть кланами і часто слугують злим богам. Нестримна атака — бонусна дія атакувати після Ривка. Стійкість: якщо отримує шкоду до 0 ХП — залишається з 1 ХП (1 раз).</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label">ХП</div><div class="entry-stat-val">15</div></div>
+          <div class="entry-stat"><div class="entry-stat-label">КБ</div><div class="entry-stat-val">13</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_xp">ДС</div><div class="entry-stat-val">100</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-monster" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-monster">КН 1/2</span></div>
+      </div>
+      <!-- Кастомний монстр -->
+      <div class="entry-card" style="border-color:rgba(180,140,80,0.3)">
+        <div class="entry-card-header">
+          <div class="entry-card-icon">🕷</div>
+          <div>
+            <div class="entry-card-title" data-i18n="monster_custom_name">Тіньовий Ткач</div>
+            <div class="entry-card-subtitle" data-i18n="monster_custom_sub">КН 3 • Середня неживота</div>
+          </div>
+        </div>
+        <div class="entry-card-body" data-i18n="monster_custom_body">Павукоподібна істота, що тче мережі з темної матерії. Народжується в підземних руїнах Астурії. Здатна з'являтись із тіні. Атака павутинням — ціль обплутана (стан), рятівний ВИТ КС 13 щоб звільнитись.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label">ХП</div><div class="entry-stat-val">45</div></div>
+          <div class="entry-stat"><div class="entry-stat-label">КБ</div><div class="entry-stat-val">14</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_xp">ДС</div><div class="entry-stat-val">700</div></div>
+        </div>
+        <div class="entry-card-tags">
+          <span class="entry-tag tag-custom" data-i18n="tag_custom">Кастомне</span>
+          <span class="entry-tag tag-monster">КН 3</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= SCREEN: CHARACTER CREATION ============================= -->
+<div id="screen-creation" class="screen">
+  <div class="cre-topbar">
+    <div class="cre-topbar-title" data-i18n="cre_title">🧙 Створення персонажа</div>
+  </div>
+  <div class="cre-tabs">
+    <button class="cre-tab active" onclick="switchCreTab('guide')" data-i18n="cre_tab_guide">Гід</button>
+    <button class="cre-tab" onclick="switchCreTab('classes')" data-i18n="cre_tab_classes">Класи</button>
+    <button class="cre-tab" onclick="switchCreTab('races')" data-i18n="cre_tab_races">Раси</button>
+    <button class="cre-tab" onclick="switchCreTab('backgrounds')" data-i18n="cre_tab_bg">Передісторії</button>
+    <button class="cre-tab" onclick="switchCreTab('abilities')" data-i18n="cre_tab_abilities">Здібності</button>
+  </div>
+
+  <!-- ГІД -->
+  <div class="cre-page active" id="cre-guide">
+    <div class="hero-banner">
+      <div class="hero-title" data-i18n="cre_guide_title">Як створити персонажа?</div>
+      <div class="hero-text" data-i18n="cre_guide_intro">D&D 5-та редакція. Слідуй 6 кrokам щоб оживити свого героя.</div>
+    </div>
+    <div class="step-card"><div class="step-num">1</div><div><div class="step-content-title" data-i18n="step1_title">Обери Расу</div><div class="step-content-text" data-i18n="step1_text">Раса визначає фізичні особливості та деякі вроджені здібності. Кожна раса дає бонуси до характеристик та унікальні риси (нічний зір, стійкості тощо).</div></div></div>
+    <div class="step-card"><div class="step-num">2</div><div><div class="step-content-title" data-i18n="step2_title">Обери Клас</div><div class="step-content-text" data-i18n="step2_text">Клас — це твоя роль. Воїн б'є в ближньому бою, Маг кидає заклинання, Злодій покладається на хитрість. Клас дає ХП, зброю та особливі здібності на кожному рівні.</div></div></div>
+    <div class="step-card"><div class="step-num">3</div><div><div class="step-content-title" data-i18n="step3_title">Визнач Характеристики</div><div class="step-content-text" data-i18n="step3_text">Кинь 4к6, відкинь найменше — запиши 6 значень. Або використовуй стандартний набір: 15, 14, 13, 12, 10, 8. Розподіли між Силою, Спритністю, Витривалістю, Інтелектом, Мудрістю, Харизмою.</div></div></div>
+    <div class="step-card"><div class="step-num">4</div><div><div class="step-content-title" data-i18n="step4_title">Обери Передісторію</div><div class="step-content-text" data-i18n="step4_text">Передісторія — хто ти був до того як став авантюристом. Солдат? Злодій? Мудрець? Кожна дає навички, мови та спорядження.</div></div></div>
+    <div class="step-card"><div class="step-num">5</div><div><div class="step-content-title" data-i18n="step5_title">Спорядження та Гроші</div><div class="step-content-text" data-i18n="step5_text">Клас та передісторія дають стартове спорядження. Або можна взяти гроші та купити самому: воїн 5к4×10зл, маг 4к4×10зл тощо.</div></div></div>
+    <div class="step-card"><div class="step-num">6</div><div><div class="step-content-title" data-i18n="step6_title">Заповни Аркуш</div><div class="step-content-text" data-i18n="step6_text">Вирахуй ХП (кость здоров'я класу + бонус Витривалості), КБ (10 + бонус Спритності без броні), бонус майстерності (+2 на 1-4 рівні). Придумай особистість та цілі.</div></div></div>
+  </div>
+
+  <!-- КЛАСИ -->
+  <div class="cre-page" id="cre-classes">
+    <div class="sec">
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="cre_classes_title">Класи персонажів</div>
+        <button class="sec-add-btn" onclick="openCreModal('class')" data-i18n="btn_add_class">+ Свій клас</button>
+      </div>
+      <div id="cre-classes-custom"></div>
+
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">⚔️</div><div>
+          <div class="entry-card-title" data-i18n="class_fighter_name">Воїн (Fighter)</div>
+          <div class="entry-card-subtitle" data-i18n="class_fighter_sub">Майстер бойових мистецтв</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="class_fighter_body">Найуніверсальніший бойовий клас. Стиль бою, Друге дихання (лікування), Сплеск дій (додаткові атаки). Кость здоров'я: к10. Підкласи: Чемпіон, Бойовий майстер, Ельдритч рицар.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_hd">КОСТЬ ХП</div><div class="entry-stat-val">к10</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_armor">БРОНЯ</div><div class="entry-stat-val">Будь-яка</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_saves">РК</div><div class="entry-stat-val">СИЛ/ВИТ</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-class" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-class" data-i18n="role_martial">Бойовий</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🔮</div><div>
+          <div class="entry-card-title" data-i18n="class_wizard_name">Маг (Wizard)</div>
+          <div class="entry-card-subtitle" data-i18n="class_wizard_sub">Учений архімаг</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="class_wizard_body">Найширший арсенал заклинань. Книга заклинань з персональними записами. Відновлення Аркани — відновлює слоти заклинань. Кость здоров'я: к6. Школи магії: Викликання, Чарівництво, Зачарування тощо.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_hd">КОСТЬ ХП</div><div class="entry-stat-val">к6</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_spells">ЗАКЛИН.</div><div class="entry-stat-val">ІНТ</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_saves">РК</div><div class="entry-stat-val">ІНТ/МУД</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-class" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-item" data-i18n="role_caster">Маг</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🗡️</div><div>
+          <div class="entry-card-title" data-i18n="class_rogue_name">Злодій (Rogue)</div>
+          <div class="entry-card-subtitle" data-i18n="class_rogue_sub">Майстер тіні та хитрощів</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="class_rogue_body">Прихована атака — додаткова шкода при перевазі чи коли союзник поруч. Хитка мова — дія для відволікання. Ухилення. Кость здоров'я: к8. Архетипи: Злодій, Убивця, Аркатний трикстер.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_hd">КОСТЬ ХП</div><div class="entry-stat-val">к8</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_sneak">ХИТРА АТК</div><div class="entry-stat-val">1к6+</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_saves">РК</div><div class="entry-stat-val">СПР/ІНТ</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-class" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-class" data-i18n="role_skill">Хитрець</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🌿</div><div>
+          <div class="entry-card-title" data-i18n="class_druid_name">Друїд (Druid)</div>
+          <div class="entry-card-subtitle" data-i18n="class_druid_sub">Охоронець природи</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="class_druid_body">Дика форма — перетворення у тварин. Заклинання природи. Спонтанний заклинач (МУД). Кость здоров'я: к8. Кола: Місяця (потужна дика форма), Землі (додаткові заклинання).</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_hd">КОСТЬ ХП</div><div class="entry-stat-val">к8</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_spells">ЗАКЛИН.</div><div class="entry-stat-val">МУД</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_wildshape">ФОРМА</div><div class="entry-stat-val">2/відп</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-class" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-race" data-i18n="role_nature">Природа</span></div>
+      </div>
+      <!-- КАСТОМНИЙ КЛАС -->
+      <div class="entry-card" style="border-color:rgba(180,140,80,0.3)">
+        <div class="entry-card-header"><div class="entry-card-icon">🌑</div><div>
+          <div class="entry-card-title" data-i18n="class_shadow_name">Тіньовий Страж</div>
+          <div class="entry-card-subtitle" data-i18n="class_shadow_sub">Кастомний клас</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="class_shadow_body">Воїн, що черпає силу зі стародавньої темної магії. Може поглинати тіні для посилення атак (+1к8 некр. шкоди). Здатний ставати невидимим у темряві як бонусна дія. Тіньовий Щит — реакція для зменшення шкоди.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_hd">КОСТЬ ХП</div><div class="entry-stat-val">к8</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_spells">ЗАКЛИН.</div><div class="entry-stat-val">ХАР</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_saves">РК</div><div class="entry-stat-val">СПР/ХАР</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-custom" data-i18n="tag_custom">Кастомне</span><span class="entry-tag tag-class" data-i18n="role_martial">Бойовий</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- РАСИ -->
+  <div class="cre-page" id="cre-races">
+    <div class="sec">
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="cre_races_title">Раси для створення персонажа</div>
+        <button class="sec-add-btn" onclick="openCreModal('race')" data-i18n="btn_add_race">+ Своя раса</button>
+      </div>
+      <div id="cre-races-custom"></div>
+      <div class="note-box" data-i18n="races_note">Раса впливає на бонуси характеристик, особливості та розмір. Детальніше — в Енциклопедії → Породження.</div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🧙</div><div>
+          <div class="entry-card-title" data-i18n="race_halfling_name">Халфлінг (Halfling)</div>
+          <div class="entry-card-subtitle" data-i18n="race_halfling_sub">Маленькі та щасливі</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="race_halfling_body">+2 Спритність. Мала істота (розмір). Щасливчик — перекидай будь-яку 1 на к20. Хоробрість — перевага на рятівні від страху. Підкласи: Легконіг (+1 ХАР), Міцне серце (+1 ВИТ).</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label">СПР</div><div class="entry-stat-val">+2</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_speed">ШВИДК.</div><div class="entry-stat-val">7.5м</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_size">РОЗМІР</div><div class="entry-stat-val">Малий</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-race" data-i18n="tag_official">Офіційний</span></div>
+      </div>
+      <!-- Кастомна раса -->
+      <div class="entry-card" style="border-color:rgba(180,140,80,0.3)">
+        <div class="entry-card-header"><div class="entry-card-icon">🌑</div><div>
+          <div class="entry-card-title" data-i18n="race_umbral_name">Умбралі (Umbral)</div>
+          <div class="entry-card-subtitle" data-i18n="race_umbral_sub">Народжені в тіні — кастомна раса</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="race_umbral_body">Напів-люди, напів-тінь. +2 ХАР, +1 СПР. Нічний зір 36м у магічній темряві. Тіньовий крок — телепортація між темними зонами (30м, 1/відп). Слабкість до святого урону. Вік до 120 років.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label">ХАР</div><div class="entry-stat-val">+2</div></div>
+          <div class="entry-stat"><div class="entry-stat-label">СПР</div><div class="entry-stat-val">+1</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_vision">ЗIР</div><div class="entry-stat-val">36м 🌑</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-custom" data-i18n="tag_custom">Кастомне</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПЕРЕДІСТОРІЇ -->
+  <div class="cre-page" id="cre-backgrounds">
+    <div class="sec">
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="cre_bg_title">Передісторії (Backgrounds)</div>
+        <button class="sec-add-btn" onclick="openCreModal('background')" data-i18n="btn_add_bg">+ Своя</button>
+      </div>
+      <div id="cre-backgrounds-custom"></div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🪖</div><div>
+          <div class="entry-card-title" data-i18n="bg_soldier_name">Солдат</div>
+          <div class="entry-card-subtitle" data-i18n="bg_soldier_sub">Ветеран воєн</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="bg_soldier_body">Навички: Атлетика, Залякування. Інструменти: Ігрові кості, Наземний транспорт. Особливість: Військове звання — солдати і ветерани визнають тебе.</div>
+        <div class="entry-card-tags"><span class="entry-tag tag-class" data-i18n="tag_official">Офіційний</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">📚</div><div>
+          <div class="entry-card-title" data-i18n="bg_sage_name">Мудрець</div>
+          <div class="entry-card-subtitle" data-i18n="bg_sage_sub">Учений і дослідник</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="bg_sage_body">Навички: Аркана, Історія. Мови: 2 за вибором. Особливість: Дослідник — якщо не знаєш відповіді, знаєш хто знає.</div>
+        <div class="entry-card-tags"><span class="entry-tag tag-class" data-i18n="tag_official">Офіційний</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🏕</div><div>
+          <div class="entry-card-title" data-i18n="bg_outlander_name">Вигнанець</div>
+          <div class="entry-card-subtitle" data-i18n="bg_outlander_sub">Дика природа як дім</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="bg_outlander_body">Навички: Атлетика, Виживання. Інструменти: Музичний інструмент. Мови: 1 за вибором. Особливість: Мандрівник — завжди можеш знайти їжу та воду для себе та 5 осіб.</div>
+        <div class="entry-card-tags"><span class="entry-tag tag-class" data-i18n="tag_official">Офіційний</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ЗДІБНОСТІ -->
+  <div class="cre-page" id="cre-abilities">
+    <div class="sec">
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="cre_abilities_title">Здібності та Вміння</div>
+        <button class="sec-add-btn" onclick="openCreModal('ability')" data-i18n="btn_add_ability">+ Нова здібність</button>
+      </div>
+      <div id="cre-abilities-custom"></div>
+      <div class="note-box" data-i18n="abilities_note">Тут можна додати кастомні здібності, заклинання або пасивні бонуси для власних класів чи рас.</div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">💨</div><div>
+          <div class="entry-card-title" data-i18n="ability_dash_name">Ривок (Dash)</div>
+          <div class="entry-card-subtitle" data-i18n="ability_dash_sub">Дія • Загальна здібність</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="ability_dash_body">Подвоює швидкість пересування до кінця ходу. Дозволяє подолати значну відстань за один хід.</div>
+        <div class="entry-card-tags"><span class="entry-tag tag-class" data-i18n="tag_action">Дія</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🛡</div><div>
+          <div class="entry-card-title" data-i18n="ability_dodge_name">Ухилення (Dodge)</div>
+          <div class="entry-card-subtitle" data-i18n="ability_dodge_sub">Дія • Захист</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="ability_dodge_body">До початку наступного ходу: атаки проти тебе з невигодою (якщо ти можеш бачити атакуючого), рятівні на Спритність — з перевагою.</div>
+        <div class="entry-card-tags"><span class="entry-tag tag-class" data-i18n="tag_action">Дія</span><span class="entry-tag tag-class" data-i18n="tag_defense">Захист</span></div>
+      </div>
+      <div class="entry-card" style="border-color:rgba(180,140,80,0.3)">
+        <div class="entry-card-header"><div class="entry-card-icon">🌑</div><div>
+          <div class="entry-card-title" data-i18n="ability_shadow_name">Поглинання Тіні</div>
+          <div class="entry-card-subtitle" data-i18n="ability_shadow_sub">Бонусна дія • Тіньовий Страж 3рв</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="ability_shadow_body">Поглинаєш навколишню темряву. Наступна атака завдає +1к8 некромантичної шкоди. Якщо ціль помирає від цієї атаки — відновлюєш 1к6 ХП. Відновлення: короткий відпочинок.</div>
+        <div class="entry-card-tags"><span class="entry-tag tag-custom" data-i18n="tag_custom">Кастомне</span><span class="entry-tag tag-item">Некромантія</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= SCREEN: EQUIPMENT ============================= -->
+<div id="screen-equipment" class="screen">
+  <div class="eq-topbar">
+    <div class="eq-topbar-title" data-i18n="eq_title">🛡 Спорядження та Зброя</div>
+  </div>
+  <div class="eq-tabs">
+    <button class="eq-tab active" onclick="switchEqTab('weapons')" data-i18n="eq_tab_weapons">Зброя</button>
+    <button class="eq-tab" onclick="switchEqTab('armor')" data-i18n="eq_tab_armor">Броня</button>
+    <button class="eq-tab" onclick="switchEqTab('gear')" data-i18n="eq_tab_gear">Спорядження</button>
+    <button class="eq-tab" onclick="switchEqTab('magic-items')" data-i18n="eq_tab_magic">Магічні предмети</button>
+  </div>
+
+  <!-- ЗБРОЯ -->
+  <div class="eq-page active" id="eq-weapons">
+    <div class="sec">
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="eq_weapons_title">Зброя</div>
+        <button class="sec-add-btn" onclick="openEqModal('weapon')" data-i18n="btn_add_weapon">+ Додати</button>
+      </div>
+      <div id="eq-weapons-custom"></div>
+      <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;color:var(--text3);margin-bottom:8px" data-i18n="eq_simple_weapons">ПРОСТА ЗБРОЯ</div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🗡</div><div>
+          <div class="entry-card-title" data-i18n="weapon_dagger_name">Кинджал</div>
+          <div class="entry-card-subtitle" data-i18n="weapon_dagger_sub">Проста рукопашна зброя</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="weapon_dagger_body">Фехтувальна, кидкова (дальність 6/18м), легка. Може використовуватись двосторонньо.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_dmg">УРОН</div><div class="entry-stat-val">1к4 🗡</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_cost">ЦІНА</div><div class="entry-stat-val">2зл</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_weight">ВАГА</div><div class="entry-stat-val">0.5кг</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-weapon" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-weapon" data-i18n="tag_finesse">Фехт.</span><span class="entry-tag tag-weapon" data-i18n="tag_thrown">Кидкова</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🏹</div><div>
+          <div class="entry-card-title" data-i18n="weapon_shortbow_name">Короткий лук</div>
+          <div class="entry-card-subtitle" data-i18n="weapon_shortbow_sub">Проста далекобійна зброя</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="weapon_shortbow_body">Амуніція (дальність 24/96м), двуручна. Потребує 2 руки для стрільби. Стріли продаються окремо (1зл за 20шт).</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_dmg">УРОН</div><div class="entry-stat-val">1к6 🏹</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_range">ДАЛЬН.</div><div class="entry-stat-val">24/96м</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_cost">ЦІНА</div><div class="entry-stat-val">25зл</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-weapon" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-weapon" data-i18n="tag_ranged">Далекоб.</span></div>
+      </div>
+      <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;color:var(--text3);margin:14px 0 8px" data-i18n="eq_martial_weapons">БОЙОВА ЗБРОЯ</div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">⚔️</div><div>
+          <div class="entry-card-title" data-i18n="weapon_longsword_name">Довгий меч</div>
+          <div class="entry-card-subtitle" data-i18n="weapon_longsword_sub">Бойова рукопашна зброя</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="weapon_longsword_body">Універсальна зброя. Однією рукою: 1к8 різального. Двома руками: 1к10 різального. Улюблена зброя воїнів та паладинів.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_dmg">УРОН</div><div class="entry-stat-val">1к8/1к10</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_cost">ЦІНА</div><div class="entry-stat-val">15зл</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_weight">ВАГА</div><div class="entry-stat-val">1.5кг</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-weapon" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-weapon" data-i18n="tag_versatile">Дворучна</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🪓</div><div>
+          <div class="entry-card-title" data-i18n="weapon_greataxe_name">Великосокира</div>
+          <div class="entry-card-subtitle" data-i18n="weapon_greataxe_sub">Бойова рукопашна зброя</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="weapon_greataxe_body">Важка, двуручна. Улюблена варварами — відмінна синергія з Нестямою. Найвищий середній урон серед рукопашних.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_dmg">УРОН</div><div class="entry-stat-val">1к12 🪓</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_cost">ЦІНА</div><div class="entry-stat-val">30зл</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_weight">ВАГА</div><div class="entry-stat-val">3.5кг</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-weapon" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-weapon" data-i18n="tag_heavy">Важка</span><span class="entry-tag tag-weapon" data-i18n="tag_2h">Двуручна</span></div>
+      </div>
+      <!-- Кастомна зброя -->
+      <div class="entry-card" style="border-color:rgba(180,140,80,0.3)">
+        <div class="entry-card-header"><div class="entry-card-icon">⚡</div><div>
+          <div class="entry-card-title" data-i18n="weapon_custom_name">Рунний Клинок Громовиці</div>
+          <div class="entry-card-subtitle" data-i18n="weapon_custom_sub">Магічна зброя — Незвичайна</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="weapon_custom_body">Довгий меч з рунним написом. +1 до атаки та урону. При критичному попаданні: додатково 1к6 блискавичного урону та ціль відштовхується на 1.5м. Вдень в сонячному світлі: злегка жевріє.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_dmg">УРОН</div><div class="entry-stat-val">1к8+1</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_bonus">БОНУС</div><div class="entry-stat-val">+1 атк</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_rarity">РІДКІСТЬ</div><div class="entry-stat-val">Незвич.</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-custom" data-i18n="tag_custom">Кастомне</span><span class="entry-tag tag-item" data-i18n="tag_magic">Магічна</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- БРОНЯ -->
+  <div class="eq-page" id="eq-armor">
+    <div class="sec">
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="eq_armor_title">Броня та Захист</div>
+        <button class="sec-add-btn" onclick="openEqModal('armor')" data-i18n="btn_add_armor">+ Додати</button>
+      </div>
+      <div id="eq-armor-custom"></div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">👘</div><div>
+          <div class="entry-card-title" data-i18n="armor_leather_name">Шкіряна броня</div>
+          <div class="entry-card-subtitle" data-i18n="armor_leather_sub">Легка броня</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="armor_leather_body">КБ 11 + бонус СПР. Без штрафів до перевірок. Ідеально для злодіїв та рейнджерів. Не заважає заклинанням.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label">КБ</div><div class="entry-stat-val">11+СПР</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_cost">ЦІНА</div><div class="entry-stat-val">10зл</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_weight">ВАГА</div><div class="entry-stat-val">4.5кг</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-armor" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-armor" data-i18n="tag_light">Легка</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">⛓</div><div>
+          <div class="entry-card-title" data-i18n="armor_chainmail_name">Кольчуга</div>
+          <div class="entry-card-subtitle" data-i18n="armor_chainmail_sub">Важка броня</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="armor_chainmail_body">КБ 16. Бонус СПР не враховується. Перевага на скритність — Невигода. Потрібна Сила 13+. Стандартна броня воїнів та кліриків.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label">КБ</div><div class="entry-stat-val">16</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_cost">ЦІНА</div><div class="entry-stat-val">75зл</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_weight">ВАГА</div><div class="entry-stat-val">27кг</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-armor" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-armor" data-i18n="tag_heavy">Важка</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🛡</div><div>
+          <div class="entry-card-title" data-i18n="armor_shield_name">Щит</div>
+          <div class="entry-card-subtitle" data-i18n="armor_shield_sub">Допоміжний захист</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="armor_shield_body">+2 КБ. Займає одну руку. Можна поєднувати з будь-якою бронею. Дерев'яний або металевий.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label">КБ</div><div class="entry-stat-val">+2</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_cost">ЦІНА</div><div class="entry-stat-val">10зл</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_weight">ВАГА</div><div class="entry-stat-val">3кг</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-armor" data-i18n="tag_official">Офіційний</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- СПОРЯДЖЕННЯ -->
+  <div class="eq-page" id="eq-gear">
+    <div class="sec">
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="eq_gear_title">Загальне Спорядження</div>
+        <button class="sec-add-btn" onclick="openEqModal('gear')" data-i18n="btn_add_gear">+ Додати</button>
+      </div>
+      <div id="eq-gear-custom"></div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🎒</div><div>
+          <div class="entry-card-title" data-i18n="gear_pack_dungeon_name">Набір підземельника</div>
+          <div class="entry-card-subtitle" data-i18n="gear_pack_dungeon_sub">Стартовий набір</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="gear_pack_dungeon_body">Наплічник, смолоскипи ×10, сухий пайок на 1 тиждень, мотузка 15м, залізні пайки, 5 смолоскипів, кресало, 10 зв'язків ниток, пляшка. Вага: 22кг.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_cost">ЦІНА</div><div class="entry-stat-val">12зл</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_weight">ВАГА</div><div class="entry-stat-val">22кг</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-item" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-item" data-i18n="tag_starter">Стартовий</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🧵</div><div>
+          <div class="entry-card-title" data-i18n="gear_rope_name">Мотузка конопляна (15м)</div>
+          <div class="entry-card-subtitle" data-i18n="gear_rope_sub">Утиліта</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="gear_rope_body">Витримує до 225кг. Використовується для підйому, зв'язування, переправ. 2 очки перфорації на метр.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_cost">ЦІНА</div><div class="entry-stat-val">1зл</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_weight">ВАГА</div><div class="entry-stat-val">5кг</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-item" data-i18n="tag_official">Офіційний</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- МАГІЧНІ ПРЕДМЕТИ -->
+  <div class="eq-page" id="eq-magic-items">
+    <div class="sec">
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="eq_magic_title">Магічні Предмети</div>
+        <button class="sec-add-btn" onclick="openEqModal('magic')" data-i18n="btn_add_magic">+ Додати</button>
+      </div>
+      <div id="eq-magic-custom"></div>
+      <div class="note-box" data-i18n="magic_note">Налаштування магічних предметів може вимагати короткого відпочинку. Максимум 3 налаштованих предмети одночасно.</div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">💍</div><div>
+          <div class="entry-card-title" data-i18n="magic_ring_prot_name">Перстень захисту</div>
+          <div class="entry-card-subtitle" data-i18n="magic_ring_prot_sub">Рідкісний, потрібне налаштування</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="magic_ring_prot_body">+1 КБ та +1 до рятівних кидків, поки ти налаштований на цей перстень. Потребує налаштування.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label">КБ</div><div class="entry-stat-val">+1</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_saves">РК</div><div class="entry-stat-val">+1</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_rarity">РІДКІСТЬ</div><div class="entry-stat-val">Рідкіс.</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-item" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-item" data-i18n="tag_attune">Налашт.</span></div>
+      </div>
+      <div class="entry-card">
+        <div class="entry-card-header"><div class="entry-card-icon">🧤</div><div>
+          <div class="entry-card-title" data-i18n="magic_gauntlets_name">Рукавиці силача</div>
+          <div class="entry-card-subtitle" data-i18n="magic_gauntlets_sub">Незвичайний, потрібне налаштування</div>
+        </div></div>
+        <div class="entry-card-body" data-i18n="magic_gauntlets_body">Сила стає 19. Якщо вже 19 або більше — ефекту немає. Потребує налаштування.</div>
+        <div class="entry-stat-row">
+          <div class="entry-stat"><div class="entry-stat-label">СИЛ</div><div class="entry-stat-val">= 19</div></div>
+          <div class="entry-stat"><div class="entry-stat-label" data-i18n="stat_rarity">РІДКІСТЬ</div><div class="entry-stat-val">Незвич.</div></div>
+        </div>
+        <div class="entry-card-tags"><span class="entry-tag tag-item" data-i18n="tag_official">Офіційний</span><span class="entry-tag tag-item" data-i18n="tag_attune">Налашт.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= MODALS ======= -->
 <div class="modal-overlay" id="modal-new-char">
   <div class="modal">
-    <div class="modal-title">Новий Персонаж</div>
-    <div class="field"><div class="field-label">Ім'я персонажа</div><input type="text" id="new-char-name" placeholder="Введи ім'я..."></div>
+    <div class="modal-title" data-i18n="modal_new_char_title">Новий Персонаж</div>
+    <div class="field"><div class="field-label" data-i18n="lbl_name">Ім'я персонажа</div><input type="text" id="new-char-name"></div>
     <div class="modal-btns">
-      <button class="modal-confirm" onclick="createChar()">Створити</button>
-      <button class="modal-cancel" onclick="closeModal('modal-new-char')">Скасувати</button>
+      <button class="modal-confirm" onclick="createChar()" data-i18n="btn_create">Створити</button>
+      <button class="modal-cancel" onclick="closeModal('modal-new-char')" data-i18n="btn_cancel">Скасувати</button>
     </div>
   </div>
 </div>
-
-<!-- MODAL: ADD ITEM -->
 <div class="modal-overlay" id="modal-add-item">
   <div class="modal">
-    <div class="modal-title">Додати предмет</div>
-    <div class="field"><div class="field-label">Назва</div><input type="text" id="item-name-input" placeholder="Меч, зілля..."></div>
+    <div class="modal-title" data-i18n="modal_add_item_title">Додати предмет</div>
+    <div class="field"><div class="field-label" data-i18n="lbl_item_name">Назва</div><input type="text" id="item-name-input"></div>
     <div class="g2">
-      <div class="field"><div class="field-label">Вага (кг)</div><input type="number" id="item-weight-input" placeholder="0.5" step="0.1"></div>
-      <div class="field"><div class="field-label">К-сть</div><input type="number" id="item-qty-input" placeholder="1" value="1"></div>
+      <div class="field"><div class="field-label" data-i18n="lbl_weight">Вага (кг)</div><input type="number" id="item-weight-input" step="0.1"></div>
+      <div class="field"><div class="field-label" data-i18n="lbl_qty">К-сть</div><input type="number" id="item-qty-input" value="1"></div>
     </div>
-    <div class="field"><div class="field-label">Клас предмету</div>
+    <div class="field"><div class="field-label" data-i18n="lbl_item_type">Клас предмету</div>
       <select id="item-type-input">
-        <option value="item">Предмет</option>
-        <option value="weapon">Зброя</option>
-        <option value="armor">Броня</option>
-        <option value="magic">Магічне</option>
+        <option value="item" data-i18n="opt_item">Предмет</option>
+        <option value="weapon" data-i18n="opt_weapon">Зброя</option>
+        <option value="armor" data-i18n="opt_armor">Броня</option>
+        <option value="magic" data-i18n="opt_magic">Магічне</option>
       </select>
     </div>
-    <div class="field"><div class="field-label">Опис / Ефект</div><textarea id="item-desc-input" rows="2" placeholder="Опис або ефект..."></textarea></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_desc">Опис / Ефект</div><textarea id="item-desc-input" rows="2"></textarea></div>
     <div class="modal-btns">
-      <button class="modal-confirm" onclick="confirmAddItem()">Додати</button>
-      <button class="modal-cancel" onclick="closeModal('modal-add-item')">Скасувати</button>
+      <button class="modal-confirm" onclick="confirmAddItem()" data-i18n="btn_add">Додати</button>
+      <button class="modal-cancel" onclick="closeModal('modal-add-item')" data-i18n="btn_cancel">Скасувати</button>
     </div>
   </div>
 </div>
-
-<!-- MODAL: ADD SHOP ITEM -->
 <div class="modal-overlay" id="modal-add-shop">
   <div class="modal">
-    <div class="modal-title">Додати товар до крамниці</div>
-    <div class="field"><div class="field-label">Назва</div><input type="text" id="shop-name-input" placeholder="Назва товару..."></div>
-    <div class="field"><div class="field-label">Клас предмету</div>
+    <div class="modal-title" data-i18n="modal_add_shop_title">Додати товар до крамниці</div>
+    <div class="field"><div class="field-label" data-i18n="lbl_item_name">Назва</div><input type="text" id="shop-name-input"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_item_type">Клас предмету</div>
       <select id="shop-type-input">
-        <option value="item">Предмет</option>
-        <option value="weapon">Зброя</option>
-        <option value="armor">Броня</option>
-        <option value="magic">Магічне</option>
+        <option value="item" data-i18n="opt_item">Предмет</option>
+        <option value="weapon" data-i18n="opt_weapon">Зброя</option>
+        <option value="armor" data-i18n="opt_armor">Броня</option>
+        <option value="magic" data-i18n="opt_magic">Магічне</option>
       </select>
     </div>
     <div class="g2">
-      <div class="field"><div class="field-label">Ціна купівлі (зол.)</div><input type="number" id="shop-buy-input" placeholder="10"></div>
-      <div class="field"><div class="field-label">Ціна продажу (зол.)</div><input type="number" id="shop-sell-input" placeholder="5"></div>
+      <div class="field"><div class="field-label" data-i18n="lbl_buy_price">Ціна купівлі (зол.)</div><input type="number" id="shop-buy-input"></div>
+      <div class="field"><div class="field-label" data-i18n="lbl_sell_price">Ціна продажу (зол.)</div><input type="number" id="shop-sell-input"></div>
     </div>
-    <div class="field"><div class="field-label">Опис</div><textarea id="shop-desc-input" rows="2" placeholder="Опис товару..."></textarea></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_desc">Опис</div><textarea id="shop-desc-input" rows="2"></textarea></div>
     <div class="modal-btns">
-      <button class="modal-confirm" onclick="confirmAddShop()">Додати</button>
-      <button class="modal-cancel" onclick="closeModal('modal-add-shop')">Скасувати</button>
+      <button class="modal-confirm" onclick="confirmAddShop()" data-i18n="btn_add">Додати</button>
+      <button class="modal-cancel" onclick="closeModal('modal-add-shop')" data-i18n="btn_cancel">Скасувати</button>
     </div>
   </div>
 </div>
-
-<!-- MODAL: CUSTOM SKILL -->
 <div class="modal-overlay" id="modal-custom-skill">
   <div class="modal">
-    <div class="modal-title">Власний скіл</div>
-    <div class="field"><div class="field-label">Назва скілу</div><input type="text" id="custom-skill-name" placeholder="Назва..."></div>
-    <div class="field"><div class="field-label">Пов'язана характеристика</div>
+    <div class="modal-title" data-i18n="modal_custom_skill_title">Власний скіл</div>
+    <div class="field"><div class="field-label" data-i18n="lbl_skill_name">Назва скілу</div><input type="text" id="custom-skill-name"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_skill_stat">Пов'язана характеристика</div>
       <select id="custom-skill-stat">
-        <option value="str">Сила (СИЛ)</option>
-        <option value="dex">Спритність (СПР)</option>
-        <option value="con">Витривалість (ВИТ)</option>
-        <option value="int">Інтелект (ІНТ)</option>
-        <option value="wis">Мудрість (МУД)</option>
-        <option value="cha">Харизма (ХАР)</option>
+        <option value="str" data-i18n="opt_str">Сила (СИЛ)</option>
+        <option value="dex" data-i18n="opt_dex">Спритність (СПР)</option>
+        <option value="con" data-i18n="opt_con">Витривалість (ВИТ)</option>
+        <option value="int" data-i18n="opt_int">Інтелект (ІНТ)</option>
+        <option value="wis" data-i18n="opt_wis">Мудрість (МУД)</option>
+        <option value="cha" data-i18n="opt_cha">Харизма (ХАР)</option>
       </select>
     </div>
     <div class="modal-btns">
-      <button class="modal-confirm" onclick="confirmCustomSkill()">Додати</button>
-      <button class="modal-cancel" onclick="closeModal('modal-custom-skill')">Скасувати</button>
+      <button class="modal-confirm" onclick="confirmCustomSkill()" data-i18n="btn_add">Додати</button>
+      <button class="modal-cancel" onclick="closeModal('modal-custom-skill')" data-i18n="btn_cancel">Скасувати</button>
+    </div>
+  </div>
+</div>
+<!-- Modal: Encyclopedia custom entry -->
+<div class="modal-overlay" id="modal-enc-entry">
+  <div class="modal">
+    <div class="modal-title" id="modal-enc-title">Новий запис</div>
+    <div class="field"><div class="field-label" data-i18n="lbl_title">Назва</div><input type="text" id="enc-entry-title"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_subtitle">Підзаголовок</div><input type="text" id="enc-entry-subtitle"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_icon">Іконка (емодзі)</div><input type="text" id="enc-entry-icon" placeholder="🗡"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_desc">Опис</div><textarea id="enc-entry-body" rows="4"></textarea></div>
+    <input type="hidden" id="enc-entry-section">
+    <div class="modal-btns">
+      <button class="modal-confirm" onclick="saveEncEntry()" data-i18n="btn_save">Зберегти</button>
+      <button class="modal-cancel" onclick="closeModal('modal-enc-entry')" data-i18n="btn_cancel">Скасувати</button>
+    </div>
+  </div>
+</div>
+<!-- Modal: Creation custom entry -->
+<div class="modal-overlay" id="modal-cre-entry">
+  <div class="modal">
+    <div class="modal-title" id="modal-cre-title">Новий запис</div>
+    <div class="field"><div class="field-label" data-i18n="lbl_title">Назва</div><input type="text" id="cre-entry-title"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_subtitle">Підзаголовок</div><input type="text" id="cre-entry-subtitle"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_icon">Іконка (емодзі)</div><input type="text" id="cre-entry-icon" placeholder="⚔️"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_desc">Опис</div><textarea id="cre-entry-body" rows="4"></textarea></div>
+    <input type="hidden" id="cre-entry-section">
+    <div class="modal-btns">
+      <button class="modal-confirm" onclick="saveCreEntry()" data-i18n="btn_save">Зберегти</button>
+      <button class="modal-cancel" onclick="closeModal('modal-cre-entry')" data-i18n="btn_cancel">Скасувати</button>
+    </div>
+  </div>
+</div>
+<!-- Modal: Equipment custom entry -->
+<div class="modal-overlay" id="modal-eq-entry">
+  <div class="modal">
+    <div class="modal-title" id="modal-eq-title">Новий запис</div>
+    <div class="field"><div class="field-label" data-i18n="lbl_title">Назва</div><input type="text" id="eq-entry-title"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_subtitle">Підзаголовок</div><input type="text" id="eq-entry-subtitle"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_icon">Іконка (емодзі)</div><input type="text" id="eq-entry-icon" placeholder="⚔️"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_dmg_or_ac">Урон / КБ</div><input type="text" id="eq-entry-stat1" placeholder="1к8"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_cost">Ціна</div><input type="text" id="eq-entry-stat2" placeholder="15зл"></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_desc">Опис</div><textarea id="eq-entry-body" rows="3"></textarea></div>
+    <input type="hidden" id="eq-entry-section">
+    <div class="modal-btns">
+      <button class="modal-confirm" onclick="saveEqEntry()" data-i18n="btn_save">Зберегти</button>
+      <button class="modal-cancel" onclick="closeModal('modal-eq-entry')" data-i18n="btn_cancel">Скасувати</button>
     </div>
   </div>
 </div>
 
 <script>
+// ===================== i18n =====================
+const I18N = {
+  uk: {
+    nav_chars:'Персонаж', nav_enc:'Енциклопедія', nav_cre:'Створення', nav_eq:'Спорядження',
+    logo_sub:'Dungeons & Dragons', logo_title:'Аркуш Персонажа',
+    btn_new_char:'+ Новий Персонаж', btn_open:'Відкрити', btn_del:'✕',
+    btn_create:'Створити', btn_cancel:'Скасувати', btn_add:'Додати', btn_save:'Зберегти',
+    btn_add_entry:'+ Додати', btn_add_class:'+ Свій клас', btn_add_race:'+ Своя раса',
+    btn_add_bg:'+ Своя', btn_add_ability:'+ Нова здібність',
+    btn_add_weapon:'+ Додати', btn_add_armor:'+ Додати', btn_add_gear:'+ Додати', btn_add_magic:'+ Додати',
+    tab_main:'Основне', tab_stats:'Характ.', tab_combat:'Бій', tab_inv:'Інвентар',
+    tab_enemies:'Вороги', tab_shop:'Крамниця',
+    saved:'ЗБЕРЕЖЕНО', sec_char_info:'Інформація про персонажа',
+    lbl_name:"Ім'я персонажа", lbl_race:'Раса', lbl_class:'Клас',
+    lbl_bg:'Передісторія', lbl_align:'Світогляд', lbl_player:"Ім'я гравця",
+    lbl_party:'Група авантюристів', lbl_level:'РІВЕНЬ', lbl_xp:'ДОСВІД',
+    btn_add:'Додати', lvl_up:'⬆ ПІДВИЩЕННЯ РІВНЯ!',
+    lvl_up_hint:"Перейди у вкладку «Характ.» щоб витратити очки",
+    xp_table_show:'Таблиця досвіду по рівнях',
+    sec_traits:'Риси та особливості', lbl_traits:'Особистісні риси',
+    lbl_ideals:'Ідеали', lbl_bonds:"Зв'язки", lbl_flaws:'Вади', sec_notes:'Примітки',
+    sec_stat_pts:'Очки характеристик', lbl_avail_pts:'Доступних очок',
+    pts_hint:'Кожні +2 = +1 бонус', pts_note:'Кожен 5-й рівень: +2 очки для характеристик. Базове значення всіх характеристик: 10.',
+    sec_stats:'Характеристики', lbl_prof_bonus:'Бонус майстерності',
+    lbl_passive_perc:'Пасивне сприйняття', sec_skills:'Навички', btn_add_skill:'+ Додати власний скіл',
+    sec_defense:'Захист та переміщення', lbl_ac:'Клас броні', lbl_init:'Ініціатива', lbl_speed:'Швидкість (м)',
+    sec_hp:"Здоров'я", lbl_cur_hp:'ПОТОЧНЕ ХП', lbl_temp_hp:'ТИМЧАСОВЕ ХП',
+    btn_dmg:'— Шкода', btn_heal:'+ Лікування', lbl_max_hp:'Макс. ХП', btn_rest:'Довгий відпочинок',
+    sec_death:'Рятівні кидки від смерті', lbl_success:'Успіх:', lbl_fail:'Провал:', btn_reset:'СКИНУТИ',
+    sec_attacks:'Атаки та заклинання', btn_add_atk:'+ Додати атаку / заклинання',
+    th_name:'Назва', th_atk:'Атака', th_dmg:'Урон', th_range:'Радіус', th_qty:'К-сть',
+    sec_features:'Особливості та здібності', sec_coins:'Монети',
+    coin_copper:'Мідні', coin_silver:'Срібні', coin_gold:'Золоті',
+    sec_inv:'Інвентар', btn_add_item:'+ Додати предмет',
+    sec_lang:'Інші знання та мови', sec_enemies:'Вороги', btn_add_enemy:'+ Додати ворога',
+    sec_shop:'Крамниця', btn_add_goods:'+ Додати товар',
+    enc_title:'📖 Енциклопедія', enc_tab_pre:'Передісторія', enc_tab_items:'Предмети', enc_tab_creatures:'Породження',
+    cre_title:'🧙 Створення персонажа', cre_tab_guide:'Гід', cre_tab_classes:'Класи',
+    cre_tab_races:'Раси', cre_tab_bg:'Передісторії', cre_tab_abilities:'Здібності',
+    eq_title:'🛡 Спорядження та Зброя', eq_tab_weapons:'Зброя', eq_tab_armor:'Броня',
+    eq_tab_gear:'Спорядження', eq_tab_magic:'Магічні предмети',
+    tag_official:'Офіційний', tag_custom:'Кастомне', tag_custom_label:'(Кастомне)',
+    modal_new_char_title:'Новий Персонаж', modal_add_item_title:'Додати предмет',
+    modal_add_shop_title:'Додати товар до крамниці', modal_custom_skill_title:'Власний скіл',
+    lbl_title:'Назва', lbl_subtitle:'Підзаголовок', lbl_icon:'Іконка (емодзі)', lbl_desc:'Опис',
+    lbl_dmg_or_ac:'Урон / КБ', lbl_cost:'Ціна',
+    lbl_item_name:'Назва', lbl_weight:'Вага (кг)', lbl_qty:'К-сть', lbl_item_type:'Клас предмету',
+    lbl_buy_price:'Ціна купівлі (зол.)', lbl_sell_price:'Ціна продажу (зол.)',
+    lbl_skill_name:'Назва скілу', lbl_skill_stat:"Пов'язана характеристика",
+    opt_item:'Предмет', opt_weapon:'Зброя', opt_armor:'Броня', opt_magic:'Магічне',
+    opt_str:'Сила (СИЛ)', opt_dex:'Спритність (СПР)', opt_con:'Витривалість (ВИТ)',
+    opt_int:'Інтелект (ІНТ)', opt_wis:'Мудрість (МУД)', opt_cha:'Харизма (ХАР)',
+    stat_str:'СИЛ', stat_dex:'СПР', stat_con:'ВИТ', stat_int:'ІНТ', stat_wis:'МУД', stat_cha:'ХАР',
+    stat_full_str:'Сила', stat_full_dex:'Спритність', stat_full_con:'Витривалість',
+    stat_full_int:'Інтелект', stat_full_wis:'Мудрість', stat_full_cha:'Харизма',
+    skill_acrobatics:'Акробатика', skill_animal:'Приручення', skill_arcana:'Аркана',
+    skill_athletics:'Атлетика', skill_deception:'Обман', skill_history:'Історія',
+    skill_insight:'Проникливість', skill_intimidation:'Залякування', skill_investigation:'Розвідка',
+    skill_medicine:'Медицина', skill_nature:'Природа', skill_perception:'Сприйняття',
+    skill_performance:'Виступ', skill_persuasion:'Переконання', skill_religion:'Релігія',
+    skill_sleight:'Спритність рук', skill_stealth:'Скритність', skill_survival:'Виживання',
+    save_label:'Рятівний', saving:'зберігаємо...', level_label:'Рівень',
+    xp_thresholds:['0','300','900','2,700','6,500','14,000','23,000','34,000','48,000','64,000','85,000','100,000','120,000','140,000','165,000','190,000','225,000','265,000','305,000','355,000']
+  },
+  en: {
+    nav_chars:'Character', nav_enc:'Encyclopedia', nav_cre:'Creation', nav_eq:'Equipment',
+    logo_sub:'Dungeons & Dragons', logo_title:'Character Sheet',
+    btn_new_char:'+ New Character', btn_open:'Open', btn_del:'✕',
+    btn_create:'Create', btn_cancel:'Cancel', btn_add:'Add', btn_save:'Save',
+    btn_add_entry:'+ Add', btn_add_class:'+ Custom Class', btn_add_race:'+ Custom Race',
+    btn_add_bg:'+ Custom', btn_add_ability:'+ New Ability',
+    btn_add_weapon:'+ Add', btn_add_armor:'+ Add', btn_add_gear:'+ Add', btn_add_magic:'+ Add',
+    tab_main:'Main', tab_stats:'Stats', tab_combat:'Combat', tab_inv:'Inventory',
+    tab_enemies:'Enemies', tab_shop:'Shop',
+    saved:'SAVED', sec_char_info:'Character Information',
+    lbl_name:'Character Name', lbl_race:'Race', lbl_class:'Class',
+    lbl_bg:'Background', lbl_align:'Alignment', lbl_player:"Player's Name",
+    lbl_party:'Party Name', lbl_level:'LEVEL', lbl_xp:'EXPERIENCE',
+    btn_add:'Add', lvl_up:'⬆ LEVEL UP!',
+    lvl_up_hint:"Go to the 'Stats' tab to spend points",
+    xp_table_show:'Experience table by level',
+    sec_traits:'Personality & Traits', lbl_traits:'Personality Traits',
+    lbl_ideals:'Ideals', lbl_bonds:'Bonds', lbl_flaws:'Flaws', sec_notes:'Notes',
+    sec_stat_pts:'Ability Points', lbl_avail_pts:'Available Points',
+    pts_hint:'Every +2 = +1 bonus', pts_note:'Every 5th level: +2 ability points. Base value for all stats: 10.',
+    sec_stats:'Ability Scores', lbl_prof_bonus:'Proficiency Bonus',
+    lbl_passive_perc:'Passive Perception', sec_skills:'Skills', btn_add_skill:'+ Add Custom Skill',
+    sec_defense:'Defense & Movement', lbl_ac:'Armor Class', lbl_init:'Initiative', lbl_speed:'Speed (m)',
+    sec_hp:'Hit Points', lbl_cur_hp:'CURRENT HP', lbl_temp_hp:'TEMP HP',
+    btn_dmg:'— Damage', btn_heal:'+ Heal', lbl_max_hp:'Max HP', btn_rest:'Long Rest',
+    sec_death:'Death Saving Throws', lbl_success:'Success:', lbl_fail:'Fail:', btn_reset:'RESET',
+    sec_attacks:'Attacks & Spells', btn_add_atk:'+ Add Attack / Spell',
+    th_name:'Name', th_atk:'Attack', th_dmg:'Damage', th_range:'Range', th_qty:'Qty',
+    sec_features:'Features & Abilities', sec_coins:'Coins',
+    coin_copper:'Copper', coin_silver:'Silver', coin_gold:'Gold',
+    sec_inv:'Inventory', btn_add_item:'+ Add Item',
+    sec_lang:'Other Languages & Knowledge', sec_enemies:'Enemies', btn_add_enemy:'+ Add Enemy',
+    sec_shop:'Shop', btn_add_goods:'+ Add Item',
+    enc_title:'📖 Encyclopedia', enc_tab_pre:'Lore', enc_tab_items:'Items', enc_tab_creatures:'Creatures',
+    cre_title:'🧙 Character Creation', cre_tab_guide:'Guide', cre_tab_classes:'Classes',
+    cre_tab_races:'Races', cre_tab_bg:'Backgrounds', cre_tab_abilities:'Abilities',
+    eq_title:'🛡 Equipment & Weapons', eq_tab_weapons:'Weapons', eq_tab_armor:'Armor',
+    eq_tab_gear:'Gear', eq_tab_magic:'Magic Items',
+    tag_official:'Official', tag_custom:'Custom', tag_custom_label:'(Custom)',
+    modal_new_char_title:'New Character', modal_add_item_title:'Add Item',
+    modal_add_shop_title:'Add Shop Item', modal_custom_skill_title:'Custom Skill',
+    lbl_title:'Title', lbl_subtitle:'Subtitle', lbl_icon:'Icon (emoji)', lbl_desc:'Description',
+    lbl_dmg_or_ac:'Damage / AC', lbl_cost:'Cost',
+    lbl_item_name:'Name', lbl_weight:'Weight (kg)', lbl_qty:'Qty', lbl_item_type:'Item Type',
+    lbl_buy_price:'Buy Price (gp)', lbl_sell_price:'Sell Price (gp)',
+    lbl_skill_name:'Skill Name', lbl_skill_stat:'Related Ability',
+    opt_item:'Item', opt_weapon:'Weapon', opt_armor:'Armor', opt_magic:'Magic',
+    opt_str:'Strength (STR)', opt_dex:'Dexterity (DEX)', opt_con:'Constitution (CON)',
+    opt_int:'Intelligence (INT)', opt_wis:'Wisdom (WIS)', opt_cha:'Charisma (CHA)',
+    stat_str:'STR', stat_dex:'DEX', stat_con:'CON', stat_int:'INT', stat_wis:'WIS', stat_cha:'CHA',
+    stat_full_str:'Strength', stat_full_dex:'Dexterity', stat_full_con:'Constitution',
+    stat_full_int:'Intelligence', stat_full_wis:'Wisdom', stat_full_cha:'Charisma',
+    skill_acrobatics:'Acrobatics', skill_animal:'Animal Handling', skill_arcana:'Arcana',
+    skill_athletics:'Athletics', skill_deception:'Deception', skill_history:'History',
+    skill_insight:'Insight', skill_intimidation:'Intimidation', skill_investigation:'Investigation',
+    skill_medicine:'Medicine', skill_nature:'Nature', skill_perception:'Perception',
+    skill_performance:'Performance', skill_persuasion:'Persuasion', skill_religion:'Religion',
+    skill_sleight:'Sleight of Hand', skill_stealth:'Stealth', skill_survival:'Survival',
+    save_label:'Save', saving:'saving...', level_label:'Level',
+    xp_thresholds:['0','300','900','2,700','6,500','14,000','23,000','34,000','48,000','64,000','85,000','100,000','120,000','140,000','165,000','190,000','225,000','265,000','305,000','355,000']
+  }
+};
+let currentLang = 'uk';
+function t(key){ return (I18N[currentLang]||I18N.uk)[key] || (I18N.uk[key]) || key; }
+function setLang(lang){
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active', b.textContent.trim()===(lang==='uk'?'УКР':'ENG')));
+  applyI18n();
+  if(currentCharId) renderAll();
+}
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k = el.getAttribute('data-i18n');
+    if(t(k)) el.textContent = t(k);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+    const k = el.getAttribute('data-i18n-placeholder');
+    if(t(k)) el.placeholder = t(k);
+  });
+}
+
 // ===================== DATA =====================
 const XP_TABLE=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,120000,140000,165000,190000,225000,265000,305000,355000];
-const STAT_NAMES={str:'СИЛ',dex:'СПР',con:'ВИТ',int:'ІНТ',wis:'МУД',cha:'ХАР'};
-const STAT_FULL={str:'Сила',dex:'Спритність',con:'Витривалість',int:'Інтелект',wis:'Мудрість',cha:'Харизма'};
-const SKILLS_DEFAULT=[
-  {name:'Акробатика',stat:'dex'},{name:'Приручення',stat:'wis'},{name:'Аркана',stat:'int'},
-  {name:'Атлетика',stat:'str'},{name:'Обман',stat:'cha'},{name:'Історія',stat:'int'},
-  {name:'Проникливість',stat:'wis'},{name:'Залякування',stat:'cha'},{name:'Розвідка',stat:'int'},
-  {name:'Медицина',stat:'wis'},{name:'Природа',stat:'int'},{name:'Сприйняття',stat:'wis'},
-  {name:'Виступ',stat:'cha'},{name:'Переконання',stat:'cha'},{name:'Релігія',stat:'int'},
-  {name:'Спритність рук',stat:'dex'},{name:'Скритність',stat:'dex'},{name:'Виживання',stat:'wis'}
+const SKILLS_KEYS=[
+  {key:'acrobatics',stat:'dex'},{key:'animal',stat:'wis'},{key:'arcana',stat:'int'},
+  {key:'athletics',stat:'str'},{key:'deception',stat:'cha'},{key:'history',stat:'int'},
+  {key:'insight',stat:'wis'},{key:'intimidation',stat:'cha'},{key:'investigation',stat:'int'},
+  {key:'medicine',stat:'wis'},{key:'nature',stat:'int'},{key:'perception',stat:'wis'},
+  {key:'performance',stat:'cha'},{key:'persuasion',stat:'cha'},{key:'religion',stat:'int'},
+  {key:'sleight',stat:'dex'},{key:'stealth',stat:'dex'},{key:'survival',stat:'wis'}
 ];
-
-let chars={};
-let currentCharId=null;
+let chars={}, currentCharId=null;
+// Custom entries storage
+let encEntries = {prehistory:[],items:[],creatures:[]};
+let creEntries = {class:[],race:[],background:[],ability:[]};
+let eqEntries  = {weapon:[],armor:[],gear:[],magic:[]};
 
 function newChar(name){
   const id='char_'+Date.now();
   chars[id]={
-    id,name,
-    race:'',cls:'',background:'',alignment:'',player:'',party:'',
+    id,name,race:'',cls:'',background:'',alignment:'',player:'',party:'',
     level:1,xp:0,statPoints:4,
     stats:{str:10,dex:10,con:10,int:10,wis:10,cha:10},
     savingThrows:{str:false,dex:false,con:false,int:false,wis:false,cha:false},
     skillProfs:{},customSkills:[],
     ac:10,speed:9,hpMax:0,hpCurrent:0,hpTemp:0,
-    deathSuccess:[false,false,false],deathFail:[false,false,false],
+    deathSaves:{success:[false,false,false],fail:[false,false,false]},
     attacks:[],features:'',
-    traits:'',ideals:'',bonds:'',flaws:'',notes:'',
-    coins:{copper:0,silver:0,gold:0},
-    inventory:[],languages:'',
-    enemies:[],shop:[]
+    inventory:[],coins:{copper:0,silver:0,gold:0},languages:'',
+    enemies:[],shop:[],traits:'',ideals:'',bonds:'',flaws:'',notes:''
   };
-  saveAll();
   return id;
 }
+function getChar(){ return chars[currentCharId]; }
+function mod(val){ return Math.floor((val-10)/2); }
+function modStr(val){ const m=mod(val); return (m>=0?'+':'')+m; }
+function profBonus(lvl){ return Math.floor((lvl-1)/4)+2; }
 
-function saveAll(){localStorage.setItem('dnd_chars',JSON.stringify(chars));}
-function loadAll(){try{const d=localStorage.getItem('dnd_chars');if(d)chars=JSON.parse(d);}catch(e){chars={};}}
-function getChar(){return chars[currentCharId];}
-
-function autoSave(){
-  const c=getChar();if(!c)return;
-  const fields=['name','race','cls','background','alignment','player','party','traits','ideals','bonds','flaws','notes','features','languages'];
-  fields.forEach(f=>{const el=document.getElementById('f-'+f);if(el)c[f]=el.value;});
-  c.ac=parseInt(document.getElementById('f-ac')?.value)||10;
-  c.speed=parseInt(document.getElementById('f-speed')?.value)||9;
-  c.hpMax=parseInt(document.getElementById('f-hp-max')?.value)||0;
-  c.hpTemp=parseInt(document.getElementById('f-temp-hp')?.value)||0;
-  saveAll();
+// ===================== STORAGE =====================
+function saveAll(){
+  try{
+    localStorage.setItem('dnd_chars',JSON.stringify(chars));
+    localStorage.setItem('dnd_enc',JSON.stringify(encEntries));
+    localStorage.setItem('dnd_cre',JSON.stringify(creEntries));
+    localStorage.setItem('dnd_eq',JSON.stringify(eqEntries));
+    localStorage.setItem('dnd_lang',currentLang);
+  }catch(e){}
   const ind=document.getElementById('save-ind');
-  ind.classList.add('show');
-  clearTimeout(ind._t);
-  ind._t=setTimeout(()=>ind.classList.remove('show'),1500);
+  if(ind){ind.classList.add('show');setTimeout(()=>ind.classList.remove('show'),1200);}
+}
+function loadAll(){
+  try{
+    const c=localStorage.getItem('dnd_chars'); if(c) chars=JSON.parse(c);
+    const e=localStorage.getItem('dnd_enc'); if(e) encEntries=JSON.parse(e);
+    const cr=localStorage.getItem('dnd_cre'); if(cr) creEntries=JSON.parse(cr);
+    const eq=localStorage.getItem('dnd_eq'); if(eq) eqEntries=JSON.parse(eq);
+    const lg=localStorage.getItem('dnd_lang'); if(lg){currentLang=lg;}
+  }catch(e){}
+}
+
+// ===================== NAVIGATION =====================
+let activeMainTab = 'chars';
+function switchMainTab(tab){
+  activeMainTab = tab;
+  document.querySelectorAll('.main-nav-tab').forEach((b,i)=>{
+    const tabs=['chars','encyclopedia','creation','equipment'];
+    b.classList.toggle('active', tabs[i]===tab);
+  });
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  if(tab==='chars') document.getElementById('screen-chars').classList.add('active');
+  else if(tab==='encyclopedia') document.getElementById('screen-encyclopedia').classList.add('active');
+  else if(tab==='creation') document.getElementById('screen-creation').classList.add('active');
+  else if(tab==='equipment') document.getElementById('screen-equipment').classList.add('active');
+}
+function switchCharTab(tab){
+  document.querySelectorAll('.char-tab').forEach(b=>b.classList.remove('active'));
+  const tabs=['main','stats','combat','inventory','enemies','shop'];
+  document.querySelectorAll('.char-tab')[tabs.indexOf(tab)]?.classList.add('active');
+  document.querySelectorAll('#screen-char-app .page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+tab)?.classList.add('active');
+}
+function switchEncTab(tab){
+  document.querySelectorAll('.enc-tab').forEach(b=>b.classList.remove('active'));
+  const tabs=['prehistory','items','creatures'];
+  document.querySelectorAll('.enc-tab')[tabs.indexOf(tab)]?.classList.add('active');
+  document.querySelectorAll('.enc-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('enc-'+tab)?.classList.add('active');
+}
+function switchCreTab(tab){
+  document.querySelectorAll('.cre-tab').forEach(b=>b.classList.remove('active'));
+  const tabs=['guide','classes','races','backgrounds','abilities'];
+  document.querySelectorAll('.cre-tab')[tabs.indexOf(tab)]?.classList.add('active');
+  document.querySelectorAll('.cre-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('cre-'+tab)?.classList.add('active');
+}
+function switchEqTab(tab){
+  document.querySelectorAll('.eq-tab').forEach(b=>b.classList.remove('active'));
+  const tabs=['weapons','armor','gear','magic-items'];
+  document.querySelectorAll('.eq-tab')[tabs.indexOf(tab)]?.classList.add('active');
+  document.querySelectorAll('.eq-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('eq-'+tab)?.classList.add('active');
+}
+
+// ===================== COLLAPSE =====================
+function toggleCollapse(id){
+  const body=document.getElementById(id);
+  const arr=document.getElementById('arr-'+id);
+  if(!body)return;
+  body.classList.toggle('open');
+  if(arr) arr.classList.toggle('open');
 }
 
 // ===================== CHAR SELECT =====================
 function renderCharSelect(){
   const list=document.getElementById('char-list');
   list.innerHTML='';
-  const ids=Object.keys(chars);
-  if(!ids.length){list.innerHTML='<div style="text-align:center;padding:30px 0;color:var(--text3);font-style:italic;font-size:13px">Немає персонажів. Створи першого!</div>';return;}
-  ids.forEach(id=>{
-    const c=chars[id];
+  Object.values(chars).forEach(c=>{
     const div=document.createElement('div');
     div.className='char-card';
     div.innerHTML=`<div class="char-card-avatar">⚔</div>
       <div class="char-card-info">
-        <div class="char-card-name">${c.name||'Без імені'}</div>
-        <div class="char-card-sub">${c.race||'—'} ${c.cls||''} · Рівень ${c.level}</div>
+        <div class="char-card-name">${c.name||'—'}</div>
+        <div class="char-card-sub">${c.race||'?'} ${c.cls||''} — ${t('level_label')} ${c.level||1}</div>
       </div>
       <div class="char-card-btns">
-        <button class="btn-open" onclick="openChar('${id}')">Відкрити</button>
-        <button class="btn-del" onclick="deleteChar('${id}')">✕</button>
+        <button class="btn-open" onclick="openChar('${c.id}')">${t('btn_open')}</button>
+        <button class="btn-del" onclick="deleteChar('${c.id}')">${t('btn_del')}</button>
       </div>`;
     list.appendChild(div);
   });
 }
-
-function openNewCharModal(){openModal('modal-new-char');document.getElementById('new-char-name').value='';}
+function openNewCharModal(){ openModal('modal-new-char'); }
 function createChar(){
-  const name=document.getElementById('new-char-name').value.trim()||'Новий Персонаж';
+  const name=document.getElementById('new-char-name').value.trim()||'Безіменний';
   const id=newChar(name);
+  saveAll();
   closeModal('modal-new-char');
+  document.getElementById('new-char-name').value='';
+  renderCharSelect();
   openChar(id);
 }
 function deleteChar(id){
-  if(!confirm('Видалити персонажа? Це незворотньо!'))return;
-  delete chars[id];saveAll();renderCharSelect();
+  if(!confirm('Видалити персонажа?'))return;
+  delete chars[id];
+  saveAll();
+  renderCharSelect();
+}
+function openChar(id){
+  currentCharId=id;
+  document.getElementById('screen-chars').classList.remove('active');
+  document.getElementById('screen-char-app').classList.add('active');
+  // update main nav
+  document.querySelectorAll('.main-nav-tab').forEach(b=>b.classList.remove('active'));
+  renderAll();
+  switchCharTab('main');
 }
 function goToSelect(){
-  autoSave();
-  document.getElementById('app').style.display='none';
-  document.getElementById('char-select-screen').style.display='flex';
+  currentCharId=null;
+  document.getElementById('screen-char-app').classList.remove('active');
+  document.getElementById('screen-chars').classList.add('active');
+  document.querySelectorAll('.main-nav-tab').forEach((b,i)=>b.classList.toggle('active',i===0));
   renderCharSelect();
 }
 
-// ===================== OPEN CHAR =====================
-function openChar(id){
-  currentCharId=id;
-  document.getElementById('char-select-screen').style.display='none';
-  const app=document.getElementById('app');
-  app.style.display='flex';
-  app.style.flexDirection='column';
-  loadCharUI();
-  switchTab('main');
-}
-
-function loadCharUI(){
-  const c=getChar();
-  document.getElementById('topbar-name').textContent=c.name||'Персонаж';
-  document.getElementById('topbar-level').textContent='Рівень '+c.level;
-  const fields=['name','race','cls','background','alignment','player','party','traits','ideals','bonds','flaws','notes','features','languages'];
-  fields.forEach(f=>{const el=document.getElementById('f-'+f);if(el)el.value=c[f]||'';});
+// ===================== RENDER ALL =====================
+function renderAll(){
+  const c=getChar(); if(!c) return;
+  document.getElementById('topbar-name').textContent=c.name||'—';
+  document.getElementById('topbar-level').textContent=`${t('level_label')} ${c.level}`;
+  document.getElementById('f-name').value=c.name||'';
+  document.getElementById('f-race').value=c.race||'';
+  document.getElementById('f-class').value=c.cls||'';
+  document.getElementById('f-background').value=c.background||'';
+  document.getElementById('f-alignment').value=c.alignment||'';
+  document.getElementById('f-player').value=c.player||'';
+  document.getElementById('f-party').value=c.party||'';
+  document.getElementById('f-traits').value=c.traits||'';
+  document.getElementById('f-ideals').value=c.ideals||'';
+  document.getElementById('f-bonds').value=c.bonds||'';
+  document.getElementById('f-flaws').value=c.flaws||'';
+  document.getElementById('f-notes').value=c.notes||'';
+  document.getElementById('f-features').value=c.features||'';
+  document.getElementById('f-languages').value=c.languages||'';
   document.getElementById('f-ac').value=c.ac||10;
   document.getElementById('f-speed').value=c.speed||9;
   document.getElementById('f-hp-max').value=c.hpMax||0;
   document.getElementById('f-temp-hp').value=c.hpTemp||0;
-  renderXP();
-  renderStats();
-  renderSkills();
-  renderHP();
-  renderAttacks();
-  renderDeathSaves();
-  renderInventory();
-  renderCoins();
-  renderEnemies();
-  renderShop();
-  renderLvlTable();
-  document.querySelectorAll('input,textarea,select').forEach(el=>{
-    el.removeEventListener('input',autoSave);
-    el.addEventListener('input',autoSave);
+  renderXP(); renderStats(); renderSkills(); renderHP();
+  renderDeathSaves(); renderAttacks(); renderInventory(); renderCoins();
+  renderEnemies(); renderShop();
+  // bind inputs
+  ['f-race','f-class','f-background','f-alignment','f-player','f-party',
+   'f-traits','f-ideals','f-bonds','f-flaws','f-notes','f-features','f-languages'].forEach(id=>{
+    const map={
+      'f-race':'race','f-class':'cls','f-background':'background','f-alignment':'alignment',
+      'f-player':'player','f-party':'party','f-traits':'traits','f-ideals':'ideals',
+      'f-bonds':'bonds','f-flaws':'flaws','f-notes':'notes','f-features':'features','f-languages':'languages'
+    };
+    const el=document.getElementById(id);
+    if(el) el.oninput=()=>{getChar()[map[id]]=el.value;saveAll();};
   });
+  document.getElementById('f-ac').oninput=()=>{getChar().ac=parseInt(document.getElementById('f-ac').value)||10;saveAll();};
+  document.getElementById('f-speed').oninput=()=>{getChar().speed=parseFloat(document.getElementById('f-speed').value)||9;saveAll();};
+  document.getElementById('f-temp-hp').oninput=()=>{getChar().hpTemp=parseInt(document.getElementById('f-temp-hp').value)||0;saveAll();};
 }
-
 function syncName(){
-  const c=getChar();if(!c)return;
+  const c=getChar(); if(!c)return;
   c.name=document.getElementById('f-name').value;
-  document.getElementById('topbar-name').textContent=c.name||'Персонаж';
+  document.getElementById('topbar-name').textContent=c.name||'—';
+  saveAll();
 }
 
-// ===================== TABS =====================
-function switchTab(name){
-  document.querySelectorAll('.tab').forEach((t,i)=>{
-    const tabs=['main','stats','combat','inventory','enemies','shop'];
-    t.classList.toggle('active',tabs[i]===name);
-  });
-  document.querySelectorAll('.page').forEach(p=>{
-    p.classList.toggle('active',p.id==='page-'+name);
-  });
-}
-
-// ===================== XP & LEVEL =====================
+// ===================== XP =====================
 function renderXP(){
   const c=getChar();
-  const lvl=c.level;
-  const xp=c.xp;
-  document.getElementById('disp-level').textContent=lvl;
-  document.getElementById('topbar-level').textContent='Рівень '+lvl;
-  const next=lvl<20?XP_TABLE[lvl]:null;
-  const prev=XP_TABLE[lvl-1];
-  document.getElementById('disp-xp').textContent=next?`${xp} / ${next}`:`${xp} (МАКС)`;
-  const pct=next?Math.min(100,Math.round((xp-prev)/(next-prev)*100)):100;
+  document.getElementById('disp-level').textContent=c.level;
+  document.getElementById('topbar-level').textContent=`${t('level_label')} ${c.level}`;
+  const nextXP=c.level<20?XP_TABLE[c.level]:XP_TABLE[19];
+  const curXP=c.level>1?XP_TABLE[c.level-1]:0;
+  const pct=c.level>=20?100:Math.min(100,((c.xp-curXP)/(nextXP-curXP))*100);
+  document.getElementById('disp-xp').textContent=`${c.xp} / ${nextXP}`;
   document.getElementById('xp-fill').style.width=pct+'%';
   const banner=document.getElementById('lvl-up-banner');
-  banner.classList.toggle('show',c._pendingLevelUp||false);
-  updateStatPoints();
+  if(banner) banner.classList.toggle('show',!!c._pendingLevelUp);
+  // LVL table
+  const tbl=document.getElementById('lvl-table');
+  if(tbl){
+    tbl.innerHTML='';
+    const xpArr=t('xp_thresholds');
+    XP_TABLE.forEach((xp,i)=>{
+      const tr=document.createElement('tr');
+      if(i+1===c.level)tr.className='current-lvl';
+      tr.innerHTML=`<td>${t('level_label')} ${i+1}</td><td>${xpArr[i]||xp} XP</td>`;
+      tbl.appendChild(tr);
+    });
+  }
 }
-
 function addXP(){
   const c=getChar();
-  const amt=parseInt(document.getElementById('xp-add-input').value)||0;
-  if(!amt)return;
-  c.xp=Math.max(0,c.xp+amt);
-  document.getElementById('xp-add-input').value='';
+  const val=parseInt(document.getElementById('xp-add-input').value)||0;
+  if(!val)return;
+  c.xp=Math.max(0,c.xp+val);
   let leveled=false;
-  while(c.level<20&&c.xp>=XP_TABLE[c.level]){
-    c.level++;
-    if(c.level%5===0)c.statPoints+=2;
-    leveled=true;
-  }
-  if(leveled){c._pendingLevelUp=true;}
+  while(c.level<20&&c.xp>=XP_TABLE[c.level]){c.level++;if(c.level%5===0)c.statPoints+=2;leveled=true;}
+  if(leveled)c._pendingLevelUp=true;
+  document.getElementById('xp-add-input').value='';
   saveAll();renderXP();
 }
 
-function renderLvlTable(){
-  const c=getChar();
-  const t=document.getElementById('lvl-table');
-  t.innerHTML='';
-  for(let i=1;i<=20;i++){
-    const tr=document.createElement('tr');
-    if(i===c.level)tr.className='current-lvl';
-    tr.innerHTML=`<td>Рівень ${i}</td><td>${XP_TABLE[i-1].toLocaleString()} досвіду</td>`;
-    t.appendChild(tr);
-  }
-}
-
 // ===================== STATS =====================
-function getMod(val){return Math.floor((val-10)/2);}
-function fmtMod(m){return m>=0?'+'+m:''+m;}
-function getProfBonus(lvl){return Math.floor((lvl-1)/4)+2;}
-
 function renderStats(){
   const c=getChar();
   const grid=document.getElementById('stats-grid');
   grid.innerHTML='';
-  const pb=getProfBonus(c.level);
-  Object.keys(STAT_NAMES).forEach(key=>{
-    const val=c.stats[key];
-    const mod=getMod(val);
-    const div=document.createElement('div');
-    div.className='stat-card';
-    div.innerHTML=`
-      <div class="stat-card-name">${STAT_FULL[key]}</div>
+  const statKeys=['str','dex','con','int','wis','cha'];
+  statKeys.forEach(s=>{
+    const val=c.stats[s]||10;
+    const m=mod(val);
+    const hasSave=c.savingThrows[s];
+    const pb=profBonus(c.level);
+    const saveVal=hasSave?m+pb:m;
+    const card=document.createElement('div');
+    card.className='stat-card';
+    card.innerHTML=`
+      <div class="stat-card-name">${t('stat_'+s)}</div>
       <div class="stat-val-wrap">
-        <button class="stat-btn" onclick="adjustStat('${key}',-2)">−</button>
-        <div class="stat-num" id="stat-num-${key}">${val}</div>
-        <button class="stat-btn" onclick="adjustStat('${key}',2)">+</button>
+        <button class="stat-btn" onclick="changeStat('${s}',-1)">−</button>
+        <div class="stat-num">${val}</div>
+        <button class="stat-btn" onclick="changeStat('${s}',1)">+</button>
       </div>
-      <div class="stat-mod" id="stat-mod-${key}">${fmtMod(mod)}</div>
+      <div class="stat-mod">${modStr(val)}</div>
       <div class="stat-save">
-        <input type="checkbox" id="save-${key}" ${c.savingThrows[key]?'checked':''} onchange="toggleSave('${key}')">
-        <span>Рятівний кидок ${fmtMod(c.savingThrows[key]?mod+pb:mod)}</span>
+        <input type="checkbox" ${hasSave?'checked':''} onchange="toggleSave('${s}',this.checked)">
+        <span>${t('save_label')}: ${saveVal>=0?'+':''}${saveVal}</span>
       </div>`;
-    grid.appendChild(div);
+    grid.appendChild(card);
   });
-  document.getElementById('f-prof-bonus').value='+'+pb;
-  const wis=getMod(c.stats.wis);
-  const percProf=c.skillProfs['Сприйняття']?pb:0;
-  document.getElementById('f-passive-perc').value=10+wis+percProf;
-  document.getElementById('f-initiative').value=fmtMod(getMod(c.stats.dex));
+  document.getElementById('pts-display').textContent=c.statPoints||0;
+  const pb=profBonus(c.level);
+  document.getElementById('f-prof-bonus').value=`+${pb}`;
+  const wisM=mod(c.stats.wis||10);
+  document.getElementById('f-passive-perc').value=10+wisM+(c.skillProfs['perception']?pb:0);
+  document.getElementById('f-initiative').value=modStr(c.stats.dex||10);
 }
-
-function adjustStat(key,delta){
+function changeStat(s,delta){
   const c=getChar();
-  const current=c.stats[key];
-  const newVal=current+delta;
-  if(newVal<2||newVal>20)return;
   if(delta>0){
-    if(c.statPoints<1){alert('Недостатньо очок!');return;}
+    if((c.statPoints||0)<1)return;
+    c.stats[s]=Math.min(20,c.stats[s]+1);
     c.statPoints--;
   } else {
+    if(c.stats[s]<=1)return;
+    c.stats[s]--;
     c.statPoints++;
   }
-  c.stats[key]=newVal;
   saveAll();renderStats();renderSkills();
-  updateStatPoints();
 }
-
-function updateStatPoints(){
-  const c=getChar();
-  document.getElementById('pts-display').textContent=c.statPoints;
-  document.getElementById('pts-hint').textContent=c.statPoints>0?'Кожні +2 = +1 бонус':'Очки витрачено';
-}
-
-function toggleSave(key){
-  const c=getChar();
-  c.savingThrows[key]=document.getElementById('save-'+key).checked;
-  saveAll();renderStats();
-}
+function toggleSave(s,v){getChar().savingThrows[s]=v;saveAll();renderStats();}
 
 // ===================== SKILLS =====================
 function renderSkills(){
   const c=getChar();
-  const pb=getProfBonus(c.level);
   const list=document.getElementById('skills-list');
   list.innerHTML='';
-  const allSkills=[...SKILLS_DEFAULT,...(c.customSkills||[])];
-  allSkills.forEach((sk,idx)=>{
-    const mod=getMod(c.stats[sk.stat]);
-    const prof=c.skillProfs[sk.name]||false;
-    const bonus=prof?mod+pb:mod;
-    const isCustom=idx>=SKILLS_DEFAULT.length;
+  const pb=profBonus(c.level);
+  const allSkills=[...SKILLS_KEYS,...(c.customSkills||[]).map(cs=>({key:cs.name,stat:cs.stat,custom:true}))];
+  allSkills.forEach(sk=>{
+    const prof=c.skillProfs[sk.key]||false;
+    const statMod=mod(c.stats[sk.stat]||10);
+    const total=prof?statMod+pb:statMod;
     const div=document.createElement('div');
     div.className='skill-item';
+    const skillName=sk.custom?sk.key:t('skill_'+sk.key);
+    const statName=t('stat_'+sk.stat);
     div.innerHTML=`
-      <input type="checkbox" class="skill-check" ${prof?'checked':''} onchange="toggleSkillProf('${sk.name}',this.checked)">
-      <span class="skill-prof">${fmtMod(bonus)}</span>
-      <span class="skill-name">${sk.name}</span>
-      <span class="skill-attr">${STAT_NAMES[sk.stat]}</span>
-      ${isCustom?`<button onclick="removeCustomSkill(${idx-SKILLS_DEFAULT.length})" style="background:none;border:none;color:var(--text3);font-size:13px;padding:0 4px">✕</button>`:''}`;
+      <input type="checkbox" class="skill-check" ${prof?'checked':''} onchange="toggleSkill('${sk.key}',this.checked)">
+      <span class="skill-prof">${total>=0?'+':''}${total}</span>
+      <span class="skill-name">${skillName}</span>
+      <span class="skill-attr">(${statName})</span>
+      ${sk.custom?`<button onclick="removeCustomSkill('${sk.key}')" style="background:none;border:none;color:var(--text3);font-size:12px;padding:0 3px">✕</button>`:''}`;
     list.appendChild(div);
   });
 }
-
-function toggleSkillProf(name,val){
+function toggleSkill(k,v){getChar().skillProfs[k]=v;saveAll();renderSkills();renderStats();}
+function removeCustomSkill(name){
   const c=getChar();
-  c.skillProfs[name]=val;
+  c.customSkills=(c.customSkills||[]).filter(s=>s.name!==name);
+  delete c.skillProfs[name];
   saveAll();renderSkills();
-  if(name==='Сприйняття')renderStats();
 }
-
 function openCustomSkillModal(){openModal('modal-custom-skill');}
 function confirmCustomSkill(){
-  const c=getChar();
   const name=document.getElementById('custom-skill-name').value.trim();
   const stat=document.getElementById('custom-skill-stat').value;
   if(!name)return;
+  const c=getChar();
   if(!c.customSkills)c.customSkills=[];
   c.customSkills.push({name,stat});
-  saveAll();renderSkills();closeModal('modal-custom-skill');
-}
-function removeCustomSkill(idx){
-  const c=getChar();
-  c.customSkills.splice(idx,1);
   saveAll();renderSkills();
+  closeModal('modal-custom-skill');
+  document.getElementById('custom-skill-name').value='';
 }
 
 // ===================== HP =====================
 function renderHP(){
   const c=getChar();
-  document.getElementById('hp-cur-disp').textContent=c.hpCurrent;
-  document.getElementById('hp-max-disp').textContent=c.hpMax;
-  const pct=c.hpMax>0?Math.max(0,Math.min(100,c.hpCurrent/c.hpMax*100)):0;
+  document.getElementById('hp-cur-disp').textContent=c.hpCurrent||0;
+  document.getElementById('hp-max-disp').textContent=c.hpMax||0;
+  const pct=c.hpMax>0?Math.max(0,Math.min(100,(c.hpCurrent/c.hpMax)*100)):0;
   document.getElementById('hp-bar').style.width=pct+'%';
-  document.getElementById('hp-bar').style.background=pct>50?'var(--blood)':pct>25?'#b85020':'#a03030';
 }
 function updateHP(){
   const c=getChar();
@@ -899,17 +1957,15 @@ function changeHP(sign){
   const c=getChar();
   const amt=parseInt(document.getElementById('hp-change-amt').value)||0;
   if(!amt)return;
-  c.hpCurrent=Math.max(0,Math.min(c.hpMax,c.hpCurrent+sign*amt));
+  c.hpCurrent=Math.max(0,Math.min(c.hpMax,(c.hpCurrent||0)+sign*amt));
   document.getElementById('hp-change-amt').value='';
   saveAll();renderHP();
 }
 function fullRest(){
   const c=getChar();
-  c.hpCurrent=c.hpMax;
-  c.hpTemp=0;
-  c.deathSuccess=[false,false,false];
-  c.deathFail=[false,false,false];
-  document.getElementById('f-temp-hp').value=0;
+  c.hpCurrent=c.hpMax;c.hpTemp=0;
+  c.deathSaves={success:[false,false,false],fail:[false,false,false]};
+  document.getElementById('f-temp-hp').value='0';
   saveAll();renderHP();renderDeathSaves();
 }
 
@@ -917,25 +1973,18 @@ function fullRest(){
 function renderDeathSaves(){
   const c=getChar();
   ['success','fail'].forEach(type=>{
-    const wrap=document.getElementById('death-'+type);
-    wrap.innerHTML='';
+    const container=document.getElementById('death-'+type);
+    container.innerHTML='';
     for(let i=0;i<3;i++){
-      const d=document.createElement('div');
-      d.className='save-circle'+(c['death'+type.charAt(0).toUpperCase()+type.slice(1)][i]?' '+type:'');
-      d.onclick=()=>toggleDeathSave(type,i);
-      wrap.appendChild(d);
+      const circle=document.createElement('div');
+      circle.className='save-circle'+(c.deathSaves[type][i]?' '+type:'');
+      circle.onclick=()=>{c.deathSaves[type][i]=!c.deathSaves[type][i];saveAll();renderDeathSaves();};
+      container.appendChild(circle);
     }
   });
 }
-function toggleDeathSave(type,idx){
-  const c=getChar();
-  const key='death'+type.charAt(0).toUpperCase()+type.slice(1);
-  c[key][idx]=!c[key][idx];
-  saveAll();renderDeathSaves();
-}
 function resetDeathSaves(){
-  const c=getChar();
-  c.deathSuccess=[false,false,false];c.deathFail=[false,false,false];
+  getChar().deathSaves={success:[false,false,false],fail:[false,false,false]};
   saveAll();renderDeathSaves();
 }
 
@@ -944,51 +1993,40 @@ function renderAttacks(){
   const c=getChar();
   const body=document.getElementById('atk-body');
   body.innerHTML='';
-  (c.attacks||[]).forEach((atk,i)=>{
+  (c.attacks||[]).forEach((a,i)=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td><input type="text" value="${atk.name||''}" placeholder="Назва" oninput="updateAtk(${i},'name',this.value)" style="min-width:70px"></td>
-      <td><input type="text" value="${atk.roll||''}" placeholder="к20+4" oninput="updateAtk(${i},'roll',this.value)" style="min-width:55px"></td>
-      <td><input type="text" value="${atk.dmg||''}" placeholder="к8+2" oninput="updateAtk(${i},'dmg',this.value)" style="min-width:55px"></td>
-      <td><input type="text" value="${atk.range||''}" placeholder="1.5м" oninput="updateAtk(${i},'range',this.value)" style="min-width:40px"></td>
-      <td><input type="text" value="${atk.uses||''}" placeholder="∞" oninput="updateAtk(${i},'uses',this.value)" style="min-width:35px"></td>
-      <td><button class="atk-del" onclick="delAtk(${i})">✕</button></td>`;
+    tr.innerHTML=`<td><input value="${a.name||''}" oninput="updateAtk(${i},'name',this.value)" placeholder="Меч..."></td>
+      <td><input value="${a.attack||''}" oninput="updateAtk(${i},'attack',this.value)" placeholder="+5"></td>
+      <td><input value="${a.damage||''}" oninput="updateAtk(${i},'damage',this.value)" placeholder="1к8+3"></td>
+      <td><input value="${a.range||''}" oninput="updateAtk(${i},'range',this.value)" placeholder="1.5м"></td>
+      <td><input value="${a.qty||''}" oninput="updateAtk(${i},'qty',this.value)" style="width:40px" placeholder="1"></td>
+      <td><button class="atk-del" onclick="delAttack(${i})">✕</button></td>`;
     body.appendChild(tr);
   });
 }
-function addAttack(){
-  const c=getChar();
-  if(!c.attacks)c.attacks=[];
-  c.attacks.push({name:'',roll:'',dmg:'',range:'',uses:''});
-  saveAll();renderAttacks();
-}
-function updateAtk(i,field,val){
-  const c=getChar();c.attacks[i][field]=val;saveAll();
-}
-function delAtk(i){
-  const c=getChar();c.attacks.splice(i,1);saveAll();renderAttacks();
-}
+function addAttack(){const c=getChar();if(!c.attacks)c.attacks=[];c.attacks.push({name:'',attack:'',damage:'',range:'',qty:''});saveAll();renderAttacks();}
+function delAttack(i){const c=getChar();c.attacks.splice(i,1);saveAll();renderAttacks();}
+function updateAtk(i,field,val){getChar().attacks[i][field]=val;saveAll();}
 
 // ===================== INVENTORY =====================
 function renderInventory(){
   const c=getChar();
   const list=document.getElementById('inv-list');
   list.innerHTML='';
+  const typeLabels={weapon:t('opt_weapon'),armor:t('opt_armor'),item:t('opt_item'),magic:t('opt_magic')};
   (c.inventory||[]).forEach((item,i)=>{
-    const typeLabels={weapon:'Зброя',armor:'Броня',item:'Предмет',magic:'Магічне'};
     const div=document.createElement('div');
     div.className='inv-item';
-    div.innerHTML=`
-      <div class="inv-item-header">
-        <div class="inv-item-name">${item.name||'Предмет'}</div>
+    div.innerHTML=`<div class="inv-item-header">
+        <div class="inv-item-name">${item.name||'?'}</div>
         <span class="inv-badge badge-${item.type||'item'}">${typeLabels[item.type||'item']}</span>
-        <button class="inv-del" onclick="delItem(${i})">✕</button>
+        <button class="inv-del" onclick="delInvItem(${i})">✕</button>
       </div>
-      ${item.desc?`<div style="font-size:12px;color:var(--text2);font-style:italic;margin-bottom:5px">${item.desc}</div>`:''}
-      <div style="display:flex;gap:12px;font-size:11px;color:var(--text3)">
-        ${item.qty?`<span>К-сть: <span style="color:var(--gold2)">${item.qty}</span></span>`:''}
-        ${item.weight?`<span>Вага: <span style="color:var(--gold2)">${item.weight} кг</span></span>`:''}
-      </div>`;
+      <div class="inv-row">
+        <div class="field" style="flex:1"><div class="field-label">${t('lbl_qty')}</div><input type="number" value="${item.qty||1}" oninput="updateInv(${i},'qty',this.value)" style="text-align:center"></div>
+        <div class="field" style="flex:1"><div class="field-label">${t('lbl_weight')}</div><input type="number" value="${item.weight||0}" oninput="updateInv(${i},'weight',this.value)" step="0.1" style="text-align:center"></div>
+      </div>
+      ${item.desc?`<div style="font-size:12px;color:var(--text3);font-style:italic;margin-top:4px">${item.desc}</div>`:''}`;
     list.appendChild(div);
   });
 }
@@ -997,26 +2035,31 @@ function confirmAddItem(){
   const c=getChar();
   if(!c.inventory)c.inventory=[];
   c.inventory.push({
-    name:document.getElementById('item-name-input').value||'Предмет',
+    name:document.getElementById('item-name-input').value||'Item',
     type:document.getElementById('item-type-input').value,
-    weight:document.getElementById('item-weight-input').value,
-    qty:document.getElementById('item-qty-input').value||1,
+    weight:parseFloat(document.getElementById('item-weight-input').value)||0,
+    qty:parseInt(document.getElementById('item-qty-input').value)||1,
     desc:document.getElementById('item-desc-input').value
   });
   saveAll();renderInventory();closeModal('modal-add-item');
+  ['item-name-input','item-weight-input','item-desc-input'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('item-qty-input').value='1';
 }
-function delItem(i){const c=getChar();c.inventory.splice(i,1);saveAll();renderInventory();}
+function delInvItem(i){const c=getChar();c.inventory.splice(i,1);saveAll();renderInventory();}
+function updateInv(i,field,val){getChar().inventory[i][field]=field==='qty'?parseInt(val)||1:parseFloat(val)||0;saveAll();}
 
 // ===================== COINS =====================
 function renderCoins(){
   const c=getChar();
-  ['copper','silver','gold'].forEach(t=>{
-    document.getElementById('coins-'+t).textContent=c.coins[t]||0;
+  ['copper','silver','gold'].forEach(coin=>{
+    const el=document.getElementById('coins-'+coin);
+    if(el)el.textContent=(c.coins||{})[coin]||0;
   });
 }
-function changeCoin(type,delta){
+function changeCoin(coin,delta){
   const c=getChar();
-  c.coins[type]=Math.max(0,(c.coins[type]||0)+delta);
+  if(!c.coins)c.coins={copper:0,silver:0,gold:0};
+  c.coins[coin]=Math.max(0,(c.coins[coin]||0)+delta);
   saveAll();renderCoins();
 }
 
@@ -1032,140 +2075,198 @@ function renderEnemies(){
     div.innerHTML=`
       <button class="enemy-del" onclick="delEnemy(${i})">✕</button>
       <div class="enemy-name-row">
-        <input class="enemy-name-input" type="text" value="${en.name||''}" placeholder="Назва ворога..." oninput="updateEnemy(${i},'name',this.value)">
+        <input class="enemy-name-input" value="${en.name||''}" oninput="updateEnemy(${i},'name',this.value)" placeholder="Гоблін...">
       </div>
       <div class="enemy-stats">
-        ${['str','dex','con','int','wis','cha'].map(s=>`<div class="enemy-stat">
-          <div class="enemy-stat-label">${STAT_NAMES[s]}</div>
-          <input type="number" value="${en.stats&&en.stats[s]||10}" style="text-align:center;font-family:'Cinzel',serif;font-size:14px;color:var(--gold);background:none;border:none;border-bottom:0.5px solid rgba(180,140,80,0.15);border-radius:0;padding:2px 0;width:100%" oninput="updateEnemyStat(${i},'${s}',this.value)">
-        </div>`).join('')}
-      </div>
-      <div class="g3" style="margin-bottom:8px">
-        <div class="field"><div class="field-label">Захист</div><input type="number" value="${en.ac||10}" oninput="updateEnemy(${i},'ac',this.value)"></div>
-        <div class="field"><div class="field-label">Швидкість</div><input type="number" value="${en.speed||9}" oninput="updateEnemy(${i},'speed',this.value)"></div>
-        <div class="field"><div class="field-label">Досвід</div><input type="number" value="${en.xpReward||0}" oninput="updateEnemy(${i},'xpReward',this.value)"></div>
+        ${['str','dex','con','int','wis','cha'].map(s=>`<div class="enemy-stat"><div class="enemy-stat-label">${t('stat_'+s)}</div><input type="number" class="enemy-stat-val" value="${(en.stats||{})[s]||10}" oninput="updateEnemyStat(${i},'${s}',this.value)" style="text-align:center;font-family:'Cinzel',serif;font-size:15px;color:var(--gold)"></div>`).join('')}
       </div>
       <div class="enemy-hp-row">
-        <div class="enemy-hp-cur" id="en-hpcur-${i}">${en.hpCur||0}</div>
-        <div class="enemy-hp-sep">/</div>
-        <div class="enemy-hp-max" id="en-hpmax-${i}">${en.hpMax||0}</div>
+        <span class="enemy-hp-cur" id="en-hpcur-${i}">${en.hpCur||0}</span>
+        <span class="enemy-hp-sep">/</span>
+        <span class="enemy-hp-max" id="en-hpmax-${i}">${en.hpMax||10}</span>
         <div class="enemy-hp-bar"><div class="enemy-hp-fill" id="en-hpbar-${i}" style="width:${pct}%"></div></div>
       </div>
-      <div class="g2" style="margin-bottom:8px">
-        <div class="field"><div class="field-label">Макс. ХП</div><input type="number" value="${en.hpMax||0}" oninput="updateEnemyHPMax(${i},this.value)"></div>
-        <div style="display:flex;gap:6px;align-items:flex-end;margin-bottom:0">
-          <input type="number" id="en-amt-${i}" placeholder="шкода" style="flex:1">
-          <button class="hp-btn dmg" style="flex:1;padding:6px 4px;font-size:11px" onclick="damageEnemy(${i})">Шкода</button>
-        </div>
+      <div class="g3" style="margin-bottom:8px">
+        <div class="field"><div class="field-label">КБ</div><input type="number" value="${en.ac||10}" oninput="updateEnemy(${i},'ac',this.value)" style="text-align:center"></div>
+        <div class="field"><div class="field-label">Макс. ХП</div><input type="number" value="${en.hpMax||10}" oninput="updateEnemyHPMax(${i},this.value)" style="text-align:center"></div>
+        <div class="field"><div class="field-label">ДС (XP)</div><input type="number" value="${en.xpReward||0}" oninput="updateEnemy(${i},'xpReward',parseInt(this.value)||0)" style="text-align:center"></div>
       </div>
-      <div class="field" style="margin-bottom:8px"><div class="field-label">Атаки (назва | к20+x | шкода)</div>
-        <textarea rows="2" placeholder="Укус | к20+4 | к8+2&#10;Кіготь | к20+3 | к6+1" oninput="updateEnemy(${i},'attacks',this.value)">${en.attacks||''}</textarea>
+      <div style="display:flex;gap:6px;align-items:flex-end;margin-bottom:8px">
+        <input type="number" id="en-amt-${i}" placeholder="шкода" style="flex:1">
+        <button class="hp-btn dmg" style="flex:1;padding:6px 4px;font-size:11px" onclick="damageEnemy(${i})">${t('btn_dmg')}</button>
       </div>
-      <button class="award-btn" onclick="awardXP(${i})">⬆ Нарахувати ${en.xpReward||0} досвіду</button>`;
+      <button class="award-btn" onclick="awardXP(${i})">⬆ +${en.xpReward||0} ДС</button>`;
     list.appendChild(div);
   });
 }
-function addEnemy(){
-  const c=getChar();
-  if(!c.enemies)c.enemies=[];
-  c.enemies.push({name:'',stats:{str:10,dex:10,con:10,int:10,wis:10,cha:10},ac:10,speed:9,hpMax:10,hpCur:10,xpReward:100,attacks:''});
-  saveAll();renderEnemies();
-}
+function addEnemy(){const c=getChar();if(!c.enemies)c.enemies=[];c.enemies.push({name:'',stats:{str:10,dex:10,con:10,int:10,wis:10,cha:10},ac:10,speed:9,hpMax:10,hpCur:10,xpReward:100,attacks:''});saveAll();renderEnemies();}
 function delEnemy(i){const c=getChar();c.enemies.splice(i,1);saveAll();renderEnemies();}
-function updateEnemy(i,field,val){const c=getChar();c.enemies[i][field]=val;saveAll();}
+function updateEnemy(i,field,val){getChar().enemies[i][field]=val;saveAll();}
 function updateEnemyStat(i,stat,val){const c=getChar();if(!c.enemies[i].stats)c.enemies[i].stats={};c.enemies[i].stats[stat]=parseInt(val)||10;saveAll();}
-function updateEnemyHPMax(i,val){
-  const c=getChar();
-  c.enemies[i].hpMax=parseInt(val)||0;
-  if(c.enemies[i].hpCur>c.enemies[i].hpMax)c.enemies[i].hpCur=c.enemies[i].hpMax;
-  saveAll();
-  document.getElementById('en-hpmax-'+i).textContent=c.enemies[i].hpMax;
-  updateEnemyBar(i);
-}
-function damageEnemy(i){
-  const c=getChar();
-  const amt=parseInt(document.getElementById('en-amt-'+i).value)||0;
-  if(!amt)return;
-  c.enemies[i].hpCur=Math.max(0,c.enemies[i].hpCur-amt);
-  document.getElementById('en-amt-'+i).value='';
-  saveAll();
-  document.getElementById('en-hpcur-'+i).textContent=c.enemies[i].hpCur;
-  updateEnemyBar(i);
-}
-function updateEnemyBar(i){
-  const c=getChar();const en=c.enemies[i];
-  const pct=en.hpMax>0?Math.max(0,Math.min(100,en.hpCur/en.hpMax*100)):0;
-  const bar=document.getElementById('en-hpbar-'+i);
-  if(bar)bar.style.width=pct+'%';
-}
-function awardXP(i){
-  const c=getChar();
-  const xp=parseInt(c.enemies[i].xpReward)||0;
-  if(!xp)return;
-  c.xp+=xp;
-  let leveled=false;
-  while(c.level<20&&c.xp>=XP_TABLE[c.level]){c.level++;if(c.level%5===0)c.statPoints+=2;leveled=true;}
-  if(leveled)c._pendingLevelUp=true;
-  saveAll();renderXP();
-  alert(`+${xp} досвіду! Всього: ${c.xp}`);
-}
+function updateEnemyHPMax(i,val){const c=getChar();c.enemies[i].hpMax=parseInt(val)||0;if(c.enemies[i].hpCur>c.enemies[i].hpMax)c.enemies[i].hpCur=c.enemies[i].hpMax;saveAll();document.getElementById('en-hpmax-'+i).textContent=c.enemies[i].hpMax;updateEnemyBar(i);}
+function damageEnemy(i){const c=getChar();const amt=parseInt(document.getElementById('en-amt-'+i).value)||0;if(!amt)return;c.enemies[i].hpCur=Math.max(0,c.enemies[i].hpCur-amt);document.getElementById('en-amt-'+i).value='';saveAll();document.getElementById('en-hpcur-'+i).textContent=c.enemies[i].hpCur;updateEnemyBar(i);}
+function updateEnemyBar(i){const c=getChar();const en=c.enemies[i];const pct=en.hpMax>0?Math.max(0,Math.min(100,en.hpCur/en.hpMax*100)):0;const bar=document.getElementById('en-hpbar-'+i);if(bar)bar.style.width=pct+'%';}
+function awardXP(i){const c=getChar();const xp=parseInt(c.enemies[i].xpReward)||0;if(!xp)return;c.xp+=xp;let leveled=false;while(c.level<20&&c.xp>=XP_TABLE[c.level]){c.level++;if(c.level%5===0)c.statPoints+=2;leveled=true;}if(leveled)c._pendingLevelUp=true;saveAll();renderXP();alert(`+${xp} ДС! Всього: ${c.xp}`);}
 
 // ===================== SHOP =====================
 function renderShop(){
   const c=getChar();
   const list=document.getElementById('shop-list');
   list.innerHTML='';
+  const typeLabels={weapon:t('opt_weapon'),armor:t('opt_armor'),item:t('opt_item'),magic:t('opt_magic')};
   (c.shop||[]).forEach((item,i)=>{
-    const typeLabels={weapon:'Зброя',armor:'Броня',item:'Предмет',magic:'Магічне'};
     const div=document.createElement('div');
     div.className='shop-item';
-    div.innerHTML=`
-      <div class="shop-item-info">
-        <div class="shop-item-name">${item.name||'Товар'} <span class="inv-badge badge-${item.type||'item'}" style="vertical-align:middle">${typeLabels[item.type||'item']}</span></div>
-        ${item.desc?`<div class="shop-item-desc">${item.desc}</div>`:''}
-      </div>
+    div.innerHTML=`<div class="shop-item-info"><div class="shop-item-name">${item.name||'?'} <span class="inv-badge badge-${item.type||'item'}" style="vertical-align:middle">${typeLabels[item.type||'item']}</span></div>${item.desc?`<div class="shop-item-desc">${item.desc}</div>`:''}</div>
       <div class="shop-prices">
-        <div class="price-tag"><div class="price-label">Купити</div><div class="price-val">${item.buyPrice||0}🟡</div></div>
-        <div class="price-tag"><div class="price-label">Продати</div><div class="price-val">${item.sellPrice||0}🟡</div></div>
+        <div class="price-tag"><div class="price-label">${t('lbl_buy_price').split(' ')[0]}</div><div class="price-val">${item.buyPrice||0}🟡</div></div>
+        <div class="price-tag"><div class="price-label">${t('lbl_sell_price').split(' ')[0]}</div><div class="price-val">${item.sellPrice||0}🟡</div></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px">
-        <button class="shop-btn buy-btn" onclick="buyItem(${i})">Купити</button>
-        <button class="shop-btn sell-btn" onclick="sellItem(${i})">Продати</button>
-        <button onclick="delShopItem(${i})" style="background:none;border:none;color:var(--text3);font-size:11px;padding:2px">✕ Видалити</button>
+        <button class="shop-btn buy-btn" onclick="buyItem(${i})">${t('btn_open')}</button>
+        <button onclick="delShopItem(${i})" style="background:none;border:none;color:var(--text3);font-size:11px;padding:2px">✕</button>
       </div>`;
     list.appendChild(div);
   });
 }
 function openAddShopModal(){openModal('modal-add-shop');}
 function confirmAddShop(){
-  const c=getChar();
-  if(!c.shop)c.shop=[];
-  c.shop.push({
-    name:document.getElementById('shop-name-input').value||'Товар',
-    type:document.getElementById('shop-type-input').value,
-    buyPrice:parseInt(document.getElementById('shop-buy-input').value)||0,
-    sellPrice:parseInt(document.getElementById('shop-sell-input').value)||0,
-    desc:document.getElementById('shop-desc-input').value
-  });
+  const c=getChar();if(!c.shop)c.shop=[];
+  c.shop.push({name:document.getElementById('shop-name-input').value||'Item',type:document.getElementById('shop-type-input').value,buyPrice:parseInt(document.getElementById('shop-buy-input').value)||0,sellPrice:parseInt(document.getElementById('shop-sell-input').value)||0,desc:document.getElementById('shop-desc-input').value});
   saveAll();renderShop();closeModal('modal-add-shop');
 }
 function delShopItem(i){const c=getChar();c.shop.splice(i,1);saveAll();renderShop();}
-function buyItem(i){
-  const c=getChar();const item=c.shop[i];
-  const price=item.buyPrice||0;
-  if(c.coins.gold<price){alert('Недостатньо золота!');return;}
-  c.coins.gold-=price;
-  if(!c.inventory)c.inventory=[];
-  c.inventory.push({name:item.name,type:item.type,desc:item.desc,qty:1,weight:0});
-  saveAll();renderCoins();renderInventory();
-  alert(`Куплено: ${item.name} за ${price} золота`);
+function buyItem(i){const c=getChar();const item=c.shop[i];const price=item.buyPrice||0;if(c.coins.gold<price){alert('Недостатньо золота!');return;}c.coins.gold-=price;if(!c.inventory)c.inventory=[];c.inventory.push({name:item.name,type:item.type,desc:item.desc,qty:1,weight:0});saveAll();renderCoins();renderInventory();}
+
+// ===================== ENCYCLOPEDIA CUSTOM ENTRIES =====================
+function openEncModal(section){
+  document.getElementById('enc-entry-section').value=section;
+  document.getElementById('modal-enc-title').textContent=t('btn_add_entry').replace('+','').trim()+' — '+section;
+  openModal('modal-enc-entry');
 }
-function sellItem(i){
-  const c=getChar();const item=c.shop[i];
-  const price=item.sellPrice||0;
-  c.coins.gold+=price;
-  saveAll();renderCoins();
-  alert(`Продано: ${item.name} за ${price} золота`);
+function saveEncEntry(){
+  const section=document.getElementById('enc-entry-section').value;
+  const entry={
+    title:document.getElementById('enc-entry-title').value||'Запис',
+    subtitle:document.getElementById('enc-entry-subtitle').value||'',
+    icon:document.getElementById('enc-entry-icon').value||'📜',
+    body:document.getElementById('enc-entry-body').value||''
+  };
+  if(!encEntries[section])encEntries[section]=[];
+  encEntries[section].push(entry);
+  saveAll();renderEncCustom(section);closeModal('modal-enc-entry');
+  ['enc-entry-title','enc-entry-subtitle','enc-entry-icon','enc-entry-body'].forEach(id=>document.getElementById(id).value='');
+}
+function renderEncCustom(section){
+  const container=document.getElementById('enc-'+section+'-custom');
+  if(!container)return;
+  container.innerHTML='';
+  (encEntries[section]||[]).forEach((e,i)=>{
+    const div=document.createElement('div');
+    div.className='entry-card';
+    div.style.borderColor='rgba(180,140,80,0.3)';
+    div.innerHTML=`<div class="entry-card-header"><div class="entry-card-icon">${e.icon}</div><div>
+      <div class="entry-card-title">${e.title}</div>
+      <div class="entry-card-subtitle">${e.subtitle}</div>
+    </div><button onclick="delEncEntry('${section}',${i})" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text3);font-size:14px">✕</button></div>
+    <div class="entry-card-body">${e.body}</div>
+    <div class="entry-card-tags"><span class="entry-tag tag-custom">${t('tag_custom')}</span></div>`;
+    container.appendChild(div);
+  });
+}
+function delEncEntry(section,i){encEntries[section].splice(i,1);saveAll();renderEncCustom(section);}
+
+// ===================== CREATION CUSTOM ENTRIES =====================
+function openCreModal(section){
+  document.getElementById('cre-entry-section').value=section;
+  openModal('modal-cre-entry');
+}
+function saveCreEntry(){
+  const section=document.getElementById('cre-entry-section').value;
+  const entry={
+    title:document.getElementById('cre-entry-title').value||'Запис',
+    subtitle:document.getElementById('cre-entry-subtitle').value||'',
+    icon:document.getElementById('cre-entry-icon').value||'⚔️',
+    body:document.getElementById('cre-entry-body').value||''
+  };
+  if(!creEntries[section])creEntries[section]=[];
+  creEntries[section].push(entry);
+  saveAll();renderCreCustom(section);closeModal('modal-cre-entry');
+  ['cre-entry-title','cre-entry-subtitle','cre-entry-icon','cre-entry-body'].forEach(id=>document.getElementById(id).value='');
+}
+function renderCreCustom(section){
+  const sectionMap={class:'classes',race:'races',background:'backgrounds',ability:'abilities'};
+  const containerId='cre-'+sectionMap[section]+'-custom';
+  const container=document.getElementById(containerId);
+  if(!container)return;
+  container.innerHTML='';
+  (creEntries[section]||[]).forEach((e,i)=>{
+    const div=document.createElement('div');
+    div.className='entry-card';
+    div.style.borderColor='rgba(180,140,80,0.3)';
+    div.innerHTML=`<div class="entry-card-header"><div class="entry-card-icon">${e.icon}</div><div>
+      <div class="entry-card-title">${e.title}</div>
+      <div class="entry-card-subtitle">${e.subtitle}</div>
+    </div><button onclick="delCreEntry('${section}',${i})" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text3);font-size:14px">✕</button></div>
+    <div class="entry-card-body">${e.body}</div>
+    <div class="entry-card-tags"><span class="entry-tag tag-custom">${t('tag_custom')}</span></div>`;
+    container.appendChild(div);
+  });
+}
+function delCreEntry(section,i){creEntries[section].splice(i,1);saveAll();renderCreCustom(section);}
+
+// ===================== EQUIPMENT CUSTOM ENTRIES =====================
+function openEqModal(section){
+  document.getElementById('eq-entry-section').value=section;
+  openModal('modal-eq-entry');
+}
+function saveEqEntry(){
+  const section=document.getElementById('eq-entry-section').value;
+  const entry={
+    title:document.getElementById('eq-entry-title').value||'Предмет',
+    subtitle:document.getElementById('eq-entry-subtitle').value||'',
+    icon:document.getElementById('eq-entry-icon').value||'⚔️',
+    stat1:document.getElementById('eq-entry-stat1').value||'—',
+    stat2:document.getElementById('eq-entry-stat2').value||'—',
+    body:document.getElementById('eq-entry-body').value||''
+  };
+  if(!eqEntries[section])eqEntries[section]=[];
+  eqEntries[section].push(entry);
+  saveAll();renderEqCustom(section);closeModal('modal-eq-entry');
+  ['eq-entry-title','eq-entry-subtitle','eq-entry-icon','eq-entry-stat1','eq-entry-stat2','eq-entry-body'].forEach(id=>document.getElementById(id).value='');
+}
+function renderEqCustom(section){
+  const sectionMap={weapon:'weapons',armor:'armor',gear:'gear',magic:'magic-items'};
+  const containerId='eq-'+sectionMap[section]+'-custom';
+  const container=document.getElementById(containerId);
+  if(!container)return;
+  container.innerHTML='';
+  (eqEntries[section]||[]).forEach((e,i)=>{
+    const div=document.createElement('div');
+    div.className='entry-card';
+    div.style.borderColor='rgba(180,140,80,0.3)';
+    div.innerHTML=`<div class="entry-card-header"><div class="entry-card-icon">${e.icon}</div><div>
+      <div class="entry-card-title">${e.title}</div>
+      <div class="entry-card-subtitle">${e.subtitle}</div>
+    </div><button onclick="delEqEntry('${section}',${i})" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text3);font-size:14px">✕</button></div>
+    <div class="entry-card-body">${e.body}</div>
+    <div class="entry-stat-row">
+      <div class="entry-stat"><div class="entry-stat-label">Урон/КБ</div><div class="entry-stat-val">${e.stat1}</div></div>
+      <div class="entry-stat"><div class="entry-stat-label">Ціна</div><div class="entry-stat-val">${e.stat2}</div></div>
+    </div>
+    <div class="entry-card-tags"><span class="entry-tag tag-custom">${t('tag_custom')}</span></div>`;
+    container.appendChild(div);
+  });
+}
+function delEqEntry(section,i){eqEntries[section].splice(i,1);saveAll();renderEqCustom(section);}
+
+// ===================== SEARCH =====================
+function filterEncItems(q){
+  const cards=document.querySelectorAll('#enc-items .entry-card');
+  cards.forEach(card=>{
+    const txt=card.textContent.toLowerCase();
+    card.style.display=txt.includes(q.toLowerCase())?'':'none';
+  });
 }
 
 // ===================== MODALS =====================
@@ -1177,9 +2278,16 @@ document.querySelectorAll('.modal-overlay').forEach(el=>{
 
 // ===================== INIT =====================
 loadAll();
+// Apply lang from storage
+document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',
+  (currentLang==='uk'&&b.textContent.trim()==='УКР')||(currentLang==='en'&&b.textContent.trim()==='ENG')
+));
+applyI18n();
 renderCharSelect();
+// Render all encyclopedia custom entries on load
+['prehistory','items','creatures'].forEach(s=>renderEncCustom(s));
+['class','race','background','ability'].forEach(s=>renderCreCustom(s));
+['weapon','armor','gear','magic'].forEach(s=>renderEqCustom(s));
 </script>
 </body>
 </html>
-HTMLEOF
-echo "Done"
