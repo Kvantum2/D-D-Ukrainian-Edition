@@ -407,6 +407,27 @@ textarea{resize:vertical;line-height:1.5}
     <div class="app-logo-title" data-i18n="logo_title">Аркуш Персонажа</div>
   </div>
   <div style="padding:0 20px">
+    <!-- SAVE / LOAD PANEL -->
+    <div class="saveload-panel">
+      <div class="saveload-title">💾 Збереження та Завантаження</div>
+      <div class="saveload-row">
+        <div class="saveload-block">
+          <div class="saveload-label">Зберегти все на пристрій</div>
+          <div class="saveload-hint">Персонажі, енциклопедія, карти — все в один файл</div>
+          <button class="saveload-btn saveload-export" onclick="exportSave()">⬇ Зберегти файл</button>
+        </div>
+        <div class="saveload-divider"></div>
+        <div class="saveload-block">
+          <div class="saveload-label">Завантажити збереження</div>
+          <div class="saveload-hint">Відновити дані з файлу (.dnd)</div>
+          <label class="saveload-btn saveload-import" style="display:block;text-align:center;cursor:pointer">
+            ⬆ Завантажити файл
+            <input type="file" id="import-file-input" accept=".dnd,.json" style="display:none" onchange="importSave(this)">
+          </label>
+        </div>
+      </div>
+      <div id="saveload-status" class="saveload-status"></div>
+    </div>
     <div class="char-list" id="char-list"></div>
     <button class="btn-new" onclick="openNewCharModal()" data-i18n="btn_new_char">+ Новий Персонаж</button>
   </div>
@@ -658,6 +679,7 @@ textarea{resize:vertical;line-height:1.5}
     <button class="enc-tab active" onclick="switchEncTab('prehistory')" data-i18n="enc_tab_pre">Передісторія</button>
     <button class="enc-tab" onclick="switchEncTab('items')" data-i18n="enc_tab_items">Предмети</button>
     <button class="enc-tab" onclick="switchEncTab('creatures')" data-i18n="enc_tab_creatures">Породження</button>
+    <button class="enc-tab" onclick="switchEncTab('maps')">🗺 Карти</button>
   </div>
 
   <!-- ПЕРЕДІСТОРІЯ -->
@@ -954,6 +976,21 @@ textarea{resize:vertical;line-height:1.5}
           <span class="entry-tag tag-custom" data-i18n="tag_custom">Кастомне</span>
           <span class="entry-tag tag-monster">КН 3</span>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- КАРТИ -->
+  <div class="enc-page" id="enc-maps">
+    <div style="padding:14px;padding-bottom:60px">
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-header-title">🗺 КАРТИ ТА МІСЦЯ</div>
+          <button class="sec-add-btn" onclick="openMapUpload()">+ Додати карту</button>
+        </div>
+        <div class="note-box">Завантажуй фото карт, планів підземель або будь-яких зображень. Зберігаються локально на пристрої.</div>
+        <div id="maps-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"></div>
+        <div id="maps-empty" style="text-align:center;color:var(--text3);font-size:12px;font-style:italic;padding:30px 0">Карт ще немає. Натисни «+ Додати карту» щоб завантажити фото.</div>
       </div>
     </div>
   </div>
