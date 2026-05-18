@@ -311,8 +311,60 @@ textarea{resize:vertical;line-height:1.5}
 .modal-confirm:active{background:rgba(139,26,26,0.4)}
 .modal-cancel:active{background:rgba(255,255,255,0.08)}
 
+/* ===== PICKER ROWS ===== */
+.picker-row{display:flex;align-items:center;gap:10px;padding:9px 10px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:4px;margin-bottom:6px;cursor:pointer;transition:border-color 0.15s}
+.picker-row:hover,.picker-row:active{border-color:var(--gold2)}
+.picker-row-icon{font-size:18px;flex-shrink:0}
+.picker-row-info{flex:1;min-width:0}
+.picker-row-name{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.picker-row-sub{font-size:11px;color:var(--text3);font-style:italic}
+.picker-row-stat{font-family:'Cinzel',serif;font-size:12px;color:var(--text2);flex-shrink:0;text-align:right}
+.picker-add-btn{background:rgba(139,26,26,0.2);border:0.5px solid rgba(139,26,26,0.4);color:var(--gold);font-size:10px;letter-spacing:0.1em;padding:5px 10px;border-radius:2px;flex-shrink:0;white-space:nowrap}
+.picker-add-btn:active{background:rgba(139,26,26,0.4)}
+.picker-empty{text-align:center;color:var(--text3);font-size:12px;font-style:italic;padding:20px}
+
+/* ===== TAG CHIPS ===== */
+.tag-chip{display:inline-flex;align-items:center;gap:4px;font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.1em;padding:3px 10px;border-radius:10px;cursor:pointer;transition:all 0.15s;border:0.5px solid}
+.tag-chip.tag-lore{background:rgba(58,106,154,0.15);color:#80b0d0;border-color:rgba(58,106,154,0.3)}
+.tag-chip.tag-monster{background:rgba(139,26,26,0.18);color:#d08080;border-color:rgba(139,26,26,0.3)}
+.tag-chip.tag-item{background:rgba(100,60,120,0.18);color:#b080d0;border-color:rgba(100,60,120,0.3)}
+.tag-chip.tag-race{background:rgba(90,154,58,0.15);color:#80b060;border-color:rgba(90,154,58,0.25)}
+.tag-chip.tag-custom{background:rgba(180,140,80,0.15);color:var(--gold2);border-color:rgba(180,140,80,0.25)}
+.tag-chip.active,.tag-chip:hover{opacity:0.8;transform:scale(1.05)}
+.tag-chip.filter-active{box-shadow:0 0 0 1px currentColor}
+.tag-chip-x{font-size:10px;opacity:0.6}
+
+/* ===== ENEMY BATTLE CARDS ===== */
+.battle-card{background:var(--bg3);border:0.5px solid rgba(139,26,26,0.35);border-radius:6px;padding:12px;margin-bottom:10px;position:relative}
+.battle-card-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.battle-card-icon{font-size:20px;flex-shrink:0}
+.battle-card-name{font-family:'Cinzel',serif;font-size:15px;color:var(--gold);flex:1}
+.battle-card-xp{font-size:11px;color:var(--gold2);font-family:'Cinzel',serif}
+.battle-del{background:none;border:none;color:var(--text3);font-size:16px;padding:2px;flex-shrink:0}
+.battle-del:active{color:var(--red)}
+.battle-hp-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.battle-hp-cur{font-family:'Cinzel',serif;font-size:24px;color:var(--red);line-height:1}
+.battle-hp-sep{color:var(--text3);font-size:16px}
+.battle-hp-max{font-family:'Cinzel',serif;font-size:16px;color:var(--text2)}
+.battle-hp-bar{flex:1;height:6px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden}
+.battle-hp-fill{height:100%;background:rgba(192,80,80,0.7);border-radius:2px;transition:width 0.3s}
+.battle-stats-row{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+.battle-stat-badge{background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:3px;padding:3px 8px;text-align:center;flex:1;min-width:40px}
+.battle-stat-label{font-size:7px;letter-spacing:0.15em;color:var(--text3);font-family:'Cinzel',serif}
+.battle-stat-val{font-family:'Cinzel',serif;font-size:13px;color:var(--gold)}
+.battle-actions{display:flex;gap:6px;align-items:center}
+.battle-dmg-input{width:70px;flex-shrink:0}
+
+/* ENC topbar search */
+.enc-topbar{background:#0a0806;border-bottom:1px solid var(--border);padding:10px 14px}
+.enc-topbar-title{font-family:'Uncial Antiqua',serif;font-size:18px;color:var(--gold);margin-bottom:8px}
+
+/* Tag suggestion chips in modal */
+.tag-sug{display:inline-block;font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.1em;padding:3px 9px;border-radius:10px;cursor:pointer;background:rgba(180,140,80,0.1);border:0.5px solid rgba(180,140,80,0.25);color:var(--gold2);transition:all 0.15s}
+.tag-sug:hover{background:rgba(180,140,80,0.25)}
+
 /* SEARCH BOX */
-.search-box{background:rgba(255,255,255,0.04);border:0.5px solid var(--border);border-radius:4px;padding:8px 12px;width:100%;margin-bottom:14px;font-size:13px;color:var(--text)}
+.search-box{background:rgba(255,255,255,0.04);border:0.5px solid var(--border);border-radius:4px;padding:8px 12px;width:100%;font-size:13px;color:var(--text)}
 .search-box::placeholder{color:var(--text3)}
 
 /* HERO BANNER */
@@ -556,9 +608,14 @@ textarea{resize:vertical;line-height:1.5}
       </div>
     </div>
     <div class="sec">
-      <div class="sec-title" data-i18n="sec_inv">Інвентар</div>
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="sec_inv">Інвентар</div>
+        <div style="display:flex;gap:6px">
+          <button class="sec-add-btn" onclick="openInvPicker()" data-i18n="btn_from_enc">З енциклопедії</button>
+          <button class="sec-add-btn" onclick="openAddItemModal()" data-i18n="btn_add_manual" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:var(--text3)">+ Вручну</button>
+        </div>
+      </div>
       <div id="inv-list"></div>
-      <button class="add-row-btn" onclick="openAddItemModal()" data-i18n="btn_add_item">+ Додати предмет</button>
     </div>
     <div class="sec">
       <div class="sec-title" data-i18n="sec_lang">Інші знання та мови</div>
@@ -569,9 +626,12 @@ textarea{resize:vertical;line-height:1.5}
   <!-- ENEMIES TAB -->
   <div class="page" id="page-enemies">
     <div class="sec">
-      <div class="sec-title" data-i18n="sec_enemies">Вороги</div>
+      <div class="sec-header">
+        <div class="sec-header-title" data-i18n="sec_enemies">Вороги у бою</div>
+        <button class="sec-add-btn" onclick="openEnemyPicker()" data-i18n="btn_add_enemy">+ З бібліотеки</button>
+      </div>
       <div id="enemy-list"></div>
-      <button class="add-row-btn" onclick="addEnemy()" data-i18n="btn_add_enemy">+ Додати ворога</button>
+      <div style="margin-top:6px;text-align:center;font-size:11px;color:var(--text3);font-style:italic" data-i18n="enemy_hint">Ворогів додають з Енциклопедії → Породження</div>
     </div>
   </div>
 
@@ -589,6 +649,10 @@ textarea{resize:vertical;line-height:1.5}
 <div id="screen-encyclopedia" class="screen">
   <div class="enc-topbar">
     <div class="enc-topbar-title" data-i18n="enc_title">📖 Енциклопедія</div>
+    <div style="margin-top:8px">
+      <input class="search-box" id="enc-global-search" placeholder="🔍 Пошук..." oninput="encGlobalSearch(this.value)" style="margin-bottom:6px">
+      <div id="enc-tag-filter-bar" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:2px"></div>
+    </div>
   </div>
   <div class="enc-tabs">
     <button class="enc-tab active" onclick="switchEncTab('prehistory')" data-i18n="enc_tab_pre">Передісторія</button>
@@ -711,7 +775,7 @@ textarea{resize:vertical;line-height:1.5}
         <div class="sec-header-title" data-i18n="enc_items_title">Предмети та Артефакти</div>
         <button class="sec-add-btn" onclick="openEncModal('items')" data-i18n="btn_add_entry">+ Додати</button>
       </div>
-      <input class="search-box" placeholder="🔍 Пошук предметів..." oninput="filterEncItems(this.value)" data-i18n-placeholder="search_items">
+      <div style="font-size:11px;color:var(--text3);font-style:italic;margin-bottom:10px">Використовуй глобальний пошук вгорі ↑</div>
       <div id="enc-items-custom"></div>
 
       <!-- Офіційні предмети -->
@@ -1409,11 +1473,80 @@ textarea{resize:vertical;line-height:1.5}
     <div class="field"><div class="field-label" data-i18n="lbl_title">Назва</div><input type="text" id="enc-entry-title"></div>
     <div class="field"><div class="field-label" data-i18n="lbl_subtitle">Підзаголовок</div><input type="text" id="enc-entry-subtitle"></div>
     <div class="field"><div class="field-label" data-i18n="lbl_icon">Іконка (емодзі)</div><input type="text" id="enc-entry-icon" placeholder="🗡"></div>
-    <div class="field"><div class="field-label" data-i18n="lbl_desc">Опис</div><textarea id="enc-entry-body" rows="4"></textarea></div>
+    <div class="field"><div class="field-label" data-i18n="lbl_desc">Опис</div><textarea id="enc-entry-body" rows="3"></textarea></div>
+    <!-- Creature-specific fields (shown only for creatures section) -->
+    <div id="enc-creature-fields" style="display:none">
+      <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;color:var(--blood);margin:10px 0 6px">БОЙОВІ ХАРАКТЕРИСТИКИ</div>
+      <div class="g3" style="margin-bottom:8px">
+        <div class="field"><div class="field-label">ХП</div><input type="number" id="enc-c-hp" placeholder="10"></div>
+        <div class="field"><div class="field-label">КБ</div><input type="number" id="enc-c-ac" placeholder="12"></div>
+        <div class="field"><div class="field-label">ДС (XP)</div><input type="number" id="enc-c-xp" placeholder="50"></div>
+      </div>
+    </div>
+    <!-- Items-specific fields (shown only for items) -->
+    <div id="enc-item-fields" style="display:none">
+      <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;color:var(--blood);margin:10px 0 6px">ХАРАКТЕРИСТИКИ ПРЕДМЕТУ</div>
+      <div class="g2" style="margin-bottom:8px">
+        <div class="field"><div class="field-label">Урон / КБ</div><input type="text" id="enc-i-stat" placeholder="1к8+2"></div>
+        <div class="field"><div class="field-label">Вага (кг)</div><input type="number" id="enc-i-weight" placeholder="1" step="0.1"></div>
+      </div>
+    </div>
+    <!-- Tags -->
+    <div class="field">
+      <div class="field-label">Теги <span style="color:var(--text3);font-size:10px">(через кому: Лісовий, Небезпечний)</span></div>
+      <input type="text" id="enc-entry-tags" placeholder="Монстр, КН 1/2, Ліс...">
+    </div>
+    <div style="margin-top:6px">
+      <div style="font-size:10px;color:var(--text3);margin-bottom:4px;font-family:'Cinzel',serif;letter-spacing:0.1em">АБО ОБЕРИ ІСНУЮЧИЙ ТЕГ:</div>
+      <div id="enc-tag-suggestions" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+    </div>
     <input type="hidden" id="enc-entry-section">
     <div class="modal-btns">
       <button class="modal-confirm" onclick="saveEncEntry()" data-i18n="btn_save">Зберегти</button>
       <button class="modal-cancel" onclick="closeModal('modal-enc-entry')" data-i18n="btn_cancel">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Enemy Picker (from library) -->
+<div class="modal-overlay" id="modal-enemy-picker">
+  <div class="modal">
+    <div class="modal-title">⚔ Вибрати ворога з бібліотеки</div>
+    <input class="search-box" id="enemy-picker-search" placeholder="🔍 Пошук..." oninput="filterEnemyPicker(this.value)" style="margin-bottom:10px">
+    <div id="enemy-picker-list" style="max-height:55vh;overflow-y:auto"></div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal('modal-enemy-picker')">Закрити</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Inventory Picker (from enc items + eq) -->
+<div class="modal-overlay" id="modal-inv-picker">
+  <div class="modal">
+    <div class="modal-title">🎒 Додати предмет з бібліотеки</div>
+    <input class="search-box" id="inv-picker-search" placeholder="🔍 Пошук..." oninput="filterInvPicker(this.value)" style="margin-bottom:10px">
+    <div id="inv-picker-list" style="max-height:50vh;overflow-y:auto"></div>
+    <div style="margin-top:8px;font-size:11px;color:var(--text3);font-style:italic">Після вибору можна змінити вагу та кількість</div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal('modal-inv-picker')">Закрити</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Quick-add item (after picking from library) -->
+<div class="modal-overlay" id="modal-inv-quick-add">
+  <div class="modal">
+    <div class="modal-title" id="inv-quick-title">Додати до інвентаря</div>
+    <input type="hidden" id="inv-quick-name">
+    <input type="hidden" id="inv-quick-type">
+    <input type="hidden" id="inv-quick-desc">
+    <div class="g2">
+      <div class="field"><div class="field-label">Вага (кг)</div><input type="number" id="inv-quick-weight" step="0.1" placeholder="1"></div>
+      <div class="field"><div class="field-label">Кількість</div><input type="number" id="inv-quick-qty" value="1"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-confirm" onclick="confirmInvQuickAdd()">Додати</button>
+      <button class="modal-cancel" onclick="closeModal('modal-inv-quick-add')">Назад</button>
     </div>
   </div>
 </div>
@@ -1884,11 +2017,11 @@ function changeStat(s,delta){
   const c=getChar();
   if(delta>0){
     if((c.statPoints||0)<1)return;
-    c.stats[s]=Math.min(20,c.stats[s]+2);
+    c.stats[s]=Math.min(20,c.stats[s]+1);
     c.statPoints--;
   } else {
     if(c.stats[s]<=1)return;
-    c.stats[s]=Math.max(1,c.stats[s]-2);
+    c.stats[s]--;
     c.statPoints++;
   }
   saveAll();renderStats();renderSkills();
@@ -2063,50 +2196,211 @@ function changeCoin(coin,delta){
   saveAll();renderCoins();
 }
 
-// ===================== ENEMIES =====================
+// ===================== ENEMIES (BATTLE) =====================
 function renderEnemies(){
   const c=getChar();
   const list=document.getElementById('enemy-list');
   list.innerHTML='';
+  if(!(c.enemies||[]).length){
+    list.innerHTML=`<div style="text-align:center;color:var(--text3);font-size:12px;font-style:italic;padding:20px 0">Ворогів немає. Додай з бібліотеки (Енциклопедія → Породження)</div>`;
+    return;
+  }
   (c.enemies||[]).forEach((en,i)=>{
     const pct=en.hpMax>0?Math.max(0,Math.min(100,en.hpCur/en.hpMax*100)):0;
+    const hpColor=pct>50?'rgba(192,80,80,0.7)':pct>25?'rgba(200,130,30,0.7)':'rgba(192,80,80,1)';
     const div=document.createElement('div');
-    div.className='enemy-card';
+    div.className='battle-card';
     div.innerHTML=`
-      <button class="enemy-del" onclick="delEnemy(${i})">✕</button>
-      <div class="enemy-name-row">
-        <input class="enemy-name-input" value="${en.name||''}" oninput="updateEnemy(${i},'name',this.value)" placeholder="Гоблін...">
+      <div class="battle-card-header">
+        <div class="battle-card-icon">${en.icon||'👹'}</div>
+        <div class="battle-card-name">${en.name||'Ворог'}</div>
+        <div class="battle-card-xp">+${en.xpReward||0} ДС</div>
+        <button class="battle-del" onclick="delEnemy(${i})">✕</button>
       </div>
-      <div class="enemy-stats">
-        ${['str','dex','con','int','wis','cha'].map(s=>`<div class="enemy-stat"><div class="enemy-stat-label">${t('stat_'+s)}</div><input type="number" class="enemy-stat-val" value="${(en.stats||{})[s]||10}" oninput="updateEnemyStat(${i},'${s}',this.value)" style="text-align:center;font-family:'Cinzel',serif;font-size:15px;color:var(--gold)"></div>`).join('')}
+      <div class="battle-hp-row">
+        <div class="battle-hp-cur" id="en-hpcur-${i}">${en.hpCur||0}</div>
+        <div class="battle-hp-sep">/</div>
+        <div class="battle-hp-max">${en.hpMax||0}</div>
+        <div class="battle-hp-bar"><div class="battle-hp-fill" id="en-hpbar-${i}" style="width:${pct}%;background:${hpColor}"></div></div>
       </div>
-      <div class="enemy-hp-row">
-        <span class="enemy-hp-cur" id="en-hpcur-${i}">${en.hpCur||0}</span>
-        <span class="enemy-hp-sep">/</span>
-        <span class="enemy-hp-max" id="en-hpmax-${i}">${en.hpMax||10}</span>
-        <div class="enemy-hp-bar"><div class="enemy-hp-fill" id="en-hpbar-${i}" style="width:${pct}%"></div></div>
+      <div class="battle-stats-row">
+        <div class="battle-stat-badge"><div class="battle-stat-label">КБ</div><div class="battle-stat-val">${en.ac||10}</div></div>
+        ${['str','dex','con','int','wis','cha'].map(s=>`<div class="battle-stat-badge"><div class="battle-stat-label">${t('stat_'+s)}</div><div class="battle-stat-val">${(en.stats||{})[s]||10}</div></div>`).join('')}
       </div>
-      <div class="g3" style="margin-bottom:8px">
-        <div class="field"><div class="field-label">КБ</div><input type="number" value="${en.ac||10}" oninput="updateEnemy(${i},'ac',this.value)" style="text-align:center"></div>
-        <div class="field"><div class="field-label">Макс. ХП</div><input type="number" value="${en.hpMax||10}" oninput="updateEnemyHPMax(${i},this.value)" style="text-align:center"></div>
-        <div class="field"><div class="field-label">ДС (XP)</div><input type="number" value="${en.xpReward||0}" oninput="updateEnemy(${i},'xpReward',parseInt(this.value)||0)" style="text-align:center"></div>
+      <div class="battle-actions">
+        <input type="number" class="battle-dmg-input" id="en-amt-${i}" placeholder="HP±">
+        <button class="hp-btn dmg" style="flex:1;padding:6px 4px;font-size:12px" onclick="damageEnemy(${i})">— Шкода</button>
+        <button class="hp-btn heal" style="flex:1;padding:6px 4px;font-size:12px" onclick="healEnemy(${i})">+ Лікув.</button>
+        <button class="award-btn" style="flex:1;padding:6px 4px;font-size:11px;margin:0" onclick="awardXP(${i})">⬆ ДС</button>
       </div>
-      <div style="display:flex;gap:6px;align-items:flex-end;margin-bottom:8px">
-        <input type="number" id="en-amt-${i}" placeholder="шкода" style="flex:1">
-        <button class="hp-btn dmg" style="flex:1;padding:6px 4px;font-size:11px" onclick="damageEnemy(${i})">${t('btn_dmg')}</button>
-      </div>
-      <button class="award-btn" onclick="awardXP(${i})">⬆ +${en.xpReward||0} ДС</button>`;
+      ${en.subtitle?`<div style="font-size:11px;color:var(--text3);font-style:italic;margin-top:6px">${en.subtitle}</div>`:''}`;
     list.appendChild(div);
   });
 }
-function addEnemy(){const c=getChar();if(!c.enemies)c.enemies=[];c.enemies.push({name:'',stats:{str:10,dex:10,con:10,int:10,wis:10,cha:10},ac:10,speed:9,hpMax:10,hpCur:10,xpReward:100,attacks:''});saveAll();renderEnemies();}
+
+function openEnemyPicker(){
+  if(!currentCharId){alert('Спочатку відкрий персонажа!');return;}
+  renderEnemyPickerList('');
+  document.getElementById('enemy-picker-search').value='';
+  openModal('modal-enemy-picker');
+}
+
+function getAllCreatures(){
+  // Collect custom enc creatures
+  const custom=(encEntries.creatures||[]).map(e=>({
+    name:e.title, subtitle:e.subtitle, icon:e.icon||'👹',
+    hp:parseInt(e.creatureHp)||10, ac:parseInt(e.creatureAc)||10,
+    xpReward:parseInt(e.creatureXp)||50,
+    stats:{str:10,dex:10,con:10,int:10,wis:10,cha:10},
+    tags:(e.tags||[])
+  }));
+  // Built-in creatures
+  const builtin=[
+    {name:'Гоблін',subtitle:'КН 1/4 • Мала істота',icon:'🐉',hp:7,ac:15,xpReward:50,stats:{str:8,dex:14,con:10,int:10,wis:8,cha:8},tags:['Офіційний','Гуманоїд']},
+    {name:'Орк',subtitle:'КН 1/2 • Середня істота',icon:'👹',hp:15,ac:13,xpReward:100,stats:{str:16,dex:12,con:16,int:7,wis:11,cha:10},tags:['Офіційний','Гуманоїд']},
+    {name:'Тіньовий Ткач',subtitle:'КН 3 • Кастомний монстр',icon:'🕷',hp:45,ac:14,xpReward:700,stats:{str:12,dex:16,con:14,int:10,wis:12,cha:8},tags:['Кастомне','Нежить']},
+  ];
+  return [...builtin,...custom];
+}
+
+function renderEnemyPickerList(query){
+  const list=document.getElementById('enemy-picker-list');
+  list.innerHTML='';
+  const creatures=getAllCreatures().filter(c=>
+    !query||c.name.toLowerCase().includes(query.toLowerCase())||
+    (c.tags||[]).some(tg=>tg.toLowerCase().includes(query.toLowerCase()))
+  );
+  if(!creatures.length){list.innerHTML='<div class="picker-empty">Нічого не знайдено</div>';return;}
+  creatures.forEach((cr,i)=>{
+    const div=document.createElement('div');
+    div.className='picker-row';
+    div.innerHTML=`<div class="picker-row-icon">${cr.icon||'👹'}</div>
+      <div class="picker-row-info">
+        <div class="picker-row-name">${cr.name}</div>
+        <div class="picker-row-sub">${cr.subtitle||''} ${(cr.tags||[]).map(tg=>`<span style="background:rgba(139,26,26,0.15);padding:1px 5px;border-radius:2px;font-size:9px">${tg}</span>`).join(' ')}</div>
+      </div>
+      <div class="picker-row-stat">ХП ${cr.hp} / КБ ${cr.ac}</div>
+      <button class="picker-add-btn" onclick="addEnemyFromLib(${i},'${query}')">+ Бій</button>`;
+    list.appendChild(div);
+  });
+}
+
+function filterEnemyPicker(q){renderEnemyPickerList(q);}
+
+function addEnemyFromLib(idx, query){
+  const creatures=getAllCreatures().filter(c=>
+    !query||c.name.toLowerCase().includes(query.toLowerCase())||
+    (c.tags||[]).some(tg=>tg.toLowerCase().includes(query.toLowerCase()))
+  );
+  const cr=creatures[idx];
+  if(!cr)return;
+  const c=getChar();
+  if(!c.enemies)c.enemies=[];
+  c.enemies.push({
+    name:cr.name, subtitle:cr.subtitle||'', icon:cr.icon||'👹',
+    ac:cr.ac, hpMax:cr.hp, hpCur:cr.hp,
+    xpReward:cr.xpReward, stats:{...cr.stats}
+  });
+  saveAll();renderEnemies();
+  closeModal('modal-enemy-picker');
+}
+
 function delEnemy(i){const c=getChar();c.enemies.splice(i,1);saveAll();renderEnemies();}
-function updateEnemy(i,field,val){getChar().enemies[i][field]=val;saveAll();}
-function updateEnemyStat(i,stat,val){const c=getChar();if(!c.enemies[i].stats)c.enemies[i].stats={};c.enemies[i].stats[stat]=parseInt(val)||10;saveAll();}
-function updateEnemyHPMax(i,val){const c=getChar();c.enemies[i].hpMax=parseInt(val)||0;if(c.enemies[i].hpCur>c.enemies[i].hpMax)c.enemies[i].hpCur=c.enemies[i].hpMax;saveAll();document.getElementById('en-hpmax-'+i).textContent=c.enemies[i].hpMax;updateEnemyBar(i);}
 function damageEnemy(i){const c=getChar();const amt=parseInt(document.getElementById('en-amt-'+i).value)||0;if(!amt)return;c.enemies[i].hpCur=Math.max(0,c.enemies[i].hpCur-amt);document.getElementById('en-amt-'+i).value='';saveAll();document.getElementById('en-hpcur-'+i).textContent=c.enemies[i].hpCur;updateEnemyBar(i);}
+function healEnemy(i){const c=getChar();const amt=parseInt(document.getElementById('en-amt-'+i).value)||0;if(!amt)return;c.enemies[i].hpCur=Math.min(c.enemies[i].hpMax,c.enemies[i].hpCur+amt);document.getElementById('en-amt-'+i).value='';saveAll();document.getElementById('en-hpcur-'+i).textContent=c.enemies[i].hpCur;updateEnemyBar(i);}
 function updateEnemyBar(i){const c=getChar();const en=c.enemies[i];const pct=en.hpMax>0?Math.max(0,Math.min(100,en.hpCur/en.hpMax*100)):0;const bar=document.getElementById('en-hpbar-'+i);if(bar)bar.style.width=pct+'%';}
 function awardXP(i){const c=getChar();const xp=parseInt(c.enemies[i].xpReward)||0;if(!xp)return;c.xp+=xp;let leveled=false;while(c.level<20&&c.xp>=XP_TABLE[c.level]){c.level++;if(c.level%5===0)c.statPoints+=2;leveled=true;}if(leveled)c._pendingLevelUp=true;saveAll();renderXP();alert(`+${xp} ДС! Всього: ${c.xp}`);}
+
+// ===================== INVENTORY PICKER =====================
+function openInvPicker(){
+  if(!currentCharId){alert('Спочатку відкрий персонажа!');return;}
+  renderInvPickerList('');
+  document.getElementById('inv-picker-search').value='';
+  openModal('modal-inv-picker');
+}
+
+function getAllLibraryItems(){
+  // From encyclopedia items (custom)
+  const encItems=(encEntries.items||[]).map(e=>({
+    name:e.title, subtitle:e.subtitle||'', icon:e.icon||'📦',
+    type:'item', desc:e.body||'', weight:parseFloat(e.itemWeight)||0,
+    stat:e.itemStat||'', tags:e.tags||[]
+  }));
+  // From encyclopedia items (built-in)
+  const builtin=[
+    {name:'Зілля зцілення',subtitle:'Відновлює 2к4+2 ХП',icon:'⚗️',type:'magic',desc:'Відновлює 2к4+2 ХП.',weight:0.5,stat:'2к4+2',tags:['Офіційний','Витратний']},
+    {name:'Смолоскип',subtitle:'Освітлення, 1 год',icon:'🔦',type:'item',desc:'Яскраве світло 6м, горить 1 годину.',weight:0.5,stat:'1 🔥',tags:['Офіційний']},
+    {name:'Кинджал',subtitle:'Проста рукопашна',icon:'🗡',type:'weapon',desc:'Фехтувальна, кидкова, легка.',weight:0.5,stat:'1к4',tags:['Офіційний','Зброя']},
+    {name:'Короткий лук',subtitle:'Проста далекобійна',icon:'🏹',type:'weapon',desc:'Дальність 24/96м, двуручна.',weight:1,stat:'1к6',tags:['Офіційний','Зброя']},
+    {name:'Довгий меч',subtitle:'Бойова рукопашна',icon:'⚔️',type:'weapon',desc:'1к8/1к10 різального.',weight:1.5,stat:'1к8',tags:['Офіційний','Зброя']},
+    {name:'Великосокира',subtitle:'Бойова рукопашна',icon:'🪓',type:'weapon',desc:'Важка, двуручна.',weight:3.5,stat:'1к12',tags:['Офіційний','Зброя']},
+    {name:'Шкіряна броня',subtitle:'Легка броня',icon:'👘',type:'armor',desc:'КБ 11 + бонус СПР.',weight:4.5,stat:'КБ 11+СПР',tags:['Офіційний','Броня']},
+    {name:'Кольчуга',subtitle:'Важка броня',icon:'⛓',type:'armor',desc:'КБ 16, потрібна Сила 13+.',weight:27,stat:'КБ 16',tags:['Офіційний','Броня']},
+    {name:'Щит',subtitle:'Допоміжний захист',icon:'🛡',type:'armor',desc:'+2 КБ, займає одну руку.',weight:3,stat:'+2 КБ',tags:['Офіційний','Броня']},
+    {name:'Мотузка 15м',subtitle:'Утиліта',icon:'🧵',type:'item',desc:'Витримує до 225кг.',weight:5,stat:'—',tags:['Офіційний']},
+    {name:'Набір підземельника',subtitle:'Стартовий набір',icon:'🎒',type:'item',desc:'Наплічник, смолоскипи, пайок, мотузка...',weight:22,stat:'—',tags:['Офіційний','Стартовий']},
+    {name:'Перстень захисту',subtitle:'Рідкісний',icon:'💍',type:'magic',desc:'+1 КБ та +1 до рятівних кидків.',weight:0,stat:'+1 КБ',tags:['Офіційний','Магічне']},
+    {name:'Рукавиці силача',subtitle:'Незвичайний',icon:'🧤',type:'magic',desc:'Сила стає 19.',weight:0.5,stat:'СИЛ 19',tags:['Офіційний','Магічне']},
+    {name:'Осколок Темної Зорі',subtitle:'Магічний артефакт',icon:'💎',type:'magic',desc:'+1к6 некр. шкоди 1/день.',weight:0,stat:'+1к6',tags:['Кастомне','Магічне']},
+    {name:'Рунний Клинок Громовиці',subtitle:'Магічна зброя',icon:'⚡',type:'weapon',desc:'+1 атака/урон, крит +1к6 блискавки.',weight:1.5,stat:'1к8+1',tags:['Кастомне','Зброя']},
+  ];
+  return [...builtin,...encItems];
+}
+
+function renderInvPickerList(query){
+  const list=document.getElementById('inv-picker-list');
+  list.innerHTML='';
+  const items=getAllLibraryItems().filter(it=>
+    !query||it.name.toLowerCase().includes(query.toLowerCase())||
+    (it.tags||[]).some(tg=>tg.toLowerCase().includes(query.toLowerCase()))||
+    (it.subtitle||'').toLowerCase().includes(query.toLowerCase())
+  );
+  if(!items.length){list.innerHTML='<div class="picker-empty">Нічого не знайдено</div>';return;}
+  items.forEach((item,i)=>{
+    const div=document.createElement('div');
+    div.className='picker-row';
+    div.innerHTML=`<div class="picker-row-icon">${item.icon||'📦'}</div>
+      <div class="picker-row-info">
+        <div class="picker-row-name">${item.name}</div>
+        <div class="picker-row-sub">${item.subtitle||''}</div>
+      </div>
+      <div class="picker-row-stat">${item.stat||''}</div>
+      <button class="picker-add-btn" onclick="selectInvItem(${i},'${(query||'').replace(/'/g,"\\'")}')">+ Взяти</button>`;
+    list.appendChild(div);
+  });
+}
+
+function filterInvPicker(q){renderInvPickerList(q);}
+
+function selectInvItem(idx, query){
+  const items=getAllLibraryItems().filter(it=>
+    !query||it.name.toLowerCase().includes(query.toLowerCase())||
+    (it.tags||[]).some(tg=>tg.toLowerCase().includes(query.toLowerCase()))||
+    (it.subtitle||'').toLowerCase().includes(query.toLowerCase())
+  );
+  const item=items[idx];
+  if(!item)return;
+  document.getElementById('inv-quick-title').textContent='Додати: '+item.name;
+  document.getElementById('inv-quick-name').value=item.name;
+  document.getElementById('inv-quick-type').value=item.type||'item';
+  document.getElementById('inv-quick-desc').value=item.desc||'';
+  document.getElementById('inv-quick-weight').value=item.weight||0;
+  document.getElementById('inv-quick-qty').value=1;
+  closeModal('modal-inv-picker');
+  openModal('modal-inv-quick-add');
+}
+
+function confirmInvQuickAdd(){
+  const c=getChar();if(!c.inventory)c.inventory=[];
+  c.inventory.push({
+    name:document.getElementById('inv-quick-name').value,
+    type:document.getElementById('inv-quick-type').value,
+    desc:document.getElementById('inv-quick-desc').value,
+    weight:parseFloat(document.getElementById('inv-quick-weight').value)||0,
+    qty:parseInt(document.getElementById('inv-quick-qty').value)||1
+  });
+  saveAll();renderInventory();closeModal('modal-inv-quick-add');
+}
 
 // ===================== SHOP =====================
 function renderShop(){
@@ -2139,42 +2433,152 @@ function delShopItem(i){const c=getChar();c.shop.splice(i,1);saveAll();renderSho
 function buyItem(i){const c=getChar();const item=c.shop[i];const price=item.buyPrice||0;if(c.coins.gold<price){alert('Недостатньо золота!');return;}c.coins.gold-=price;if(!c.inventory)c.inventory=[];c.inventory.push({name:item.name,type:item.type,desc:item.desc,qty:1,weight:0});saveAll();renderCoins();renderInventory();}
 
 // ===================== ENCYCLOPEDIA CUSTOM ENTRIES =====================
+let activeTagFilter = null;
+
 function openEncModal(section){
   document.getElementById('enc-entry-section').value=section;
-  document.getElementById('modal-enc-title').textContent=t('btn_add_entry').replace('+','').trim()+' — '+section;
+  document.getElementById('modal-enc-title').textContent='Новий запис';
+  // Show/hide section-specific fields
+  document.getElementById('enc-creature-fields').style.display=section==='creatures'?'block':'none';
+  document.getElementById('enc-item-fields').style.display=section==='items'?'block':'none';
+  // Populate tag suggestions
+  renderTagSuggestions();
   openModal('modal-enc-entry');
 }
+
+function renderTagSuggestions(){
+  const all=getAllTags();
+  const container=document.getElementById('enc-tag-suggestions');
+  if(!container)return;
+  container.innerHTML='';
+  all.slice(0,20).forEach(tg=>{
+    const btn=document.createElement('button');
+    btn.className='tag-sug';
+    btn.textContent=tg;
+    btn.onclick=()=>{
+      const input=document.getElementById('enc-entry-tags');
+      const cur=input.value.trim();
+      input.value=cur?cur+', '+tg:tg;
+    };
+    container.appendChild(btn);
+  });
+}
+
+function getAllTags(){
+  const tags=new Set(['Офіційний','Кастомне','Монстр','Гуманоїд','Нежить','Звір','Зброя','Броня','Магічне','Витратний','КН 1/4','КН 1/2','КН 1','КН 3','Стартовий','Ліс','Підземля','Місто']);
+  Object.values(encEntries).forEach(arr=>(arr||[]).forEach(e=>(e.tags||[]).forEach(tg=>tags.add(tg))));
+  return [...tags];
+}
+
 function saveEncEntry(){
   const section=document.getElementById('enc-entry-section').value;
+  const tagsRaw=document.getElementById('enc-entry-tags').value;
+  const tags=tagsRaw.split(',').map(s=>s.trim()).filter(Boolean);
   const entry={
     title:document.getElementById('enc-entry-title').value||'Запис',
     subtitle:document.getElementById('enc-entry-subtitle').value||'',
     icon:document.getElementById('enc-entry-icon').value||'📜',
-    body:document.getElementById('enc-entry-body').value||''
+    body:document.getElementById('enc-entry-body').value||'',
+    tags
   };
+  if(section==='creatures'){
+    entry.creatureHp=document.getElementById('enc-c-hp').value||10;
+    entry.creatureAc=document.getElementById('enc-c-ac').value||10;
+    entry.creatureXp=document.getElementById('enc-c-xp').value||50;
+  }
+  if(section==='items'){
+    entry.itemStat=document.getElementById('enc-i-stat').value||'—';
+    entry.itemWeight=document.getElementById('enc-i-weight').value||0;
+  }
   if(!encEntries[section])encEntries[section]=[];
   encEntries[section].push(entry);
-  saveAll();renderEncCustom(section);closeModal('modal-enc-entry');
-  ['enc-entry-title','enc-entry-subtitle','enc-entry-icon','enc-entry-body'].forEach(id=>document.getElementById(id).value='');
+  saveAll();renderEncCustom(section);renderTagFilterBar();closeModal('modal-enc-entry');
+  ['enc-entry-title','enc-entry-subtitle','enc-entry-icon','enc-entry-body','enc-entry-tags',
+   'enc-c-hp','enc-c-ac','enc-c-xp','enc-i-stat','enc-i-weight'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
 }
+
 function renderEncCustom(section){
   const container=document.getElementById('enc-'+section+'-custom');
   if(!container)return;
   container.innerHTML='';
   (encEntries[section]||[]).forEach((e,i)=>{
     const div=document.createElement('div');
-    div.className='entry-card';
+    div.className='entry-card enc-searchable';
     div.style.borderColor='rgba(180,140,80,0.3)';
-    div.innerHTML=`<div class="entry-card-header"><div class="entry-card-icon">${e.icon}</div><div>
+    div.dataset.tags=(e.tags||[]).join(',').toLowerCase();
+    div.dataset.text=(e.title+' '+(e.subtitle||'')+' '+(e.body||'')).toLowerCase();
+    let extraStats='';
+    if(e.creatureHp){
+      extraStats=`<div class="entry-stat-row">
+        <div class="entry-stat"><div class="entry-stat-label">ХП</div><div class="entry-stat-val">${e.creatureHp}</div></div>
+        <div class="entry-stat"><div class="entry-stat-label">КБ</div><div class="entry-stat-val">${e.creatureAc}</div></div>
+        <div class="entry-stat"><div class="entry-stat-label">ДС</div><div class="entry-stat-val">${e.creatureXp}</div></div>
+      </div>`;
+    }
+    if(e.itemStat){
+      extraStats=`<div class="entry-stat-row">
+        <div class="entry-stat"><div class="entry-stat-label">СТАТ</div><div class="entry-stat-val">${e.itemStat}</div></div>
+        <div class="entry-stat"><div class="entry-stat-label">ВАГА</div><div class="entry-stat-val">${e.itemWeight||0}кг</div></div>
+      </div>`;
+    }
+    const tagsHtml=(e.tags||[]).map(tg=>`<span class="entry-tag tag-custom" style="cursor:pointer" onclick="setTagFilter('${tg}')">${tg}</span>`).join('');
+    div.innerHTML=`<div class="entry-card-header" style="position:relative"><div class="entry-card-icon">${e.icon}</div><div style="flex:1">
       <div class="entry-card-title">${e.title}</div>
       <div class="entry-card-subtitle">${e.subtitle}</div>
-    </div><button onclick="delEncEntry('${section}',${i})" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text3);font-size:14px">✕</button></div>
+    </div><button onclick="delEncEntry('${section}',${i})" style="position:absolute;top:0;right:0;background:none;border:none;color:var(--text3);font-size:14px">✕</button></div>
     <div class="entry-card-body">${e.body}</div>
-    <div class="entry-card-tags"><span class="entry-tag tag-custom">${t('tag_custom')}</span></div>`;
+    ${extraStats}
+    <div class="entry-card-tags">${tagsHtml}</div>`;
     container.appendChild(div);
   });
 }
-function delEncEntry(section,i){encEntries[section].splice(i,1);saveAll();renderEncCustom(section);}
+function delEncEntry(section,i){encEntries[section].splice(i,1);saveAll();renderEncCustom(section);renderTagFilterBar();}
+
+// ===================== ENCYCLOPEDIA SEARCH + TAG FILTER =====================
+function renderTagFilterBar(){
+  const bar=document.getElementById('enc-tag-filter-bar');
+  if(!bar)return;
+  const tags=getAllTags().slice(0,15);
+  bar.innerHTML='';
+  tags.forEach(tg=>{
+    const span=document.createElement('span');
+    const isActive=activeTagFilter===tg;
+    span.className='tag-chip tag-custom'+(isActive?' filter-active':'');
+    span.textContent=tg;
+    span.onclick=()=>setTagFilter(isActive?null:tg);
+    bar.appendChild(span);
+  });
+}
+
+function setTagFilter(tag){
+  activeTagFilter=tag;
+  renderTagFilterBar();
+  const q=document.getElementById('enc-global-search')?.value||'';
+  applyEncSearch(q);
+}
+
+function encGlobalSearch(q){applyEncSearch(q);}
+
+function applyEncSearch(q){
+  const ql=q.toLowerCase();
+  const tgl=activeTagFilter?activeTagFilter.toLowerCase():null;
+  // Search all .enc-searchable cards
+  document.querySelectorAll('.enc-searchable').forEach(card=>{
+    const txt=card.dataset.text||'';
+    const tags=card.dataset.tags||'';
+    const matchQ=!ql||txt.includes(ql)||tags.includes(ql);
+    const matchT=!tgl||tags.includes(tgl);
+    card.style.display=(matchQ&&matchT)?'':'none';
+  });
+  // Also search static built-in cards (mark them)
+  document.querySelectorAll('.entry-card:not(.enc-searchable)').forEach(card=>{
+    const txt=card.textContent.toLowerCase();
+    const matchQ=!ql||txt.includes(ql);
+    // for tag filter on static cards — check text
+    const matchT=!tgl||txt.includes(tgl.toLowerCase());
+    card.style.display=(matchQ&&matchT)?'':'none';
+  });
+}
 
 // ===================== CREATION CUSTOM ENTRIES =====================
 function openCreModal(section){
@@ -2260,15 +2664,6 @@ function renderEqCustom(section){
 }
 function delEqEntry(section,i){eqEntries[section].splice(i,1);saveAll();renderEqCustom(section);}
 
-// ===================== SEARCH =====================
-function filterEncItems(q){
-  const cards=document.querySelectorAll('#enc-items .entry-card');
-  cards.forEach(card=>{
-    const txt=card.textContent.toLowerCase();
-    card.style.display=txt.includes(q.toLowerCase())?'':'none';
-  });
-}
-
 // ===================== MODALS =====================
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
@@ -2278,16 +2673,15 @@ document.querySelectorAll('.modal-overlay').forEach(el=>{
 
 // ===================== INIT =====================
 loadAll();
-// Apply lang from storage
 document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',
   (currentLang==='uk'&&b.textContent.trim()==='УКР')||(currentLang==='en'&&b.textContent.trim()==='ENG')
 ));
 applyI18n();
 renderCharSelect();
-// Render all encyclopedia custom entries on load
 ['prehistory','items','creatures'].forEach(s=>renderEncCustom(s));
 ['class','race','background','ability'].forEach(s=>renderCreCustom(s));
 ['weapon','armor','gear','magic'].forEach(s=>renderEqCustom(s));
+renderTagFilterBar();
 </script>
 </body>
 </html>
