@@ -2058,7 +2058,7 @@ function changeStat(s, delta){
     c.stats[s] = Math.min(20, c.stats[s] + 2);
     c.statPoints--;
   } else {
-    if(c.stats[s] <= 2) return; // нижче 2 не даємо
+    if(c.stats[s] <= 1) return; // нижче 2 не даємо
     c.stats[s] = Math.max(2, c.stats[s] - 2);
     c.statPoints++;
   }
