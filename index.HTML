@@ -2050,16 +2050,17 @@ function renderStats(){
   document.getElementById('f-passive-perc').value=10+wisM+(c.skillProfs['perception']?pb:0);
   document.getElementById('f-initiative').value=modStr(c.stats.dex||10);
 }
-function changeStat(s, delta){
-  const c = getChar();
+function changeStat(s,delta){
+  const c=getChar();
 
-  if(delta > 0){
-    if((c.statPoints || 0) < 2) return; // треба 2 очки
-    c.stats[s] = Math.min(20, c.stats[s] + 2);
+  if(delta>0){
+    if((c.statPoints||0)<1)return;
+    if(c.stats[s] >= 20)return;
+    c.stats[s]=Math.min(20,c.stats[s]+2);
     c.statPoints--;
   } else {
-    if(c.stats[s] <= 1) return; // нижче 2 не даємо
-    c.stats[s] = Math.max(2, c.stats[s] - 2);
+    if(c.stats[s] <= 2)return;
+    c.stats[s]=Math.max(1,c.stats[s]-2);
     c.statPoints++;
   }
 
